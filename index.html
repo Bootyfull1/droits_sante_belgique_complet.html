@@ -1,371 +1,635 @@
-        <div class="field"><label>Statut BIM/OMNIO</label><select id="s-med-bim" onchange="validateFields()"><option value="non">Non</option><option value="oui">Oui</option></select></div>
-      `;
-      setTimeout(() => {
-        const dl = document.getElementById('med-list');
-        dl.innerHTML = '';
-        Object.values(CFG.DRUGS_DB).forEach(m => { const o = document.createElement('option'); o.value = m.name; dl.appendChild(o); });
-      }, 50);
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Assistant INAMI</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      --surface: rgba(30, 41, 59, 0.85);
+      --surface-hover: rgba(51, 65, 85, 0.95);
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --accent: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --border: rgba(148, 163, 184, 0.2);
+      --shadow: 0 12px 40px -8px rgba(0, 0, 0, 0.5);
+      --radius: 14px;
+      --radius-lg: 20px;
+      --font: system-ui, -apple-system, "Inter", sans-serif;
+      --spacing-xs: 0.3rem;
+      --spacing-sm: 0.6rem;
+      --spacing-md: 1.2rem;
+      --spacing-lg: 1.8rem;
+      --spacing-xl: 2.5rem;
     }
-    else if (t === 'log') {
-      c.innerHTML = `
-        <div class="field"><label>Categorie logopedie</label>
-          <select id="s-log-cat" onchange="validateFields()">
-            <option value="log-langage">Langage oral / Dysphasie</option>
-            <option value="log-dyslexie">Dyslexie</option>
-            <option value="log-begaiement">Begaiement</option>
-          </select>
-        </div>
-        <div class="field"><label>Seances</label><input type="number" id="s-log-sess" oninput="validateFields()"></div>
-      `;
+    * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
+    body { 
+      font-family: var(--font); 
+      background: var(--bg-gradient); 
+      color: var(--text); 
+      line-height: 1.6; 
+      padding: var(--spacing-md); 
+      min-height: 100vh;
     }
-    else if (t === 'mobilite') {
-      c.innerHTML = `
-        <div class="field"><label>Type d'aide</label>
-          <select id="s-mob-type" onchange="validateFields()">
-            <option value="fauteuil">Fauteuil roulant</option>
-            <option value="deambulateur">Deambulateur / Rollator</option>
-            <option value="orthese">Orthese / Prothese</option>
-          </select>
-        </div>
-        <div class="field"><label>Age du patient</label><input type="number" id="s-mob-age" placeholder="Age" oninput="validateFields()"></div>
-      `;
-    }
-  }
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
 
-  // Logique Kiné (Pathologies)
-  function updatePaths() {
-    const cat = document.getElementById('s-cat')?.value;
-    const pathField = document.getElementById('path-field');
-    const pathSel = document.getElementById('s-path');
-    pathSel.innerHTML = '<option value="">-- Selectionner --</option>';
-    if (cat && CFG.KINE_LISTS[cat]) {
-      pathField.style.display = 'flex';
-      CFG.KINE_LISTS[cat].forEach(p => {
-        const opt = document.createElement('option');
-        opt.value = p.id; opt.textContent = `${p.id} : ${p.name}`;
-        pathSel.appendChild(opt);
-      });
-    } else { pathField.style.display = 'none'; document.getElementById('op-code-field').style.display = 'none'; }
-  }
-  function updatePathLogic() {
-    const cat = document.getElementById('s-cat')?.value;
-    const pathId = document.getElementById('s-path')?.value;
-    const opField = document.getElementById('op-code-field');
-    if (cat && pathId) {
-      currentPathology = CFG.KINE_LISTS[cat].find(p => p.id == pathId);
-      if (currentPathology?.requiresSurgicalCode) opField.style.display = 'flex';
-      else opField.style.display = 'none';
+    #login-screen {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: var(--bg-gradient);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 1000;
     }
-    validateFields();
-  }
+    .login-card {
+      background: var(--surface);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-xl);
+      width: 90%; max-width: 420px;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+    .login-card h1 { font-size: 2rem; margin-bottom: var(--spacing-sm); color: var(--text); }
+    .login-card h1 span { color: var(--primary); }
+    .login-card p { color: var(--text-muted); margin-bottom: var(--spacing-lg); }
+    .login-input {
+      width: 100%; padding: 0.9rem;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      margin-bottom: var(--spacing-md);
+    }
+    .login-input:focus { border-color: var(--primary); }
+    .login-btn {
+      width: 100%; padding: 0.9rem;
+      background: var(--primary); color: #fff;
+      border: none; border-radius: var(--radius);
+      font-weight: 600; cursor: pointer;
+    }
+    .login-btn:hover { background: var(--primary-hover); }
+    .login-error { color: var(--danger); margin-top: var(--spacing-sm); display: none; }
+    .login-help { margin-top: var(--spacing-lg); font-size: 0.8rem; }
+    .login-help a { color: var(--primary); cursor: pointer; }
 
-  // Validation temps réel (Fact-Checking)
-  function validateFields() {
-    const msgEl = document.getElementById('validation-msg');
-    if(!msgEl) return;
-    msgEl.textContent = '';
-    const age = +document.getElementById('age')?.value || 0;
-    const type = document.getElementById('type')?.value;
-
-    if (type === 'kine' && currentPathology) {
-      if (currentPathology.minAge && age < currentPathology.minAge) {
-        msgEl.innerHTML = `<span style="color:var(--danger)">⚠️ ${currentPathology.name} exige un âge ≥ ${currentPathology.minAge} ans.</span>`;
-      }
-      if (currentPathology.maxAge && age > currentPathology.maxAge) {
-        msgEl.innerHTML = `<span style="color:var(--danger)">️ ${currentPathology.name} est réservée aux < ${currentPathology.maxAge} ans.</span>`;
-      }
+    #main-app { display: none; max-width: 1000px; margin: 0 auto; }
+    header { text-align: center; margin-bottom: var(--spacing-xl); padding: var(--spacing-md) 0; }
+    h1 { font-size: 1.8rem; margin-bottom: var(--spacing-xs); }
+    .sub { color: var(--text-muted); }
+    .header-actions { display: flex; gap: var(--spacing-sm); justify-content: center; margin-top: var(--spacing-sm); flex-wrap: wrap; }
+    .global-search { 
+      background: var(--surface); border: 1px solid var(--border);
+      color: var(--text); padding: 0.5rem 0.8rem;
+      border-radius: var(--radius); flex: 1; max-width: 300px;
+    }
+    .logout-btn {
+      background: none; border: 1px solid var(--border);
+      color: var(--text-muted); padding: 0.5rem 0.8rem;
+      border-radius: var(--radius); cursor: pointer;
     }
 
-    if (type === 'med') {
-      const drugName = document.getElementById('s-med-search')?.value.toLowerCase() || '';
-      const presc = document.getElementById('s-med-presc')?.value;
-      let drug = null;
-      for(let k in CFG.DRUGS_DB) { if(drugName.includes(k) || CFG.DRUGS_DB[k].name.toLowerCase().includes(drugName)) drug = CFG.DRUGS_DB[k]; }
-      
-      if (drug && drug.prescripteur === 'specialiste' && presc === 'generaliste') {
-        msgEl.innerHTML = `<span style="color:var(--warning)">⚠️ ${drug.name} nécessite un spécialiste (diabétologue/endocrinologue).</span>`;
-      }
+    #nav { display: flex; flex-direction: column; gap: var(--spacing-md); margin: 0 auto var(--spacing-xl); width: 100%; max-width: 400px; padding: var(--spacing-md); }
+    .nav-btn {
+      background: var(--surface); border: 1px solid var(--border);
+      color: var(--text); padding: 1.2rem;
+      border-radius: var(--radius-lg); cursor: pointer;
+      font-weight: 600; font-size: 1.1rem;
     }
+    .nav-btn:hover { background: var(--primary); color: #fff; }
 
-    if (type === 'kine' && currentPathology?.requiresSurgicalCode) {
-      const opCode = document.getElementById('s-op-code')?.value || '';
-      if (opCode && !/^\d{6}$/.test(opCode)) {
-        msgEl.innerHTML = `<span style="color:var(--warning)">⚠️ Code opératoire invalide (6 chiffres requis).</span>`;
-      }
+    .view { display: none; }
+    .back-btn {
+      background: var(--surface); color: var(--text-muted);
+      border: 1px solid var(--border); padding: 0.7rem 1.2rem;
+      border-radius: var(--radius); cursor: pointer;
+      margin-bottom: var(--spacing-lg);
     }
-  }
-
-  // Exécution du Simulateur
-  function runSim() {
-    const tp = document.getElementById('type').value;
-    const age = +document.getElementById('age').value;
-    const st = document.getElementById('status').value;
-    const res = document.getElementById('res');
-    res.style.display = 'block';
+    .card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: var(--spacing-xl);
+      margin-bottom: var(--spacing-lg);
+    }
+    h2 { color: var(--primary); margin-bottom: var(--spacing-lg); border-bottom: 1px solid var(--border); padding-bottom: var(--spacing-sm); }
     
-    if (tp === 'med') {
-      const searchVal = document.getElementById('s-med-search').value.trim().toLowerCase();
-      const patho = document.getElementById('s-med-patho').value.trim().toLowerCase();
-      const presc = document.getElementById('s-med-presc').value;
-      const bim = document.getElementById('s-med-bim').value;
-      
-      if (!searchVal) return alert('Entrez un nom de medicament.');
-      if (!patho) return alert('Precisez la pathologie.');
-
-      let drug = null;
-      for (let k in CFG.DRUGS_DB) { if (searchVal.includes(k) || CFG.DRUGS_DB[k].name.toLowerCase().includes(searchVal)) { drug = CFG.DRUGS_DB[k]; break; } }
-
-      if (drug) {
-        const indKey = Object.keys(drug.indications).find(k => patho.includes(k));
-        const info = indKey ? drug.indications[indKey] : 'Indication non precisee.';
-        
-        let status = 'ok', msg = `<strong>${drug.name}</strong> (Cat. ${drug.cat}) pour ${patho} :<br>${info}`;
-        
-        if (drug.prescripteur === 'specialiste' && presc !== 'specialiste') { status = 'refus'; msg += '<br>Refus: Prescription specialiste obligatoire.'; }
-        else if (info.includes('Non rembourse')) { status = 'refus'; }
-        else if (info.includes('conditions')) { status = 'cond'; }
-
-        if (st === 'bim' && status !== 'refus') msg += '<br><em>Statut BIM : ticket modérateur réduit.</em>';
-
-        document.getElementById('r-status').className = `res-status ${status === 'ok' ? 'ok' : (status === 'cond' ? 'cond' : 'no')}`;
-        document.getElementById('r-status').textContent = status === 'ok' ? 'ELIGIBLE' : (status === 'cond' ? 'CONDITIONNEL' : 'REFUS');
-        document.getElementById('r-msg').innerHTML = msg;
-        document.getElementById('r-ref').innerHTML = `<strong>Source :</strong> Nomenclature Pharmaceutique INAMI`;
-      } else {
-        document.getElementById('r-status').className = 'res-status cond';
-        document.getElementById('r-status').textContent = 'NON TROUVE';
-        document.getElementById('r-msg').textContent = `Aucun medicament correspondant.`;
-      }
-    } 
-    else if (tp === 'kine') {
-      if (!currentPathology) return alert('Selectionnez une pathologie.');
-      const sess = +document.getElementById('s-sess').value;
-      const opCode = document.getElementById('s-op-code')?.value.trim();
-
-      if (!sess) return alert('Nombre de seances requis.');
-      if (currentPathology.requiresSurgicalCode && !opCode) {
-         document.getElementById('r-status').className = 'res-status no';
-         document.getElementById('r-status').textContent = 'REFUS';
-         document.getElementById('r-msg').innerHTML = `Le code operatoire chirurgical est obligatoire pour ${currentPathology.name}.`;
-         return;
-      }
-
-      let status = 'ok', msg = `<strong>${currentPathology.name}</strong><br>Remboursement prevu pour ${sess} seances.`;
-      if (sess > currentPathology.maxSessions) { status = 'cond'; msg = `Depassement du forfait (${currentPathology.maxSessions} seances). Accord prealable requis.`; }
-      if (currentPathology.priorAgreementRequired) { status = 'cond'; msg = 'Pathologie lourde. Accord prealable obligatoire.'; }
-      
-      document.getElementById('r-status').className = `res-status ${status === 'ok' ? 'ok' : 'cond'}`;
-      document.getElementById('r-status').textContent = status === 'ok' ? 'ELIGIBLE' : 'CONDITIONNEL';
-      document.getElementById('r-msg').innerHTML = msg;
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--spacing-lg); margin-bottom: var(--spacing-lg); }
+    .field { display: flex; flex-direction: column; gap: var(--spacing-sm); }
+    label { font-weight: 500; color: var(--text-muted); font-size: 0.8rem; }
+    input, select {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border);
+      color: var(--text); padding: 0.9rem;
+      border-radius: var(--radius); width: 100%;
     }
-    else if (tp === 'mobilite') {
-      const mobType = document.getElementById('s-mob-type').value;
-      const mobAge = +document.getElementById('s-mob-age').value || 0;
-      
-      let status = 'ok', msg = `Aide à la mobilité (${mobType}) remboursée à 90%.`;
-      if (mobType === 'fauteuil' && mobAge > 0) msg = `Fauteuil roulant remboursé à 90%. Renouvellement tous les 5 ans (2 ans si <16 ans).`;
-      
-      document.getElementById('r-status').className = 'res-status ok';
-      document.getElementById('r-status').textContent = 'ELIGIBLE';
-      document.getElementById('r-msg').innerHTML = msg;
-      document.getElementById('r-ref').innerHTML = `<strong>Source :</strong> Nomenclature Aide à la Mobilité`;
+    input:focus, select:focus { border-color: var(--primary); }
+
+    .btn-primary {
+      background: var(--primary); color: #fff;
+      border: none; padding: 0.9rem;
+      border-radius: var(--radius); cursor: pointer;
+      width: 100%; margin-top: var(--spacing-sm);
     }
-    else {
-      document.getElementById('r-status').className = 'res-status cond';
-      document.getElementById('r-status').textContent = 'DEMANDE ENREGISTREE';
-      document.getElementById('r-msg').textContent = 'Utilisez le Super Agent pour une analyse detaillee.';
+    .result-panel {
+      margin-top: var(--spacing-lg); padding: var(--spacing-lg);
+      border-radius: var(--radius-lg); background: var(--bg);
+      border: 1px solid var(--border); display: none;
+    }
+    .res-status { font-size: 1.1rem; font-weight: 700; margin-bottom: var(--spacing-sm); }
+    .ok { color: var(--accent); border-left: 4px solid var(--accent); padding-left: var(--spacing-md); }
+    .no { color: var(--danger); border-left: 4px solid var(--danger); padding-left: var(--spacing-md); }
+    .cond { color: var(--warning); border-left: 4px solid var(--warning); padding-left: var(--spacing-md); }
+
+    /* Chat */
+    .chat-container {
+      display: flex; flex-direction: column; height: 70vh;
+      border: 1px solid var(--border); border-radius: var(--radius-lg);
+      overflow: hidden; background: var(--surface);
+    }
+    .chat-header { padding: var(--spacing-md); background: rgba(15,23,42,0.9); border-bottom: 1px solid var(--border); }
+    .agent-title { font-weight: 700; }
+    .agent-sub { font-size: 0.8rem; color: var(--text-muted); }
+    
+    #chat-log { flex: 1; overflow-y: auto; padding: var(--spacing-lg); display: flex; flex-direction: column; gap: var(--spacing-md); }
+    .msg { max-width: 90%; padding: 1rem; border-radius: var(--radius-lg); }
+    .msg.user { align-self: flex-end; background: var(--primary); color: #fff; }
+    .msg.agent { align-self: flex-start; background: var(--surface-hover); border: 1px solid var(--border); }
+    .msg.agent ul { margin: 0.5rem 0 0.5rem 1.2rem; }
+    
+    .suggestion-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.8rem; }
+    .suggestion-chip {
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid var(--primary);
+      color: var(--primary); padding: 0.4rem 0.8rem;
+      border-radius: 20px; font-size: 0.85rem; cursor: pointer;
+    }
+    .suggestion-chip:hover { background: rgba(59, 130, 246, 0.2); }
+
+    .chat-input-area { display: flex; padding: var(--spacing-md); background: var(--surface-hover); border-top: 1px solid var(--border); gap: var(--spacing-sm); }
+    .chat-input { flex: 1; background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 0.8rem; border-radius: var(--radius); }
+    .send-btn { background: var(--accent); color: #fff; border: none; padding: 0 1.4rem; border-radius: var(--radius); cursor: pointer; }
+
+    footer { text-align: center; margin-top: var(--spacing-xl); padding: var(--spacing-lg) 0; border-top: 1px solid var(--border); color: var(--text-muted); font-size: 0.75rem; }
+  </style>
+</head>
+<body>
+
+<div id="login-screen">
+  <div class="login-card">
+    <h1>Assistant <span>INAMI</span></h1>
+    <p>Accès sécurisé</p>
+    <input type="password" id="login-password" class="login-input" placeholder="Mot de passe">
+    <button class="login-btn" onclick="attemptLogin()">Valider</button>
+    <div class="login-error" id="login-error">Mot de passe incorrect</div>
+    <div class="login-help"><a onclick="alert('Mot de passe: inami2025')">Mot de passe oublié ?</a></div>
+  </div>
+</div>
+
+<div id="main-app">
+<header>
+  <h1>Assistant INAMI</h1>
+  <p class="sub">Vos droits de santé en Belgique</p>
+  <div class="header-actions">
+    <input type="text" class="global-search" placeholder="Rechercher..." onkeypress="if(event.key==='Enter'){show('agent');document.getElementById('input-agent').value=this.value;sendMsg();}">
+    <button class="logout-btn" onclick="logout()">Déconnexion</button>
+  </div>
+</header>
+
+<nav id="nav">
+  <button class="nav-btn" onclick="show('sim')">Simulateur</button>
+  <button class="nav-btn" onclick="show('nom')">Nomenclature</button>
+  <button class="nav-btn" onclick="show('agent')">Super Agent</button>
+</nav>
+
+<main>
+  <section id="v-sim" class="view">
+    <button class="back-btn" onclick="show('home')">← Retour</button>
+    <div class="card">
+      <h2>Simulateur d'Éligibilité</h2>
+      <div class="grid">
+        <div class="field">
+          <label>Âge du patient</label>
+          <input type="number" id="age" min="0" max="120" placeholder="Ex: 68">
+        </div>
+        <div class="field">
+          <label>Statut mutualité</label>
+          <select id="status">
+            <option value="std">Standard</option>
+            <option value="bim">BIM / OMNIO</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Type de soins</label>
+          <select id="type" onchange="toggleCond()">
+            <option value="">-- Sélectionner --</option>
+            <option value="kine">Kinésithérapie</option>
+            <option value="med">Médicaments</option>
+            <option value="mobilite">Aide à la mobilité</option>
+          </select>
+        </div>
+      </div>
+      <div id="cond" class="grid" style="display:none;"></div>
+      <div id="validation-msg" style="margin-top:1rem; font-size:0.9rem; min-height:1.5rem;"></div>
+      <button class="btn-primary" onclick="runSim()">Vérifier mon éligibilité</button>
+      <div id="res" class="result-panel">
+        <div id="r-status" class="res-status"></div>
+        <div id="r-msg" style="margin-top:0.5rem;"></div>
+        <div id="r-ref" style="margin-top:1rem; font-size:0.85rem; color:var(--text-muted);"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="v-nom" class="view">
+    <button class="back-btn" onclick="show('home')">← Retour</button>
+    <div class="card">
+      <h2>Nomenclature et Codes</h2>
+      <div class="field" style="margin-bottom:1rem;">
+        <label>Recherche</label>
+        <input type="text" id="nomo-search" placeholder="Code ou mot-clé..." oninput="updateNomoList()">
+      </div>
+      <div id="nomo-count" style="margin-bottom:1rem; color:var(--text-muted);">0 codes</div>
+      <div id="nomo-results" style="max-height:500px; overflow-y:auto;"></div>
+    </div>
+  </section>
+
+  <section id="v-agent" class="view">
+    <button class="back-btn" onclick="show('home')">← Retour</button>
+    <div class="chat-container">
+      <div class="chat-header">
+        <div class="agent-title">Super Agent INAMI</div>
+        <div class="agent-sub">Expert multi-matières</div>
+      </div>
+      <div id="chat-log"></div>
+      <div class="chat-input-area">
+        <input type="text" class="chat-input" id="input-agent" placeholder="Ex: Mounjaro est-il remboursé ?">
+        <button class="send-btn" onclick="sendMsg()">Envoyer</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>Règles INAMI à jour : Janvier 2025</footer>
+</div>
+
+<script>
+// Configuration
+const CFG = {
+  PASSWORD: 'inami2025',
+  DB_URLS: {
+    kine: 'https://raw.githubusercontent.com/Bootyfull1/inami-database/main/kine.json',
+    medicaments: 'https://raw.githubusercontent.com/Bootyfull1/inami-database/main/medicaments.json',
+    mobilite: 'https://raw.githubusercontent.com/Bootyfull1/inami-database/main/mobilite.json',
+    logopedie: 'https://raw.githubusercontent.com/Bootyfull1/inami-database/main/logopedie.json'
+  },
+  DRUGS: {
+    'mounjaro': {name:'Mounjaro', cat:'B', indications:{'diabete':'Remboursé si échec trithérapie et HbA1c>=8%'}, prescripteur:'specialiste'},
+    'insuline': {name:'Insuline', cat:'A', indications:{'diabete':'Remboursé à 100%'}, prescripteur:'generaliste'}
+  },
+  KINE: {
+    FA: [{id:1, name:'Fractures', requiresSurgicalCode:true, maxSessions:18}, {id:2, name:'Ligaments', requiresSurgicalCode:false, maxSessions:18}],
+    FB: [{id:51, name:'Rééducation marche', minAge:65, maxSessions:18}]
+  }
+};
+
+let allDB = {};
+let currentPath = null;
+
+// Login
+function attemptLogin() {
+  const pwd = document.getElementById('login-password').value;
+  if (pwd === CFG.PASSWORD) {
+    localStorage.setItem('inami_ok', '1');
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('main-app').style.display = 'block';
+    loadDBs();
+  } else {
+    document.getElementById('login-error').style.display = 'block';
+  }
+}
+
+function logout() {
+  localStorage.removeItem('inami_ok');
+  location.reload();
+}
+
+if (localStorage.getItem('inami_ok')) {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('main-app').style.display = 'block';
+  loadDBs();
+}
+
+// Chargement des bases
+async function loadDBs() {
+  for (const [key, url] of Object.entries(CFG.DB_URLS)) {
+    try {
+      const res = await fetch(url);
+      if (res.ok) {
+        allDB[key] = await res.json();
+        console.log('Chargé:', key);
+      }
+    } catch(e) {
+      console.warn('Erreur ' + key, e);
     }
   }
+}
 
-  function filterMedSuggestions(val) {
-    const dl = document.getElementById('med-list');
-    if(!dl) return;
-    dl.innerHTML = '';
-    const lower = val.toLowerCase();
-    Object.values(CFG.DRUGS_DB).forEach(m => {
-      if (m.name.toLowerCase().includes(lower)) {
-        const o = document.createElement('option'); o.value = m.name; dl.appendChild(o);
-      }
-    });
-  }
-
-  // NOMENCLATURE
-  function switchNomoTab(tab) {
-    document.querySelectorAll('.nomo-tab').forEach(t => t.classList.remove('active'));
-    event.target.classList.add('active');
-    document.getElementById('nomo-search-tab').style.display = tab === 'search' ? 'block' : 'none';
-    document.getElementById('nomo-compare-tab').style.display = tab === 'compare' ? 'block' : 'none';
-    if (tab === 'search') updateNomoList();
-  }
-  function togglePrices() { showPrices = !showPrices; document.getElementById('price-toggle').classList.toggle('active', showPrices); updateNomoList(); }
+// Navigation
+function show(id) {
+  document.querySelectorAll('.view').forEach(v => v.style.display = 'none');
+  document.getElementById('nav').style.display = id === 'home' ? 'flex' : 'none';
+  document.querySelector('header h1').style.display = id === 'home' ? 'block' : 'none';
+  document.querySelector('.sub').style.display = id === 'home' ? 'block' : 'none';
+  document.querySelector('.header-actions').style.display = id === 'home' ? 'flex' : 'none';
+  document.querySelector('footer').style.display = id === 'home' ? 'block' : 'none';
   
-  function updateNomoList() {
-    const query = document.getElementById('nomo-search-input').value.toLowerCase();
-    const container = document.getElementById('nomo-results'); container.innerHTML = '';
-    let count = 0;
-    // Recherche dans toutes les matières chargées
-    const domains = ['medicaments', 'kine', 'logopedie', 'mobilite'];
-    
-    domains.forEach(domain => {
-      const data = allDBData[domain];
-      if (data && data.items) {
-        data.items.forEach(item => {
-          if (item.nomenclatureCodes) {
-            item.nomenclatureCodes.forEach(code => {
-              if (code.code.includes(query) || code.desc.toLowerCase().includes(query) || item.name.toLowerCase().includes(query)) {
-                count++;
-                const div = document.createElement('div');
-                div.className = 'nomo-item' + (selectedCompareCodes.includes(code.code) ? ' selected' : '');
-                div.innerHTML = `<input type="checkbox" class="nomo-checkbox" ${selectedCompareCodes.includes(code.code)?'checked':''} onchange="toggleCompare('${code.code}')"><span class="nomo-code">${code.code}</span><span class="nomo-desc">${code.desc} (${item.name})</span><span class="nomo-cat">${domain}</span>${showPrices?`<span class="nomo-price">${code.price} EUR</span>`:''}`;
-                container.appendChild(div);
-              }
-            });
-          }
-        });
-      }
-    });
-    document.getElementById('nomo-count').textContent = `${count} codes`;
+  const el = document.getElementById('v-' + id);
+  if (el) el.style.display = 'block';
+  
+  if (id === 'agent' && document.getElementById('chat-log').children.length === 0) {
+    addMsg('agent', 'Bonjour. Je suis le Super Agent INAMI. Posez-moi votre question sur les médicaments, la kinésithérapie, ou l\'aide à la mobilité.');
   }
+}
 
-  function toggleCompare(code) {
-    if (selectedCompareCodes.includes(code)) selectedCompareCodes = selectedCompareCodes.filter(c => c !== code);
-    else if (selectedCompareCodes.length < 3) selectedCompareCodes.push(code);
-    else alert('Maximum 3 codes');
-    updateNomoList(); renderComparison();
+// Simulateur - Affichage conditions
+function toggleCond() {
+  const t = document.getElementById('type').value;
+  const c = document.getElementById('cond');
+  c.innerHTML = '';
+  document.getElementById('validation-msg').textContent = '';
+  
+  if (!t) { c.style.display = 'none'; return; }
+  c.style.display = 'grid';
+
+  if (t === 'kine') {
+    c.innerHTML = `
+      <div class="field">
+        <label>Catégorie</label>
+        <select id="s-cat" onchange="updatePaths()">
+          <option value="">-- Choisir --</option>
+          <option value="FA">Fa (Aigu)</option>
+          <option value="FB">Fb (Chronique)</option>
+        </select>
+      </div>
+      <div class="field" id="path-field" style="display:none">
+        <label>Pathologie</label>
+        <select id="s-path" onchange="updatePathLogic()"><option value="">-- Sélectionner --</option></select>
+      </div>
+      <div class="field"><label>Séances</label><input type="number" id="s-sess" min="1"></div>
+    `;
+  } else if (t === 'med') {
+    c.innerHTML = `
+      <div class="field">
+        <label>Médicament</label>
+        <input type="text" id="s-med" list="med-list" placeholder="Ex: Mounjaro">
+        <datalist id="med-list"></datalist>
+      </div>
+      <div class="field"><label>Pathologie</label><input type="text" id="s-patho" placeholder="Ex: diabète"></div>
+      <div class="field">
+        <label>Prescripteur</label>
+        <select id="s-presc">
+          <option value="generaliste">Généraliste</option>
+          <option value="specialiste">Spécialiste</option>
+        </select>
+      </div>
+    `;
+    setTimeout(() => {
+      const dl = document.getElementById('med-list');
+      dl.innerHTML = '';
+      Object.values(CFG.DRUGS).forEach(m => {
+        const o = document.createElement('option');
+        o.value = m.name;
+        dl.appendChild(o);
+      });
+    }, 50);
+  } else if (t === 'mobilite') {
+    c.innerHTML = `
+      <div class="field">
+        <label>Type d'aide</label>
+        <select id="s-mob">
+          <option value="fauteuil">Fauteuil roulant</option>
+          <option value="deambulateur">Déambulateur</option>
+        </select>
+      </div>
+      <div class="field"><label>Âge</label><input type="number" id="s-mob-age"></div>
+    `;
   }
-  function renderComparison() {
-    const grid = document.getElementById('comparison-grid'); grid.innerHTML = '';
-    selectedCompareCodes.forEach(code => {
-      let found = null;
-      // Recherche brute dans toutes les DB pour trouver le code
-      Object.values(allDBData).forEach(db => {
-        if(db && db.items) {
-          db.items.forEach(item => {
-            if(item.nomenclatureCodes) {
-              const match = item.nomenclatureCodes.find(c => c.code === code);
-              if(match) found = { ...match, itemName: item.name, domain: db.domain };
+}
+
+function updatePaths() {
+  const cat = document.getElementById('s-cat').value;
+  const pf = document.getElementById('path-field');
+  const ps = document.getElementById('s-path');
+  ps.innerHTML = '<option value="">-- Sélectionner --</option>';
+  
+  if (cat && CFG.KINE[cat]) {
+    pf.style.display = 'flex';
+    CFG.KINE[cat].forEach(p => {
+      const o = document.createElement('option');
+      o.value = p.id;
+      o.textContent = p.id + ': ' + p.name;
+      ps.appendChild(o);
+    });
+  } else {
+    pf.style.display = 'none';
+  }
+}
+
+function updatePathLogic() {
+  const cat = document.getElementById('s-cat').value;
+  const pid = document.getElementById('s-path').value;
+  if (cat && pid) {
+    currentPath = CFG.KINE[cat].find(p => p.id == pid);
+  }
+}
+
+// Exécution simulateur
+function runSim() {
+  const tp = document.getElementById('type').value;
+  const res = document.getElementById('res');
+  res.style.display = 'block';
+  
+  if (tp === 'med') {
+    const med = document.getElementById('s-med').value.toLowerCase();
+    const patho = document.getElementById('s-patho').value.toLowerCase();
+    const presc = document.getElementById('s-presc').value;
+    
+    let drug = null;
+    for (const k in CFG.DRUGS) {
+      if (med.includes(k) || CFG.DRUGS[k].name.toLowerCase().includes(med)) {
+        drug = CFG.DRUGS[k];
+        break;
+      }
+    }
+    
+    if (drug) {
+      const indKey = Object.keys(drug.indications).find(k => patho.includes(k));
+      const info = indKey ? drug.indications[indKey] : 'Indication non précisée';
+      
+      let status = 'ok';
+      let msg = '<strong>' + drug.name + '</strong> (Cat. ' + drug.cat + ')<br>' + info;
+      
+      if (drug.prescripteur === 'specialiste' && presc !== 'specialiste') {
+        status = 'refus';
+        msg += '<br>Refus: Prescription spécialiste obligatoire';
+      }
+      
+      document.getElementById('r-status').className = 'res-status ' + (status === 'ok' ? 'ok' : 'no');
+      document.getElementById('r-status').textContent = status === 'ok' ? 'ÉLIGIBLE' : 'REFUS';
+      document.getElementById('r-msg').innerHTML = msg;
+    } else {
+      document.getElementById('r-status').className = 'res-status no';
+      document.getElementById('r-status').textContent = 'NON TROUVÉ';
+      document.getElementById('r-msg').textContent = 'Médicament non trouvé dans la base';
+    }
+  } else if (tp === 'kine') {
+    if (!currentPath) {
+      alert('Sélectionnez une pathologie');
+      return;
+    }
+    const sess = +document.getElementById('s-sess').value;
+    
+    let msg = '<strong>' + currentPath.name + '</strong><br>Remboursement prévu pour ' + sess + ' séances';
+    if (sess > currentPath.maxSessions) {
+      msg = 'Dépassement du forfait (' + currentPath.maxSessions + ' séances). Accord préalable requis.';
+      document.getElementById('r-status').className = 'res-status cond';
+      document.getElementById('r-status').textContent = 'CONDITIONNEL';
+    } else {
+      document.getElementById('r-status').className = 'res-status ok';
+      document.getElementById('r-status').textContent = 'ÉLIGIBLE';
+    }
+    document.getElementById('r-msg').innerHTML = msg;
+  } else if (tp === 'mobilite') {
+    document.getElementById('r-status').className = 'res-status ok';
+    document.getElementById('r-status').textContent = 'ÉLIGIBLE';
+    document.getElementById('r-msg').innerHTML = 'Aide à la mobilité remboursée à 90%. Accord préalable L113 requis.';
+  }
+}
+
+// Nomenclature
+function updateNomoList() {
+  const q = document.getElementById('nomo-search').value.toLowerCase();
+  const container = document.getElementById('nomo-results');
+  container.innerHTML = '';
+  let count = 0;
+  
+  Object.values(allDB).forEach(db => {
+    if (db && db.items) {
+      db.items.forEach(item => {
+        if (item.nomenclatureCodes) {
+          item.nomenclatureCodes.forEach(code => {
+            if (code.code.includes(q) || code.desc.toLowerCase().includes(q) || item.name.toLowerCase().includes(q)) {
+              count++;
+              const div = document.createElement('div');
+              div.style.cssText = 'padding:0.8rem; border-bottom:1px solid var(--border);';
+              div.innerHTML = '<strong>' + code.code + '</strong> - ' + code.desc + ' <em>(' + item.name + ')</em> - ' + code.price + ' EUR';
+              container.appendChild(div);
             }
           });
         }
       });
+    }
+  });
+  
+  document.getElementById('nomo-count').textContent = count + ' codes trouvés';
+}
+
+// Super Agent
+function addMsg(sender, html) {
+  const log = document.getElementById('chat-log');
+  const div = document.createElement('div');
+  div.className = 'msg ' + sender;
+  div.innerHTML = html;
+  log.appendChild(div);
+  log.scrollTop = log.scrollHeight;
+}
+
+function sendMsg() {
+  const input = document.getElementById('input-agent');
+  const txt = input.value.trim();
+  if (!txt) return;
+  
+  addMsg('user', txt);
+  input.value = '';
+  
+  // Recherche intelligente dans les bases
+  const lower = txt.toLowerCase();
+  let found = null;
+  let domain = '';
+  
+  for (const [key, db] of Object.entries(allDB)) {
+    if (!db || !db.items) continue;
+    for (const item of db.items) {
+      const text = (item.name + ' ' + (item.description || '')).toLowerCase();
+      if (lower.split(' ').some(w => text.includes(w) && w.length > 3)) {
+        found = item;
+        domain = key;
+        break;
+      }
+    }
+    if (found) break;
+  }
+  
+  // Réponse
+  setTimeout(() => {
+    if (found) {
+      let resp = '<strong>Analyse pour: ' + found.name + '</strong><br>';
+      resp += '<em>Domaine: ' + domain + '</em><br><br>';
       
-      if (found) grid.innerHTML += `<div class="comp-card"><div class="comp-code">${found.code}</div><div class="comp-row"><span>Item</span><span>${found.itemName}</span></div><div class="comp-row"><span>Description</span><span>${found.desc}</span></div><div class="comp-row"><span>Tarif</span><span>${found.price} EUR</span></div></div>`;
+      if (found.nomenclatureCodes) {
+        resp += '<strong>Codes:</strong><ul>';
+        found.nomenclatureCodes.slice(0, 3).forEach(c => {
+          resp += '<li>' + c.code + ': ' + c.desc + ' (' + c.price + ' EUR)</li>';
+        });
+        resp += '</ul>';
+      }
+      
+      if (found.rules) {
+        resp += '<strong>Conditions:</strong><ul>';
+        if (found.rules.requiresMedicalPrescription) resp += '<li>Prescription médicale requise</li>';
+        if (found.rules.priorAgreementRequired) resp += '<li style="color:var(--warning)">Accord préalable requis</li>';
+        if (found.rules.maxSessionsPerYear) resp += '<li>Plafond: ' + found.rules.maxSessionsPerYear + ' séances/an</li>';
+        resp += '</ul>';
+      }
+      
+      // Suggestions
+      let sugg = [];
+      if (domain === 'medicaments') sugg = ['Prescripteur?', 'Taux remboursement?'];
+      else if (domain === 'mobilite') sugg = ['Renouvellement?', 'Accord L113?'];
+      
+      if (sugg.length > 0) {
+        resp += '<div class="suggestion-chips">';
+        sugg.forEach(s => {
+          resp += '<span class="suggestion-chip" onclick="document.getElementById(\'input-agent\').value=\'' + s + '\';sendMsg()">' + s + '</span>';
+        });
+        resp += '</div>';
+      }
+      
+      addMsg('agent', resp);
+    } else {
+      if (lower.includes('bonjour')) {
+        addMsg('agent', 'Bonjour. Je peux vous renseigner sur les médicaments, la kinésithérapie, l\'aide à la mobilité, etc. Posez votre question.');
+      } else {
+        addMsg('agent', 'Je n\'ai pas trouvé d\'information précise. Essayez avec "Mounjaro", "fauteuil", "kiné", etc.');
+      }
+    }
+  }, 300);
+}
+
+// Init
+window.addEventListener('DOMContentLoaded', () => {
+  if (document.getElementById('input-agent')) {
+    document.getElementById('input-agent').addEventListener('keypress', e => {
+      if (e.key === 'Enter') sendMsg();
     });
   }
-
-  // SUPER AGENT EXPERT (Intelligence Artificielle basée sur JSON)
-  function setTopic(topic) {
-    currentTopic = topic;
-    document.querySelectorAll('.topic-btn').forEach(b => b.classList.remove('active'));
-    event.target.classList.add('active');
-  }
-
-  function addMsg(sender, html) {
-    const log = document.getElementById('chat-log-agent');
-    const div = document.createElement('div'); div.className = `msg ${sender}`; div.innerHTML = html;
-    log.appendChild(div); log.scrollTop = log.scrollHeight;
-  }
-
-  function sendMsg(type) {
-    const input = document.getElementById('input-agent');
-    const txt = input.value.trim(); if (!txt) return;
-    addMsg('user', txt); input.value = '';
-    
-    agentContext.history.push({ role: 'user', text: txt });
-
-    // Analyse intelligente
-    const lower = txt.toLowerCase();
-    let response = '';
-    let suggestions = [];
-
-    // 1. Recherche dans toutes les bases JSON
-    let matchFound = null;
-    let matchDomain = '';
-    
-    // Recherche par mots-clés dans les noms et descriptions
-    const searchDomains = ['medicaments', 'kine', 'logopedie', 'mobilite', 'soins', 'dietetique', 'imagerie', 'hospitalisation'];
-    
-    for (const domain of searchDomains) {
-      const data = allDBData[domain];
-      if (!data || !data.items) continue;
-      
-      for (const item of data.items) {
-        const textToSearch = `${item.name} ${item.description || ''} ${item.id || ''} ${item.category || ''}`.toLowerCase();
-        const words = lower.split(' ');
-        // Si au moins un mot important correspond
-        if (words.some(w => textToSearch.includes(w) && w.length > 3)) {
-          matchFound = item;
-          matchDomain = domain;
-          break;
-        }
-      }
-      if (matchFound) break;
-    }
-
-    // 2. Construction de la réponse
-    if (matchFound) {
-      response += `<strong>Analyse INAMI pour : ${matchFound.name}</strong><br>`;
-      response += `<em>Catégorie : ${matchFound.category || matchFound.domain}</em><br><br>`;
-
-      // Détails selon le domaine
-      if (matchFound.nomenclatureCodes) {
-        response += `<strong>Codes Nomenclature :</strong><ul>`;
-        matchFound.nomenclatureCodes.slice(0, 3).forEach(c => {
-          response += `<li>${c.code} : ${c.desc} (${c.price} EUR)</li>`;
-        });
-        response += `</ul>`;
-      }
-
-      // Règles et Conditions
-      if (matchFound.rules) {
-        const rules = matchFound.rules;
-        response += `<strong>Conditions de remboursement :</strong><ul>`;
-        if (rules.requiresMedicalPrescription) response += `<li>Prescription médicale requise (${rules.medicalSpecialist || 'Médecin traitant'})</li>`;
-        if (rules.priorAgreementRequired) response += `<li><span style="color:var(--warning)">Accord préalable (L113) requis</span></li>`;
-        if (rules.maxSessionsPerYear) response += `<li>Plafond : ${rules.maxSessionsPerYear} séances/an</li>`;
-        if (rules.clinicalCriteria) {
-          response += `<li>Critères cliniques : ${Array.isArray(rules.clinicalCriteria) ? rules.clinicalCriteria.join(', ') : rules.clinicalCriteria}</li>`;
-        }
-        response += `</ul>`;
-      }
-
-      // Suggestions contextuelles
-      if (matchDomain === 'kine') suggestions = ['Quels sont les codes Fa ?', 'Conditions Liste E'];
-      else if (matchDomain === 'medicaments') suggestions = ['Prescripteur autorisé ?', 'Taux de remboursement ?'];
-      else if (matchDomain === 'mobilite') suggestions = ['Renouvellement', 'Accord préalable L113'];
-      
-    } else {
-      // Réponse générique si pas de match précis
-      if (lower.includes('bonjour') || lower.includes('salut')) {
-        response = "Bonjour. Je suis prêt. Demandez-moi des informations sur un médicament, une pathologie kiné, ou une aide technique.";
-      } else if (lower.includes('rembours') || lower.includes('eligibil')) {
-        response = "Pour vérifier l'éligibilité, précisez le nom du produit ou de la pathologie. Exemple: 'Mounjaro' ou 'Fauteuil électrique'.";
-      } else {
-        response = "Je n'ai pas trouvé d'information précise dans ma base pour cette requête. Essayez avec des termes comme 'Mounjaro', 'Fauteuil', 'Fa-1', ou 'Dyslexie'.";
-      }
-    }
-
-    // Affichage suggestions
-    if (suggestions.length > 0) {
-      response += `<div class="suggestion-chips">`;
-      suggestions.forEach(s => {
-        response += `<span class="suggestion-chip" onclick="document.getElementById('input-agent').value='${s}';sendMsg('agent')">${s}</span>`;
-      });
-      response += `</div>`;
-    }
-
-    // Simulation de délai de réflexion
-    setTimeout(() => addMsg('agent', response), 400);
-  }
-
-  document.getElementById('input-agent').addEventListener('keypress', e => { if(e.key==='Enter') sendMsg('agent'); });
-  
-  // Init
-  window.addEventListener('DOMContentLoaded', () => {
-    updateSyncStatus();
-    // Pré-chargement des médicaments locaux si JSON échoue
-    const dl = document.createElement('datalist'); dl.id = 'med-list'; document.body.appendChild(dl);
-  });
+});
 </script>
+
 </body>
 </html>
