@@ -4,101 +4,295 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Assistant INAMI | Simulateur, Experts & Nomenclature">
-  <title>INAMI Assistant Pro</title>
+  <title>Assistant INAMI</title>
   <style>
     :root {
-      --bg: #0b0f19;
-      --surface: #111827;
-      --surface-hover: #1e293b;
-      --text: #e2e8f0;
-      --text-muted: #94a3b8;
-      --primary: #2563eb;
-      --primary-hover: #1d4ed8;
-      --accent: #059669;
-      --warning: #d97706;
-      --danger: #dc2626;
-      --border: #334155;
-      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
-      --radius: 6px;
-      --radius-lg: 8px;
-      --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --bg: #1e293b;
+      --bg-gradient: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      --surface: #334155;
+      --surface-hover: #475569;
+      --text: #f1f5f9;
+      --text-muted: #cbd5e1;
+      --primary: #60a5fa;
+      --primary-hover: #3b82f6;
+      --accent: #34d399;
+      --warning: #fbbf24;
+      --danger: #f87171;
+      --border: #475569;
+      --border-soft: #64748b;
+      --shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.25);
+      --shadow-soft: 0 4px 12px -2px rgba(0, 0, 0, 0.15);
+      --radius: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 20px;
+      --font: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      --spacing-sm: 0.5rem;
+      --spacing-md: 1rem;
+      --spacing-lg: 1.5rem;
+      --spacing-xl: 2rem;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.5; padding: 1.5rem; min-height: 100vh; }
+    body { 
+      font-family: var(--font); 
+      background: var(--bg-gradient); 
+      color: var(--text); 
+      line-height: 1.6; 
+      padding: var(--spacing-lg); 
+      min-height: 100vh;
+    }
     
-    header { text-align: center; margin-bottom: 2rem; }
-    h1 { font-size: 1.75rem; font-weight: 600; color: var(--text); letter-spacing: -0.5px; margin-bottom: 0.25rem; }
-    .sub { color: var(--text-muted); font-size: 0.9rem; }
+    header { text-align: center; margin-bottom: var(--spacing-xl); padding-top: var(--spacing-md); }
+    h1 { font-size: 1.8rem; font-weight: 600; color: var(--text); letter-spacing: -0.5px; margin-bottom: var(--spacing-sm); }
+    .sub { color: var(--text-muted); font-size: 0.95rem; font-weight: 400; }
 
-    #nav { display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center; margin-bottom: 2.5rem; padding: 0.5rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); }
-    .nav-btn { background: transparent; border: 1px solid var(--border); color: var(--text-muted); padding: 0.6rem 1rem; border-radius: var(--radius); cursor: pointer; font-weight: 500; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.15s; }
-    .nav-btn:hover, .nav-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+    #nav { 
+      display: flex; flex-wrap: wrap; gap: var(--spacing-sm); justify-content: center; 
+      margin-bottom: var(--spacing-xl); padding: var(--spacing-md); 
+      background: var(--surface); border: 1px solid var(--border); 
+      border-radius: var(--radius-lg); 
+      box-shadow: var(--shadow-soft);
+    }
+    .nav-btn { 
+      background: transparent; border: 1px solid var(--border-soft); 
+      color: var(--text-muted); padding: 0.7rem 1.2rem; 
+      border-radius: var(--radius); cursor: pointer; 
+      font-weight: 500; font-size: 0.9rem; 
+      transition: all 0.2s ease;
+    }
+    .nav-btn:hover, .nav-btn.active { 
+      background: var(--primary); color: #fff; 
+      border-color: var(--primary); 
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-soft);
+    }
 
-    .view { max-width: 960px; margin: 0 auto; display: none; animation: fadeIn 0.2s ease; }
-    @keyframes fadeIn { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:translateY(0); } }
-    .back-btn { background: var(--surface); color: var(--text-muted); border: 1px solid var(--border); padding: 0.5rem 0.8rem; border-radius: var(--radius); cursor: pointer; margin-bottom: 1.25rem; font-size: 0.85rem; transition: 0.15s; }
+    .view { max-width: 1000px; margin: 0 auto; display: none; animation: fadeIn 0.25s ease; }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+    
+    .back-btn { 
+      background: var(--surface); color: var(--text-muted); 
+      border: 1px solid var(--border); padding: 0.6rem 1rem; 
+      border-radius: var(--radius); cursor: pointer; 
+      margin-bottom: var(--spacing-lg); font-size: 0.9rem; 
+      transition: 0.2s;
+    }
     .back-btn:hover { background: var(--border); color: var(--text); }
 
-    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem; margin-bottom: 1.25rem; box-shadow: var(--shadow); }
-    h2 { color: var(--primary); font-size: 1.15rem; margin-bottom: 1.25rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+    .card { 
+      background: var(--surface); border: 1px solid var(--border); 
+      border-radius: var(--radius-lg); padding: var(--spacing-xl); 
+      margin-bottom: var(--spacing-lg); 
+      box-shadow: var(--shadow);
+    }
+    h2 { 
+      color: var(--primary); font-size: 1.2rem; 
+      margin-bottom: var(--spacing-lg); font-weight: 600; 
+      padding-bottom: var(--spacing-sm); border-bottom: 1px solid var(--border);
+    }
     
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
-    .field { display: flex; flex-direction: column; gap: 0.35rem; }
-    label { font-weight: 500; color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; }
-    input, select { background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 0.7rem 0.8rem; border-radius: var(--radius); font-size: 0.9rem; transition: 0.15s; width: 100%; }
-    input:focus, select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2); }
-    .btn-primary { background: var(--primary); color: #fff; border: none; padding: 0.8rem; border-radius: var(--radius); font-weight: 600; cursor: pointer; width: 100%; margin-top: 0.5rem; transition: 0.15s; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; }
-    .btn-primary:hover { background: var(--primary-hover); }
-
-    .result-panel { margin-top: 1.5rem; padding: 1.2rem; border-radius: var(--radius-lg); background: var(--bg); border: 1px solid var(--border); display: none; }
-    .res-status { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.4rem; text-transform: uppercase; }
-    .ok { color: var(--accent); border-left: 3px solid var(--accent); padding-left: 0.75rem; }
-    .no { color: var(--danger); border-left: 3px solid var(--danger); padding-left: 0.75rem; }
-    .cond { color: var(--warning); border-left: 3px solid var(--warning); padding-left: 0.75rem; }
-    .res-msg { margin-top: 0.5rem; color: var(--text); font-size: 0.9rem; }
-    .res-ref { margin-top: 0.8rem; font-size: 0.8rem; color: var(--text-muted); background: var(--surface); padding: 0.75rem; border-radius: 4px; border-left: 2px solid var(--border); }
-    .form-link { display: inline-block; margin-top: 0.9rem; color: var(--primary); text-decoration: none; font-weight: 500; font-size: 0.85rem; border-bottom: 1px dashed var(--primary); }
-    .form-link:hover { border-bottom-style: solid; }
-
-    .chat-container { display: flex; flex-direction: column; height: 65vh; border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; background: var(--surface); }
-    .chat-header { padding: 0.9rem; background: var(--bg); border-bottom: 1px solid var(--border); }
-    .agent-title { font-weight: 600; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; }
-    .agent-sub { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.15rem; }
+    .grid { 
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
+      gap: var(--spacing-lg); margin-bottom: var(--spacing-lg); 
+    }
+    .field { display: flex; flex-direction: column; gap: var(--spacing-sm); }
+    label { 
+      font-weight: 500; color: var(--text-muted); 
+      font-size: 0.85rem; text-transform: uppercase; 
+      letter-spacing: 0.5px;
+    }
+    input, select { 
+      background: var(--bg); border: 1px solid var(--border); 
+      color: var(--text); padding: 0.8rem 1rem; 
+      border-radius: var(--radius); font-size: 0.95rem; 
+      transition: 0.2s; width: 100%;
+    }
+    input:focus, select:focus { 
+      outline: none; border-color: var(--primary); 
+      box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
+    }
     
-    #chat-log { flex: 1; overflow-y: auto; padding: 1rem; display: flex; flex-direction: column; gap: 0.8rem; background: var(--bg); }
-    .msg { max-width: 85%; padding: 0.8rem 1rem; border-radius: var(--radius); font-size: 0.9rem; line-height: 1.45; animation: slideIn 0.2s ease; }
-    @keyframes slideIn { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:translateY(0); } }
-    .msg.user { align-self: flex-end; background: var(--primary); color: #fff; border-bottom-right-radius: 2px; }
-    .msg.agent { align-self: flex-start; background: var(--surface-hover); border: 1px solid var(--border); border-bottom-left-radius: 2px; }
+    /* Toggle switch style */
+    .toggle-group { display: flex; gap: var(--spacing-sm); align-items: center; }
+    .toggle-option {
+      display: flex; align-items: center; gap: 0.4rem;
+      cursor: pointer; padding: 0.4rem 0.8rem;
+      border-radius: var(--radius); transition: 0.2s;
+      background: var(--bg); border: 1px solid var(--border);
+    }
+    .toggle-option:hover { background: var(--surface-hover); }
+    .toggle-option.selected {
+      background: var(--primary); border-color: var(--primary); color: #fff;
+    }
+    .toggle-option input { display: none; }
+    
+    .btn-primary { 
+      background: var(--primary); color: #fff; border: none; 
+      padding: 0.9rem; border-radius: var(--radius); 
+      font-weight: 600; cursor: pointer; width: 100%; 
+      margin-top: var(--spacing-sm); transition: 0.2s;
+      font-size: 0.95rem;
+    }
+    .btn-primary:hover { 
+      background: var(--primary-hover); 
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .result-panel { 
+      margin-top: var(--spacing-lg); padding: var(--spacing-lg); 
+      border-radius: var(--radius-lg); background: var(--bg); 
+      border: 1px solid var(--border); display: none;
+    }
+    .res-status { font-size: 1rem; font-weight: 700; margin-bottom: var(--spacing-sm); }
+    .ok { color: var(--accent); border-left: 4px solid var(--accent); padding-left: var(--spacing-md); }
+    .no { color: var(--danger); border-left: 4px solid var(--danger); padding-left: var(--spacing-md); }
+    .cond { color: var(--warning); border-left: 4px solid var(--warning); padding-left: var(--spacing-md); }
+    .res-msg { margin-top: var(--spacing-sm); color: var(--text); font-size: 0.95rem; }
+    .res-ref { 
+      margin-top: var(--spacing-md); font-size: 0.85rem; 
+      color: var(--text-muted); background: var(--surface); 
+      padding: var(--spacing-md); border-radius: var(--radius);
+      border-left: 3px solid var(--border-soft);
+    }
+    .form-link { 
+      display: inline-block; margin-top: var(--spacing-md); 
+      color: var(--primary); text-decoration: none; 
+      font-weight: 500; font-size: 0.9rem; 
+      border-bottom: 1px dashed var(--primary);
+      transition: 0.2s;
+    }
+    .form-link:hover { border-bottom-style: solid; color: var(--primary-hover); }
+
+    .chat-container { 
+      display: flex; flex-direction: column; height: 68vh; 
+      border: 1px solid var(--border); border-radius: var(--radius-lg); 
+      overflow: hidden; background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+    .chat-header { 
+      padding: var(--spacing-md); background: var(--bg); 
+      border-bottom: 1px solid var(--border);
+    }
+    .agent-title { font-weight: 600; font-size: 1rem; color: var(--text); }
+    .agent-sub { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem; }
+    
+    #chat-log { 
+      flex: 1; overflow-y: auto; padding: var(--spacing-lg); 
+      display: flex; flex-direction: column; gap: var(--spacing-md); 
+      background: var(--bg); scroll-behavior: smooth;
+    }
+    .msg { 
+      max-width: 88%; padding: 0.9rem 1.1rem; 
+      border-radius: var(--radius-lg); font-size: 0.95rem; 
+      line-height: 1.5; animation: slideIn 0.25s ease;
+    }
+    @keyframes slideIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+    .msg.user { 
+      align-self: flex-end; background: var(--primary); 
+      color: #fff; border-bottom-right-radius: 4px;
+      box-shadow: var(--shadow-soft);
+    }
+    .msg.agent { 
+      align-self: flex-start; background: var(--surface-hover); 
+      border: 1px solid var(--border); border-bottom-left-radius: 4px;
+    }
     .msg.agent strong { color: var(--text); }
-    .msg.agent ul { margin: 0.4rem 0 0 1.2rem; }
-    .typing { font-style: italic; color: var(--text-muted); font-size: 0.75rem; margin-left: 1rem; display: none; padding: 0.3rem 0; }
+    .msg.agent ul { margin: 0.5rem 0 0 1.3rem; }
+    .typing { 
+      font-style: italic; color: var(--text-muted); 
+      font-size: 0.8rem; margin-left: var(--spacing-md); 
+      display: none; padding: var(--spacing-sm) 0;
+    }
 
-    .chat-input-area { display: flex; padding: 0.8rem; background: var(--surface-hover); border-top: 1px solid var(--border); gap: 0.6rem; }
-    .chat-input { flex: 1; background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 0.7rem 1rem; border-radius: var(--radius); font-size: 0.9rem; }
+    .chat-input-area { 
+      display: flex; padding: var(--spacing-md); 
+      background: var(--surface-hover); 
+      border-top: 1px solid var(--border); gap: var(--spacing-sm);
+    }
+    .chat-input { 
+      flex: 1; background: var(--bg); border: 1px solid var(--border); 
+      color: var(--text); padding: 0.8rem 1.2rem; 
+      border-radius: var(--radius-lg); font-size: 0.95rem;
+    }
     .chat-input:focus { outline: none; border-color: var(--primary); }
-    .send-btn { background: var(--accent); color: #fff; border: none; padding: 0 1.2rem; border-radius: var(--radius); cursor: pointer; font-weight: 600; font-size: 0.85rem; text-transform: uppercase; transition: 0.15s; }
-    .send-btn:hover { filter: brightness(1.1); }
+    .send-btn { 
+      background: var(--accent); color: #fff; border: none; 
+      padding: 0 1.4rem; border-radius: var(--radius-lg); 
+      cursor: pointer; font-weight: 600; font-size: 0.9rem; 
+      transition: 0.2s;
+    }
+    .send-btn:hover { filter: brightness(1.05); transform: translateY(-1px); }
 
-    .search-row { display: flex; gap: 0.8rem; margin-bottom: 1rem; flex-wrap: wrap; }
-    .search-row input { flex: 1; min-width: 200px; }
-    .search-btn { background: var(--accent); color: #fff; border: none; padding: 0 1.2rem; border-radius: var(--radius); cursor: pointer; font-weight: 600; font-size: 0.85rem; text-transform: uppercase; transition: 0.15s; }
-    .db-info { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.6rem; text-align: right; }
-    table { width: 100%; border-collapse: collapse; margin-top: 1rem; background: var(--surface); border-radius: var(--radius-lg); overflow: hidden; }
-    th, td { text-align: left; padding: 0.9rem; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
-    th { background: var(--bg); color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; font-size: 0.75rem; }
-    .n-code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--accent); font-weight: 600; }
-    .empty-state { text-align: center; color: var(--text-muted); padding: 2rem 0; display: none; font-size: 0.9rem; }
+    .search-row { 
+      display: flex; gap: var(--spacing-md); margin-bottom: var(--spacing-lg); 
+      flex-wrap: wrap;
+    }
+    .search-row input { flex: 1; min-width: 220px; }
+    .search-btn { 
+      background: var(--accent); color: #fff; border: none; 
+      padding: 0 1.4rem; border-radius: var(--radius); 
+      cursor: pointer; font-weight: 600; font-size: 0.9rem; 
+      transition: 0.2s;
+    }
+    .db-info { font-size: 0.8rem; color: var(--text-muted); margin-top: var(--spacing-sm); text-align: right; }
+    
+    table { 
+      width: 100%; border-collapse: collapse; margin-top: var(--spacing-lg); 
+      background: var(--surface); border-radius: var(--radius-lg); 
+      overflow: hidden;
+    }
+    th, td { text-align: left; padding: var(--spacing-md); border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+    th { 
+      background: var(--bg); color: var(--text-muted); 
+      font-weight: 600; text-transform: uppercase; 
+      letter-spacing: 0.5px; font-size: 0.8rem;
+    }
+    .n-code { font-family: ui-monospace, monospace; color: var(--accent); font-weight: 600; }
+    .empty-state { text-align: center; color: var(--text-muted); padding: var(--spacing-xl) 0; display: none; font-size: 0.95rem; }
 
-    footer { text-align: center; margin-top: 3rem; padding: 1rem 0; border-top: 1px solid var(--border); color: var(--text-muted); font-size: 0.75rem; }
-    @media (max-width: 650px) { h1 { font-size: 1.4rem; } .nav-btn { flex: 1 1 100%; text-align: center; } th, td { padding: 0.7rem; font-size: 0.8rem; } .chat-container { height: 55vh; } }
+    /* Mutualités styles */
+    .mutualite-card {
+      background: var(--surface-hover); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: var(--spacing-lg);
+      margin-bottom: var(--spacing-md); transition: 0.2s;
+    }
+    .mutualite-card:hover { border-color: var(--primary); transform: translateY(-2px); }
+    .mutualite-name { font-weight: 600; font-size: 1.05rem; color: var(--text); margin-bottom: var(--spacing-sm); }
+    .mutualite-info { font-size: 0.9rem; color: var(--text-muted); margin: 0.3rem 0; }
+    .mutualite-link { 
+      display: inline-block; margin-top: var(--spacing-sm); 
+      color: var(--primary); text-decoration: none; font-weight: 500;
+    }
+    .mutualite-link:hover { text-decoration: underline; }
+    
+    .mutualite-filters { 
+      display: flex; gap: var(--spacing-md); margin-bottom: var(--spacing-lg); 
+      flex-wrap: wrap; align-items: center;
+    }
+    .mutualite-filters input, .mutualite-filters select {
+      max-width: 250px;
+    }
+
+    footer { 
+      text-align: center; margin-top: var(--spacing-xl); 
+      padding: var(--spacing-lg) 0; border-top: 1px solid var(--border); 
+      color: var(--text-muted); font-size: 0.85rem;
+    }
+    
+    @media (max-width: 700px) { 
+      h1 { font-size: 1.5rem; } 
+      .nav-btn { flex: 1 1 100%; text-align: center; } 
+      th, td { padding: var(--spacing-sm); font-size: 0.85rem; } 
+      .chat-container { height: 60vh; }
+      .grid { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
 
 <header>
   <h1>Assistant INAMI</h1>
-  <p class="sub">Simulateur &bull; Experts &bull; Nomenclature</p>
+  <p class="sub">Simulateur • Experts • Nomenclature • Mutualités</p>
 </header>
 
 <nav id="nav">
@@ -109,18 +303,25 @@
   <button class="nav-btn" onclick="show('agent-pall')">Soins Palliatifs</button>
   <button class="nav-btn" onclick="show('agent-mob')">Aide a la Mobilite</button>
   <button class="nav-btn" onclick="show('nom')">Nomenclature</button>
+  <button class="nav-btn" onclick="show('mutualites')">Mutualites</button>
 </nav>
 
 <main>
+  <!-- SIMULATEUR -->
   <section id="v-sim" class="view">
     <button class="back-btn" onclick="home()">Retour</button>
     <div class="card">
       <h2>Simulateur d'Eligibilite</h2>
       <div class="grid">
         <div class="field"><label>Age</label><input type="number" id="age" min="0" max="120" placeholder="Ex: 68"></div>
-        <div class="field"><label>Statut</label><select id="status"><option value="std">Standard</option><option value="bim">BIM / OMNIO</option></select></div>
+        <div class="field"><label>Statut mutualite</label><select id="status"><option value="std">Standard</option><option value="bim">BIM / OMNIO</option></select></div>
         <div class="field"><label>Type de soins</label><select id="type" onchange="toggleCond()"><option value="">-- Selectionner --</option><option value="kine">Kinesitherapie</option><option value="med">Medicaments</option><option value="img">Imagerie</option><option value="spec">Specialiste</option><option value="hosp">Hospitalisation</option><option value="chron">Maladie Chronique</option></select></div>
-        <div class="field"><label>Parcours coordonne</label><select id="mdt"><option value="oui">Oui (ou exempte)</option><option value="non">Non (hors parcours)</option></select></div>
+        <div class="field"><label>Parcours coordonne</label>
+          <div class="toggle-group">
+            <label class="toggle-option" onclick="toggleSelect(this, 'mdt', 'oui')"><input type="radio" name="mdt" value="oui" checked>Oui</label>
+            <label class="toggle-option" onclick="toggleSelect(this, 'mdt', 'non')"><input type="radio" name="mdt" value="non">Non</label>
+          </div>
+        </div>
       </div>
       <div id="cond" class="grid" style="display:none;"></div>
       <button class="btn-primary" onclick="runSim()">Verifier l'eligibilite</button>
@@ -128,15 +329,16 @@
         <div id="r-status" class="res-status"></div>
         <div id="r-msg" class="res-msg"></div>
         <div id="r-ref" class="res-ref"></div>
-        <a id="r-form" href="#" target="_blank" class="form-link" style="display:none;">Acceder au formulaire de demande officiel</a>
+        <a id="r-form" href="#" target="_blank" rel="noopener" class="form-link" style="display:none;">Acceder au formulaire de demande officiel</a>
       </div>
     </div>
   </section>
 
+  <!-- AGENTS -->
   <section id="v-agent-kine" class="view">
     <button class="back-btn" onclick="home()">Retour</button>
     <div class="chat-container">
-      <div class="chat-header"><div class="agent-title">Expert Kinesitherapie</div><div class="agent-sub">Forfaits INAMI &bull; Pathologies &bull; Accords</div></div>
+      <div class="chat-header"><div class="agent-title">Expert Kinesitherapie</div><div class="agent-sub">Forfaits INAMI • Pathologies • Accords</div></div>
       <div id="chat-log-kine"></div>
       <div class="typing" id="typing-kine">Analyse en cours...</div>
       <div class="chat-input-area"><input type="text" class="chat-input" id="input-kine" placeholder="Ex: J'ai une prescription pour 24 seances..."><button class="send-btn" onclick="sendMsg('kine')">Envoyer</button></div>
@@ -146,7 +348,7 @@
   <section id="v-agent-med" class="view">
     <button class="back-btn" onclick="home()">Retour</button>
     <div class="chat-container">
-      <div class="chat-header"><div class="agent-title">Expert Medicaments</div><div class="agent-sub">Categories &bull; Conditions &bull; Generiques</div></div>
+      <div class="chat-header"><div class="agent-title">Expert Medicaments</div><div class="agent-sub">Categories • Conditions • Generiques</div></div>
       <div id="chat-log-med"></div>
       <div class="typing" id="typing-med">Verification nomenclature...</div>
       <div class="chat-input-area"><input type="text" class="chat-input" id="input-med" placeholder="Ex: Mounjaro pour diabete T2 ?"><button class="send-btn" onclick="sendMsg('med')">Envoyer</button></div>
@@ -156,7 +358,7 @@
   <section id="v-agent-parc" class="view">
     <button class="back-btn" onclick="home()">Retour</button>
     <div class="chat-container">
-      <div class="chat-header"><div class="agent-title">Expert Parcours de Soins</div><div class="agent-sub">MDT &bull; Tiers payant &bull; Tickets</div></div>
+      <div class="chat-header"><div class="agent-title">Expert Parcours de Soins</div><div class="agent-sub">MDT • Tiers payant • Tickets</div></div>
       <div id="chat-log-parc"></div>
       <div class="typing" id="typing-parc">Preparation analyse...</div>
       <div class="chat-input-area"><input type="text" class="chat-input" id="input-parc" placeholder="Ex: Puis-je voir un cardiologue sans MDT ?"><button class="send-btn" onclick="sendMsg('parc')">Envoyer</button></div>
@@ -166,7 +368,7 @@
   <section id="v-agent-pall" class="view">
     <button class="back-btn" onclick="home()">Retour</button>
     <div class="chat-container">
-      <div class="chat-header"><div class="agent-title">Expert Soins Palliatifs</div><div class="agent-sub">Forfait &bull; Equipes &bull; Accompagnement</div></div>
+      <div class="chat-header"><div class="agent-title">Expert Soins Palliatifs</div><div class="agent-sub">Forfait • Equipes • Accompagnement</div></div>
       <div id="chat-log-pall"></div>
       <div class="typing" id="typing-pall">Recherche protocoles...</div>
       <div class="chat-input-area"><input type="text" class="chat-input" id="input-pall" placeholder="Ex: Comment acceder au forfait palliatif ?"><button class="send-btn" onclick="sendMsg('pall')">Envoyer</button></div>
@@ -176,13 +378,14 @@
   <section id="v-agent-mob" class="view">
     <button class="back-btn" onclick="home()">Retour</button>
     <div class="chat-container">
-      <div class="chat-header"><div class="agent-title">Expert Aide a la Mobilite</div><div class="agent-sub">Fauteuils &bull; Protheses &bull; Orthoses</div></div>
+      <div class="chat-header"><div class="agent-title">Expert Aide a la Mobilite</div><div class="agent-sub">Fauteuils • Protheses • Orthoses</div></div>
       <div id="chat-log-mob"></div>
       <div class="typing" id="typing-mob">Verification tarifs INAMI...</div>
       <div class="chat-input-area"><input type="text" class="chat-input" id="input-mob" placeholder="Ex: Fauteuil roulant electrique rembourse ?"><button class="send-btn" onclick="sendMsg('mob')">Envoyer</button></div>
     </div>
   </section>
 
+  <!-- NOMENCLATURE -->
   <section id="v-nom" class="view">
     <button class="back-btn" onclick="home()">Retour</button>
     <div class="card">
@@ -192,57 +395,87 @@
         <button class="search-btn" onclick="searchNom()">Rechercher</button>
         <button class="search-btn" style="background:var(--primary)" onclick="updateDB()">Actualiser</button>
       </div>
-      <div class="db-info" id="db-st">Base locale &bull; Entrees: 0</div>
+      <div class="db-info" id="db-st">Base locale • Entrees: 0</div>
       <div class="empty-state" id="nom-empty">Aucun resultat trouve.</div>
       <table><thead><tr><th>Code</th><th>Description</th><th>Categorie</th><th>Tarif (EUR)</th></tr></thead><tbody id="nom-tbody"></tbody></table>
     </div>
   </section>
+
+  <!-- MUTUALITÉS -->
+  <section id="v-mutualites" class="view">
+    <button class="back-btn" onclick="home()">Retour</button>
+    <div class="card">
+      <h2>Mutualites Belges - Contacts Officiels</h2>
+      <div class="mutualite-filters">
+        <input type="text" id="mut-search" placeholder="Rechercher une mutualite..." oninput="filterMutualites()">
+        <select id="mut-region" onchange="filterMutualites()">
+          <option value="">Toutes les regions</option>
+          <option value="Bruxelles">Bruxelles</option>
+          <option value="Wallonie">Wallonie</option>
+          <option value="Flandre">Flandre</option>
+          <option value="National">National</option>
+        </select>
+      </div>
+      <div id="mut-list"></div>
+      <div class="db-info" style="margin-top:var(--spacing-md)">Source: <a href="https://www.inami.fgov.be/fr/professionnels/autres-professionnels/mutualites/contactez-les-mutualites" target="_blank" rel="noopener" style="color:var(--primary)">INAMI - Contactez les mutualites</a></div>
+    </div>
+  </section>
 </main>
 
-<footer>Application INAMI &bull; Donnees reglementaires simplifiees &bull; Mise a jour automatique &bull; Licence MIT</footer>
+<footer>Application INAMI • Donnees reglementaires simplifiees • Mise a jour automatique • Licence MIT</footer>
 
 <script>
   const CFG = {
     DB_URL: 'https://raw.githubusercontent.com/UTILISATEUR/REPO/main/nomenclature.json',
-    STORAGE_KEY: 'inami_cache_v5',
+    STORAGE_KEY: 'inami_cache_v6',
     FORMS: {
-      kine: 'https://www.inami.fed.be/FR/citoyens/soins/pages/protocole-de-soins.aspx',
-      med: 'https://www.inami.fed.be/FR/citoyens/soins/pages/medicaments.aspx',
-      chron: 'https://www.inami.fed.be/FR/citoyens/soins/pages/protocole-de-soins.aspx',
-      hosp: 'https://www.inami.fed.be/FR/citoyens/soins/pages/hospitalisation.aspx',
-      pall: 'https://www.inami.fed.be/FR/citoyens/soins/pages/soins-palliatifs.aspx',
-      mob: 'https://www.inami.fed.be/FR/citoyens/soins/pages/orthoprotheses.aspx'
+      kine: 'https://www.inami.fgov.be/SiteCollectionDocuments/formulaire_reglement20030728_annexe_05a.pdf',
+      kine_prolong: 'https://www.inami.fgov.be/SiteCollectionDocuments/formulaire_reglement20030728_annexe_05b.pdf',
+      med: 'https://www.health.belgium.be/sites/default/files/media/files/2025-11/m_at_formulaire_accord_prealable_fr.pdf',
+      chron: 'https://www.inami.fgov.be/fr/professionnels/professionnels-de-la-sante/medecins/formulaires-pour-les-medecins',
+      hosp: 'https://www.health.belgium.be/sites/default/files/media/files/2025-11/m_at_formulaire_accord_prealable_fr.pdf',
+      pall: 'https://www.inami.fgov.be/fr/citoyens/soins/pages/soins-palliatifs.aspx',
+      mob: 'https://www.inami.fgov.be/fr/citoyens/soins/pages/orthoprotheses.aspx'
     },
     KINE_LISTS: {
       FA: [
-        {id:1, name:'Fractures et luxations (traumatiques)'},
-        {id:2, name:'Lésions ligamentaires et musculaires'},
-        {id:3, name:'Interventions orthopédiques post-opératoires'},
-        {id:4, name:'Interventions neurochirurgicales'},
-        {id:5, name:'Affections rhumatologiques inflammatoires aiguës'}
+        {id:1, name:'Fractures et luxations (traumatiques)', codes:['100101','100102','100201','100202']},
+        {id:2, name:'Lesions ligamentaires et musculaires', codes:['100301','100302','100401']},
+        {id:3, name:'Interventions orthopediques post-operatoires', codes:['100501','100502','100601']},
+        {id:4, name:'Interventions neurochirurgicales', codes:['100701','100702']},
+        {id:5, name:'Affections rhumatologiques inflammatoires aigues', codes:['100801','100802']}
       ],
       FB: [
-        {id:51, name:'Rééducation à la marche (age >= 65 ans)'},
-        {id:52, name:'Retard ou trouble du développement psychomoteur (age < 16 ans)'},
-        {id:53, name:'Lymphœdème chronique avec critères validés'},
-        {id:54, name:'Affections neurologiques chroniques non évolutives'},
-        {id:55, name:'Rééducation fonctionnelle post-brûlures'}
+        {id:51, name:'Reeducation a la marche (age >= 65 ans)', minAge:65},
+        {id:52, name:'Retard ou trouble du developpement psychomoteur (age < 16 ans)', maxAge:15},
+        {id:53, name:'Lymphoedeme chronique avec criteres valides'},
+        {id:54, name:'Affections neurologiques chroniques non evolutives'},
+        {id:55, name:'Reeducation fonctionnelle post-brulures'}
       ],
       E: [
-        {id:'E-a', name:'Paralysie périphérique étendue (Guillain-Barré, etc.)'},
-        {id:'E-b', name:'Affections neurologiques centrales évolutives (SEP, Parkinson, SLA)'},
-        {id:'E-c', name:'Séquelles motrices étendues (IMC, hémiplégie, spina bifida)'},
-        {id:'E-d', name:'Suites de brûlures graves (membres/cou, phase évolutive)'},
-        {id:'E-e', name:'Perte fonctionnelle majeure d\'un membre (amputation, agénésie)'},
-        {id:'E-f', name:'Pied bot varus équin (enfant < 2 ans)'},
-        {id:'E-g', name:'Dysfonction articulaire grave (hémophilie, scoliose >=15° <18 ans)'},
+        {id:'E-a', name:'Paralysie peripherique etendue (Guillain-Barre, etc.)'},
+        {id:'E-b', name:'Affections neurologiques centrales evolutives (SEP, Parkinson, SLA)'},
+        {id:'E-c', name:'Sequelles motrices etendues (IMC, hemiplegie, spina bifida)'},
+        {id:'E-d', name:'Suites de brulures graves (membres/cou, phase evolutive)'},
+        {id:'E-e', name:'Perte fonctionnelle majeure d\'un membre (amputation, agenese)'},
+        {id:'E-f', name:'Pied bot varus equin (enfant < 2 ans)'},
+        {id:'E-g', name:'Dysfonction articulaire grave (hemophilie, scoliose >=15° <18 ans)'},
         {id:'E-h', name:'Polyarthrites chroniques inflammatoires (PR, spondylarthrite, lupus)'},
         {id:'E-i', name:'Myopathies (dystrophies musculaires, polymyosite)'},
         {id:'E-j', name:'Affections respiratoires chroniques (mucoviscidose, BPCO severe)'},
-        {id:'E-k', name:'Lymphœdème (post-radio/chirurgical avec critères objectifs)'},
+        {id:'E-k', name:'Lymphoedeme (post-radio/chirurgical avec criteres objectifs)'},
         {id:'E-l', name:'Anomalie structurelle locomotrice ou affection rare (<5/10.000)'}
       ]
     },
+    MUTUALITES: [
+      {name:'Mutualite Chretienne', website:'https://www.mc.be', phone:'02 778 91 11', email:'info@mc.be', regions:['Bruxelles','Wallonie','Flandre'], contact:'https://www.mc.be/contact'},
+      {name:'Solidaris', website:'https://www.solidaris.be', phone:'02 515 01 11', email:'info@solidaris.be', regions:['Bruxelles','Wallonie','Flandre'], contact:'https://www.solidaris.be/contact'},
+      {name:'Mutualite Liberate', website:'https://www.lm.be', phone:'02 543 91 11', email:'info@lm.be', regions:['Bruxelles','Wallonie','Flandre'], contact:'https://www.lm.be/contact'},
+      {name:'Partena Mutualite', website:'https://www.partena.be', phone:'02 788 81 11', email:'info@partena.be', regions:['Bruxelles','Wallonie','Flandre'], contact:'https://www.partena.be/contact'},
+      {name:'Helan', website:'https://www.helan.be', phone:'03 247 81 11', email:'info@helan.be', regions:['Flandre'], contact:'https://www.helan.be/contact'},
+      {name:'Vlaams & Neutraal Ziekenfonds', website:'https://www.vnz.be', phone:'02 513 08 08', email:'info@vnz.be', regions:['Flandre'], contact:'https://www.vnz.be/contact'},
+      {name:'Mutualite Socialiste', website:'https://www.mutualitesocialiste.be', phone:'02 515 01 11', email:'info@mutualitesocialiste.be', regions:['Bruxelles','Wallonie'], contact:'https://www.mutualitesocialiste.be/contact'}
+    ],
     AGENT_CONFIG: {
       kine: {
         greeting: "Assistant Kinesitherapie. Pour analyser votre situation, veuillez preciser la categorie demandee (Fa, Fb ou Pathologie Lourde liste E).",
@@ -368,12 +601,20 @@
     document.getElementById('nav').style.display = 'none';
     document.querySelector('h1').style.display = 'none';
     document.querySelector('.sub').style.display = 'none';
+    if (id === 'mutualites') renderMutualites();
   }
   function home() {
     document.querySelectorAll('.view').forEach(v => v.style.display = 'none');
     document.getElementById('nav').style.display = 'flex';
     document.querySelector('h1').style.display = 'block';
     document.querySelector('.sub').style.display = 'block';
+  }
+
+  // Toggle select helper
+  function toggleSelect(el, name, value) {
+    document.querySelectorAll(`.toggle-option[name="${name}"]`).forEach(opt => opt.classList.remove('selected'));
+    el.classList.add('selected');
+    document.getElementById(name).value = value;
   }
 
   // Simulator
@@ -394,10 +635,21 @@
         </div>
         <div class="field"><label>Pathologie</label><select id="s-kine-path"><option value="">-- Charger --</option></select></div>
         <div class="field"><label>Seances demandees</label><input type="number" id="s-kine-sess" min="1" max="100"></div>
+        <div class="field"><label>Prescription medicale</label>
+          <div class="toggle-group">
+            <label class="toggle-option" onclick="toggleSelect(this, 's-presc', 'oui')"><input type="radio" name="s-presc" value="oui" checked>Oui</label>
+            <label class="toggle-option" onclick="toggleSelect(this, 's-presc', 'non')"><input type="radio" name="s-presc" value="non">Non</label>
+          </div>
+        </div>
       `;
       updatePathologies();
     } else if (t === 'med') {
-      c.innerHTML = `<div class="field"><label>Categorie medicament</label><select id="s-med"><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option></select></div><div class="field"><label>Accord prealable requis ?</label><select id="s-pri"><option value="0">Non</option><option value="1">Oui</option></select></div>`;
+      c.innerHTML = `<div class="field"><label>Categorie medicament</label><select id="s-med"><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option></select></div><div class="field"><label>Accord prealable requis ?</label>
+          <div class="toggle-group">
+            <label class="toggle-option" onclick="toggleSelect(this, 's-pri', '0')"><input type="radio" name="s-pri" value="0" checked>Non</label>
+            <label class="toggle-option" onclick="toggleSelect(this, 's-pri', '1')"><input type="radio" name="s-pri" value="1">Oui</label>
+          </div>
+        </div>`;
     } else if (t === 'img') {
       c.innerHTML = `<div class="field"><label>Type d'imagerie</label><select id="s-img"><option value="radio">Radio</option><option value="echo">Echo</option><option value="irm">IRM</option><option value="scan">Scanner</option></select></div>`;
     } else if (t === 'hosp') {
@@ -433,9 +685,25 @@
 
     if (tp === 'kine') {
       const n = +v('s-kine-sess') || 0, cat = v('s-kine-cat') || 'FA', path = v('s-kine-path');
+      const presc = v('s-presc') || 'oui';
       if (n <= 0) return alert('Nombre de seances requis.');
+      if (presc === 'non') return alert('Prescription medicale obligatoire pour le remboursement INAMI.');
+      
       r.s = mdt === 'non' ? 'cond' : 'ok';
       r.m = `Categorie : ${cat} (Path. ${path}). Seances : ${n}.`;
+      
+      // Validation code opératoire pour Fa-1
+      if (cat === 'FA' && path === '1') {
+        const opCode = v('s-opcode')?.trim();
+        if (!opCode) return alert('Le code opératoire est requis pour la pathologie Fa-1.');
+        const validCodes = CFG.KINE_LISTS.FA[0].codes;
+        if (!validCodes.includes(opCode)) {
+          r.s = 'no'; r.m += ` Refus : Le code opératoire "${opCode}" ne figure pas parmi les actes remboursables pour Fa-1.`; 
+          r.ref.push('Liste des actes autorises Fa-1');
+        }
+      }
+      
+      // Vérification âge pour Fb-51
       if (path === '51' && cat === 'FB' && age < 65) { 
         r.s = 'no'; r.m += ` Refus : La pathologie Fb 51 (Reeducation a la marche) exige un age minimum de 65 ans. Age saisi : ${age} ans.`; 
       }
@@ -444,9 +712,9 @@
       } else { r.ref.push('Forfaits Kinesitherapie INAMI'); }
     } else if (tp === 'med') {
       if (mdt === 'non') return alert('Parcours/Ordonnance requis.');
-      const cat = v('s-med'), pri = +v('s-pri');
+      const cat = v('s-med'), pri = v('s-pri');
       if (cat === 'D') return alert('Categorie D : hors nomenclature INAMI.');
-      r.s = pri ? 'cond' : 'ok'; r.m = pri ? 'Accord prealable requis.' : `Remboursement cat. ${cat} standard.`; r.ref.push('Classification Pharmaceutique'); formUrl = pri ? CFG.FORMS.med : '#';
+      r.s = pri === '1' ? 'cond' : 'ok'; r.m = pri === '1' ? 'Accord prealable requis.' : `Remboursement cat. ${cat} standard.`; r.ref.push('Classification Pharmaceutique'); formUrl = pri === '1' ? CFG.FORMS.med : '#';
     } else if (tp === 'img') {
       const im = v('s-img');
       if (mdt === 'non' && ['irm', 'scan'].includes(im)) { r.s = 'no'; r.m = 'IRM/Scanner hors parcours -> non rembourse.'; r.ref.push('Conditions Imagerie'); }
@@ -478,7 +746,9 @@
   function addMsg(type, sender, html) {
     const log = document.getElementById(`chat-log-${type}`);
     const div = document.createElement('div'); div.className = `msg ${sender}`; div.innerHTML = html;
-    log.appendChild(div); log.scrollTop = log.scrollHeight;
+    log.appendChild(div);
+    // Force scroll after DOM update
+    setTimeout(() => { log.scrollTop = log.scrollHeight; }, 50);
   }
 
   function sendMsg(type) {
@@ -491,13 +761,25 @@
 
     const inp = document.getElementById(`input-${type}`);
     const txt = inp.value.trim(); if (!txt) return;
-    addMsg(type, 'user', txt); inp.value = '';
+    addMsg(type, 'user', txt); 
+    inp.value = ''; // Clear input immediately
     
     const cfg = CFG.AGENT_CONFIG[type];
     const session = chatSessions[type];
-    const currentStep = cfg.steps[session.step];
     
-    if (currentStep) {
+    // Extract context from initial message if not already set
+    if (session.step === 0 && !session.initialParsed) {
+      const lower = txt.toLowerCase();
+      // Auto-extract drug/indication for med agent
+      if (type === 'med') {
+        if (lower.includes('mounjaro') || lower.includes('tirzepatide')) session.slots.drug = 'Mounjaro (tirzepatide)';
+        if (lower.includes('diabete') || lower.includes('obesite')) session.slots.indication = lower.includes('diabete') ? 'Diabete type 2' : 'Obesite';
+      }
+      session.initialParsed = true;
+    }
+    
+    const currentStep = cfg.steps[session.step];
+    if (currentStep && !session.slots[currentStep.key]) {
       session.slots[currentStep.key] = txt;
       session.step++;
     }
@@ -511,14 +793,21 @@
       } else {
         const result = cfg.evaluate(session.slots);
         let msg = result.msg;
-        if (result.status === 'ok' || result.status === 'conditionnel') {
-          msg += `<br><a href="${CFG.FORMS[type] || CFG.FORMS.kine}" target="_blank" class="form-link">Acceder au formulaire de demande officiel</a>`;
+        
+        // Check if user asked for source
+        const sourceKeywords = ['source', 'reference', 'lien', 'url', 'site', 'officiel', 'inami', 'preuve', 'document', 'ou trouver', 'consulter', 'verifier', 'page', 'formulaire'];
+        if (sourceKeywords.some(kw => txt.toLowerCase().includes(kw))) {
+          msg += `<br><a href="https://www.google.com/search?q=${encodeURIComponent(session.slots.drug || session.slots.pathology || '')}+INAMI&safe=active&as_sitesearch=inami.fed.be|health.belgium.be|sciensano.be|afmps.be" target="_blank" rel="noopener" class="form-link">Rechercher sur les sources officielles</a>`;
         }
+        
         addMsg(type, 'agent', `<strong>Resultat : ${result.status.toUpperCase()}</strong><br>${msg}<br><small style="color:var(--text-muted)">References : ${result.ref.join(', ')}</small>`);
         // Reset for next query
-        chatSessions[type] = { step: 0, slots: {} };
+        chatSessions[type] = { step: 0, slots: {}, initialParsed: false };
         setTimeout(() => { addMsg(type, 'agent', cfg.greeting); askQuestion(type); }, 800);
       }
+      // Ensure scroll after message added
+      const log = document.getElementById(`chat-log-${type}`);
+      setTimeout(() => { log.scrollTop = log.scrollHeight; }, 100);
     }, 400 + Math.random() * 300);
   }
 
@@ -526,12 +815,21 @@
     const cfg = CFG.AGENT_CONFIG[type];
     const session = chatSessions[type];
     if (session.step < cfg.steps.length) {
+      // Skip question if slot already filled from context extraction
+      const key = cfg.steps[session.step].key;
+      if (session.slots[key]) {
+        session.step++;
+        if (session.step < cfg.steps.length) askQuestion(type);
+        else sendMsg(type); // Trigger evaluation
+        return;
+      }
       addMsg(type, 'agent', cfg.steps[session.step].prompt);
     }
   }
 
   ['kine','med','parc','pall','mob'].forEach(t => {
-    document.getElementById(`input-${t}`).addEventListener('keypress', e => { if(e.key==='Enter') sendMsg(t); });
+    const inp = document.getElementById(`input-${t}`);
+    inp.addEventListener('keypress', e => { if(e.key==='Enter') sendMsg(t); });
   });
 
   // Nomenclature
@@ -540,7 +838,7 @@
     if (c) { try { const d = JSON.parse(c); nomData = d.data; updSt(d.ts); } catch(e) { nomData = [...CFG.FALLBACK]; } }
     renderNom(nomData);
   }
-  function updSt(ts) { document.getElementById('db-st').textContent = ts ? `Base: ${nomData.length} entrees &bull; Synchro: ${new Date(ts).toLocaleString('fr-BE')}` : `Base locale: ${nomData.length} entrees`; }
+  function updSt(ts) { document.getElementById('db-st').textContent = ts ? `Base: ${nomData.length} entrees • Synchro: ${new Date(ts).toLocaleString('fr-BE')}` : `Base locale: ${nomData.length} entrees`; }
   function renderNom(d) {
     const tb = document.getElementById('nom-tbody'), em = document.getElementById('nom-empty');
     tb.innerHTML = ''; if (!d.length) { em.style.display = 'block'; return; } em.style.display = 'none';
@@ -561,7 +859,47 @@
     finally { loadDB(); }
   }
 
-  window.addEventListener('DOMContentLoaded', loadDB);
+  // Mutualités
+  function renderMutualites() {
+    const list = document.getElementById('mut-list');
+    list.innerHTML = '';
+    CFG.MUTUALITES.forEach(m => {
+      const card = document.createElement('div');
+      card.className = 'mutualite-card';
+      card.dataset.name = m.name.toLowerCase();
+      card.dataset.regions = m.regions.join(',').toLowerCase();
+      card.innerHTML = `
+        <div class="mutualite-name">${m.name}</div>
+        <div class="mutualite-info"><strong>Regions :</strong> ${m.regions.join(', ')}</div>
+        <div class="mutualite-info"><strong>Telephone :</strong> ${m.phone}</div>
+        <div class="mutualite-info"><strong>Email :</strong> ${m.email}</div>
+        <a href="${m.website}" target="_blank" rel="noopener" class="mutualite-link">Site officiel</a>
+        <a href="${m.contact}" target="_blank" rel="noopener" class="mutualite-link" style="margin-left:var(--spacing-md)">Contact</a>
+      `;
+      list.appendChild(card);
+    });
+  }
+
+  function filterMutualites() {
+    const search = document.getElementById('mut-search').value.toLowerCase();
+    const region = document.getElementById('mut-region').value.toLowerCase();
+    const cards = document.querySelectorAll('.mutualite-card');
+    cards.forEach(card => {
+      const nameMatch = card.dataset.name.includes(search);
+      const regionMatch = !region || card.dataset.regions.includes(region) || region === 'national';
+      card.style.display = nameMatch && regionMatch ? 'block' : 'none';
+    });
+  }
+
+  // Init
+  window.addEventListener('DOMContentLoaded', () => {
+    loadDB();
+    // Initialize toggle states
+    document.querySelectorAll('.toggle-option').forEach(opt => {
+      const input = opt.querySelector('input');
+      if (input && input.checked) opt.classList.add('selected');
+    });
+  });
 </script>
 </body>
 </html>
