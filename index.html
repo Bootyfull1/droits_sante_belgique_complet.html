@@ -3,167 +3,259 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Simulateur interactif INAMI Belgique + Assistant Chat & Nomenclature">
-  <title>🇧🇪 Assistant INAMI | Simulateur & Chat</title>
+  <meta name="description" content="Simulateur INAMI & Assistants Experts | Nomenclature & Droits">
+  <title>INAMI Assistant | Simulateur & Experts</title>
   <style>
     :root {
-      --bg: #0d1117; --card: #161b22; --text: #c9d1d9; --muted: #8b949e;
-      --primary: #58a6ff; --primary-dk: #1f6feb; --accent: #3fb950;
-      --border: #30363d; --warn-bg: #2a2100; --warn: #d29922;
-      --danger: #f85149; --success: #2ea043; --input-bg: #21262d;
-      --shadow: 0 4px 12px rgba(0,0,0,0.5); --hover: #1c232b;
-      --chat-user: #1f6feb; --chat-bot: #21262d;
+      --bg: #0b1120;
+      --surface: #111827;
+      --surface-light: #1f2937;
+      --text: #e5e7eb;
+      --text-muted: #9ca3af;
+      --primary: #3b82f6;
+      --primary-dark: #2563eb;
+      --accent: #10b981;
+      --border: #374151;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --success: #10b981;
+      --shadow: 0 4px 12px rgba(0,0,0,0.3);
+      --shadow-lg: 0 10px 20px rgba(0,0,0,0.4);
+      --font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      --chat-user: #3b82f6;
+      --chat-agent: #1f2937;
+      --radius: 10px;
+      --radius-lg: 14px;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; padding: 1rem; min-height: 100vh; }
-    header { text-align: center; margin-bottom: 1.5rem; }
-    h1 { color: var(--primary); font-size: 1.8rem; margin-bottom: 0.5rem; }
-    .sub { color: var(--muted); font-size: 0.9rem; }
-    #disclaimer { background: var(--warn-bg); border: 1px solid var(--warn); color: var(--warn); padding: 0.8rem; border-radius: 8px; margin-bottom: 1.5rem; font-size: 0.9rem; text-align: center; }
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+      padding: 1rem;
+      min-height: 100vh;
+    }
+    header { text-align: center; margin-bottom: 1.5rem; padding-top: 1rem; }
+    h1 { font-size: 1.9rem; font-weight: 700; color: var(--primary); margin-bottom: 0.4rem; letter-spacing: -0.5px; }
+    .sub { color: var(--text-muted); font-size: 0.95rem; font-weight: 400; }
     
-    #nav { display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center; margin-bottom: 2rem; }
-    .btn { background: var(--input-bg); border: 2px solid var(--primary); color: var(--primary); padding: 0.6rem 1rem; border-radius: 8px; cursor: pointer; font-weight: 500; transition: 0.2s; }
-    .btn:hover, .btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+    #nav {
+      display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center; margin-bottom: 2rem;
+      padding: 0.5rem; background: var(--surface); border-radius: var(--radius-lg); box-shadow: var(--shadow);
+    }
+    .nav-btn {
+      background: transparent; border: 1px solid var(--border); color: var(--text-muted);
+      padding: 0.7rem 1rem; border-radius: var(--radius); cursor: pointer; font-weight: 500; transition: all 0.2s; font-size: 0.9rem;
+    }
+    .nav-btn:hover, .nav-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
 
-    .view { max-width: 900px; margin: 0 auto; display: none; }
-    .back { display: inline-block; margin-bottom: 1rem; background: #484f58; color: #fff; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; }
-    .back:hover { background: #555d66; }
+    .view { max-width: 960px; margin: 0 auto; display: none; animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+    .back-btn { background: var(--surface-light); color: var(--text-muted); border: 1px solid var(--border); padding: 0.6rem 1rem; border-radius: var(--radius); cursor: pointer; margin-bottom: 1rem; transition: 0.2s; }
+    .back-btn:hover { background: var(--border); color: #fff; }
 
-    .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 1.2rem; margin-bottom: 1rem; box-shadow: var(--shadow); }
-    .q { font-weight: 600; margin-bottom: 0.5rem; color: var(--primary); }
-    .a { margin-top: 0.8rem; padding: 0.8rem; background: #1c2a1c; border-left: 4px solid var(--accent); border-radius: 6px; display: none; }
-    .a.show { display: block; }
-    .toggle { background: var(--accent); color: #fff; border: none; padding: 0.4rem 0.8rem; border-radius: 6px; cursor: pointer; margin-top: 0.5rem; }
-    .toggle:hover { filter: brightness(1.1); }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.4rem; margin-bottom: 1.2rem; box-shadow: var(--shadow); }
+    h2 { color: var(--primary); font-size: 1.3rem; margin-bottom: 1rem; font-weight: 600; }
+    
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+    .field { display: flex; flex-direction: column; gap: 0.4rem; }
+    label { font-weight: 500; color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    input, select {
+      background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 0.75rem 0.9rem;
+      border-radius: var(--radius); font-size: 0.95rem; transition: 0.2s;
+    }
+    input:focus, select:focus { outline: 2px solid var(--primary); border-color: transparent; box-shadow: 0 0 0 3px rgba(59,130,246,0.2); }
+    .btn-primary { background: var(--primary); color: #fff; border: none; padding: 0.85rem; border-radius: var(--radius); font-weight: 600; cursor: pointer; width: 100%; margin-top: 1rem; transition: 0.2s; }
+    .btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); }
 
-    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
-    .grp { display: flex; flex-direction: column; gap: 0.3rem; }
-    label { font-weight: 500; color: var(--muted); font-size: 0.9rem; }
-    input, select { background: var(--input-bg); border: 1px solid var(--border); color: var(--text); padding: 0.7rem; border-radius: 6px; font-size: 1rem; }
-    input:focus, select:focus { outline: 2px solid var(--primary); border-color: transparent; }
-    .submit { background: var(--primary); color: #fff; border: none; padding: 0.9rem; border-radius: 8px; font-weight: 600; cursor: pointer; width: 100%; margin-top: 1rem; }
-    .submit:hover { background: var(--primary-dk); }
-    .res { margin-top: 1.5rem; padding: 1.2rem; border-radius: 10px; background: var(--card); border: 1px solid var(--border); display: none; }
-    .status { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem; }
-    .ok { color: var(--success); border-left: 4px solid var(--success); padding-left: 0.6rem; }
-    .no { color: var(--danger); border-left: 4px solid var(--danger); padding-left: 0.6rem; }
-    .cond { color: var(--warn); border-left: 4px solid var(--warn); padding-left: 0.6rem; }
-    .ref { margin-top: 0.6rem; font-size: 0.85rem; color: var(--muted); background: var(--bg); padding: 0.6rem; border-radius: 6px; }
+    .result-panel { margin-top: 1.5rem; padding: 1.2rem; border-radius: var(--radius-lg); background: var(--surface-light); border: 1px solid var(--border); display: none; }
+    .res-status { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .ok { color: var(--success); border-left: 4px solid var(--success); padding-left: 0.8rem; }
+    .no { color: var(--danger); border-left: 4px solid var(--danger); padding-left: 0.8rem; }
+    .cond { color: var(--warning); border-left: 4px solid var(--warning); padding-left: 0.8rem; }
+    .res-msg { margin-top: 0.5rem; color: var(--text); }
+    .res-ref { margin-top: 0.8rem; font-size: 0.8rem; color: var(--text-muted); background: var(--bg); padding: 0.7rem; border-radius: 6px; }
 
-    /* Chat Styles */
-    #chat-wrap { display: flex; flex-direction: column; height: 70vh; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: var(--card); }
-    #chat-log { flex: 1; overflow-y: auto; padding: 1rem; display: flex; flex-direction: column; gap: 0.8rem; }
-    .msg { max-width: 85%; padding: 0.8rem 1rem; border-radius: 12px; font-size: 0.95rem; line-height: 1.4; animation: fade 0.3s; }
-    @keyframes fade { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:translateY(0); } }
-    .msg.user { align-self: flex-end; background: var(--chat-user); color: #fff; border-bottom-right-radius: 4px; }
-    .msg.bot { align-self: flex-start; background: var(--chat-bot); border: 1px solid var(--border); border-bottom-left-radius: 4px; }
-    .msg.bot strong { color: var(--primary); }
-    .msg.bot ul { margin: 0.5rem 0 0 1rem; }
-    #chat-area { display: flex; padding: 0.8rem; background: var(--input-bg); border-top: 1px solid var(--border); gap: 0.5rem; }
-    #chat-input { flex: 1; background: var(--card); border: 1px solid var(--border); color: var(--text); padding: 0.7rem; border-radius: 20px; }
-    #chat-send { background: var(--accent); color: #fff; border: none; padding: 0 1.2rem; border-radius: 20px; cursor: pointer; font-weight: 600; }
-    #chat-send:hover { filter: brightness(1.1); }
-    .typing { font-style: italic; color: var(--muted); font-size: 0.85rem; margin-top: 0.3rem; display: none; }
+    /* Chat Agent UI */
+    .chat-container { display: flex; flex-direction: column; height: 70vh; border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; background: var(--surface); box-shadow: var(--shadow-lg); }
+    .chat-header { padding: 1rem; background: var(--surface-light); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.8rem; }
+    .agent-avatar { width: 36px; height: 36px; background: var(--primary); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1rem; }
+    .agent-title { font-weight: 600; font-size: 1rem; }
+    .agent-sub { font-size: 0.8rem; color: var(--text-muted); }
+    
+    #chat-log { flex: 1; overflow-y: auto; padding: 1rem; display: flex; flex-direction: column; gap: 0.9rem; background: var(--bg); }
+    .msg { max-width: 85%; padding: 0.9rem 1rem; border-radius: 14px; font-size: 0.95rem; line-height: 1.5; animation: pop 0.25s ease; }
+    @keyframes pop { from { opacity:0; transform:scale(0.95) translateY(5px); } to { opacity:1; transform:scale(1) translateY(0); } }
+    .msg.user { align-self: flex-end; background: var(--chat-user); color: #fff; border-bottom-right-radius: 4px; box-shadow: var(--shadow); }
+    .msg.agent { align-self: flex-start; background: var(--chat-agent); border: 1px solid var(--border); border-bottom-left-radius: 4px; }
+    .msg.agent strong { color: var(--primary); }
+    .msg.agent ul { margin: 0.4rem 0 0 1.1rem; }
+    .typing { font-style: italic; color: var(--text-muted); font-size: 0.8rem; margin-left: 1rem; display: none; padding: 0.5rem 0; }
 
-    .search-box { display: flex; gap: 0.8rem; flex-wrap: wrap; margin-bottom: 1rem; }
-    .search-box input { flex: 1; min-width: 200px; }
-    .search-box .btn { width: auto; margin: 0; background: var(--accent); color: #fff; border-color: var(--accent); }
-    .db-st { font-size: 0.8rem; color: var(--muted); margin-bottom: 1rem; text-align: right; }
-    table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
-    th, td { text-align: left; padding: 0.8rem; border-bottom: 1px solid var(--border); }
-    th { color: var(--primary); }
-    tr:hover { background: var(--hover); }
-    .code { font-family: monospace; color: var(--accent); font-weight: 600; }
-    .empty { text-align: center; color: var(--muted); margin-top: 2rem; display: none; }
-    .loader { color: var(--warn); font-weight: 500; display: none; margin-bottom: 1rem; }
+    .chat-input-area { display: flex; padding: 0.8rem; background: var(--surface-light); border-top: 1px solid var(--border); gap: 0.6rem; }
+    .chat-input { flex: 1; background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 0.8rem 1rem; border-radius: 24px; font-size: 0.95rem; }
+    .chat-input:focus { outline: none; border-color: var(--primary); }
+    .send-btn { background: var(--accent); color: #fff; border: none; padding: 0 1.4rem; border-radius: 24px; cursor: pointer; font-weight: 600; transition: 0.2s; }
+    .send-btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
 
-    footer { text-align: center; margin-top: 2rem; color: var(--muted); font-size: 0.8rem; }
-    @media (max-width: 600px) { h1 { font-size: 1.4rem; } .btn { flex: 1 1 100%; } th, td { padding: 0.5rem; font-size: 0.9rem; } #chat-wrap { height: 60vh; } }
+    /* Nomenclature */
+    .search-row { display: flex; gap: 0.8rem; margin-bottom: 1rem; flex-wrap: wrap; }
+    .search-row input { flex: 1; min-width: 200px; }
+    .search-btn { background: var(--accent); color: #fff; border: none; padding: 0 1.2rem; border-radius: var(--radius); cursor: pointer; font-weight: 600; transition: 0.2s; }
+    .search-btn:hover { filter: brightness(1.1); }
+    .db-info { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.6rem; text-align: right; }
+    table { width: 100%; border-collapse: collapse; margin-top: 1rem; background: var(--surface); border-radius: var(--radius); overflow: hidden; }
+    th, td { text-align: left; padding: 0.9rem; border-bottom: 1px solid var(--border); }
+    th { background: var(--surface-light); color: var(--primary); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    tr:last-child td { border-bottom: none; }
+    .n-code { font-family: monospace; color: var(--accent); font-weight: 600; }
+    .empty-state { text-align: center; color: var(--text-muted); padding: 2rem 0; display: none; }
+
+    footer { text-align: center; margin-top: 2.5rem; padding: 1rem 0; border-top: 1px solid var(--border); color: var(--text-muted); font-size: 0.8rem; }
+    @media (max-width: 650px) { h1 { font-size: 1.5rem; } .nav-btn { flex: 1 1 100%; } th, td { padding: 0.7rem; font-size: 0.85rem; } .chat-container { height: 60vh; } }
   </style>
 </head>
 <body>
 
 <header>
-  <h1>🇧🇪 Assistant INAMI</h1>
-  <p class="sub">Simulateur, Chat & Recherche Nomenclature</p>
+  <h1>INAMI Assistant</h1>
+  <p class="sub">Simulateur • Experts Domaine • Nomenclature</p>
 </header>
 
-<div id="disclaimer">
-  ⚠️ <strong>Outil pédagogique.</strong> Les décisions officielles dépendent du médecin-conseil, de votre mutualité et de la clinique. 
-  Consultez <a href="https://www.inami.fed.be" target="_blank" style="color:inherit;text-decoration:underline;">inami.fed.be</a>.
-</div>
+<nav id="nav">
+  <button class="nav-btn" onclick="show('sim')">📊 Simulateur</button>
+  <button class="nav-btn" onclick="show('agent-kine')">🦴 Expert Kinésithérapie</button>
+  <button class="nav-btn" onclick="show('agent-med')">💊 Expert Médicaments</button>
+  <button class="nav-btn" onclick="show('agent-parcours')">🩺 Expert Parcours</button>
+  <button class="nav-btn" onclick="show('nom')">🔍 Nomenclature</button>
+</nav>
 
-<nav id="nav"></nav>
-
-<section id="v-qa" class="view"><button class="back" onclick="home()">← Accueil</button><div id="qa-list"></div></section>
-
-<section id="v-sim" class="view"><button class="back" onclick="home()">← Accueil</button>
-  <div class="card">
-    <h2 style="color:var(--primary);margin-bottom:0.8rem;">🧮 Simulateur d'Accords</h2>
-    <div class="form-grid">
-      <div class="grp"><label for="age">Âge</label><input type="number" id="age" min="0" max="120"></div>
-      <div class="grp"><label for="status">Statut</label><select id="status"><option value="std">Standard</option><option value="bim">BIM / OMNIO</option></select></div>
-      <div class="grp"><label for="type">Type de soins</label><select id="type" onchange="toggleCond()"><option value="">-- Choisir --</option><option value="kine">Kinésithérapie</option><option value="med">Médicaments</option><option value="img">Imagerie</option><option value="spec">Spécialiste</option><option value="hosp">Hospitalisation</option><option value="chron">Maladie Chronique</option></select></div>
-      <div class="grp"><label for="mdt">Parcours coordonné</label><select id="mdt"><option value="oui">Oui (ou exempté)</option><option value="non">Non (hors parcours)</option></select></div>
+<main>
+  <!-- SIMULATEUR -->
+  <section id="v-sim" class="view">
+    <button class="back-btn" onclick="home()">← Accueil</button>
+    <div class="card">
+      <h2>📊 Simulateur d'Éligibilité</h2>
+      <div class="grid">
+        <div class="field"><label>Âge</label><input type="number" id="age" min="0" max="120" placeholder="Ex: 34"></div>
+        <div class="field"><label>Statut</label><select id="status"><option value="std">Standard</option><option value="bim">BIM / OMNIO</option></select></div>
+        <div class="field"><label>Type de soins</label><select id="type" onchange="toggleCond()"><option value="">-- Sélectionner --</option><option value="kine">Kinésithérapie</option><option value="med">Médicaments</option><option value="img">Imagerie</option><option value="spec">Spécialiste</option><option value="hosp">Hospitalisation</option><option value="chron">Maladie Chronique</option></select></div>
+        <div class="field"><label>Parcours coordonné</label><select id="mdt"><option value="oui">Oui (ou exempté)</option><option value="non">Non (hors parcours)</option></select></div>
+      </div>
+      <div id="cond" class="grid" style="display:none;"></div>
+      <button class="btn-primary" onclick="runSim()">Vérifier l'éligibilité</button>
+      <div id="res" class="result-panel">
+        <div id="r-status" class="res-status"></div>
+        <div id="r-msg" class="res-msg"></div>
+        <div id="r-ref" class="res-ref"></div>
+      </div>
     </div>
-    <div id="cond" class="form-grid" style="display:none;"></div>
-    <button class="submit" onclick="runSim()">🔍 Vérifier l'éligibilité</button>
-    <div id="res" class="res">
-      <div id="r-status" class="status"></div>
-      <div id="r-msg" style="margin-top:0.5rem;"></div>
-      <div id="r-ref" class="ref"></div>
-    </div>
-  </div>
-</section>
+  </section>
 
-<section id="v-nom" class="view"><button class="back" onclick="home()">← Accueil</button>
-  <div class="card">
-    <h2 style="color:var(--primary);margin-bottom:0.5rem;">🔍 Recherche Nomenclature</h2>
-    <div class="search-box">
-      <input type="text" id="s-nom" placeholder="Code (ex: 502020) ou mot-clé">
-      <button class="btn" onclick="searchNom()">Rechercher</button>
-      <button class="btn" onclick="updateDB()" style="background:var(--primary);border-color:var(--primary);">🔄 Actualiser</button>
+  <!-- AGENT KINÉ -->
+  <section id="v-agent-kine" class="view">
+    <button class="back-btn" onclick="home()">← Accueil</button>
+    <div class="chat-container">
+      <div class="chat-header">
+        <div class="agent-avatar">K</div>
+        <div><div class="agent-title">Expert Kinésithérapie</div><div class="agent-sub">Nomenclature INAMI • Forfaits • Accords</div></div>
+      </div>
+      <div id="chat-log-kine"></div>
+      <div class="typing" id="typing-kine">L'expert analyse votre situation...</div>
+      <div class="chat-input-area">
+        <input type="text" class="chat-input" id="input-kine" placeholder="Ex: J'ai une prescription pour 24 séances FA...">
+        <button class="send-btn" onclick="sendMsg('kine')">Envoyer</button>
+      </div>
     </div>
-    <div class="loader" id="loader">⏳ Synchronisation...</div>
-    <div class="db-st" id="db-st">Base locale • Entrées: 0</div>
-    <table><thead><tr><th>Code</th><th>Description</th><th>Catégorie</th><th>Tarif (€)</th></tr></thead><tbody id="nom-tbody"></tbody></table>
-    <div class="empty" id="nom-empty">Aucun résultat.</div>
-  </div>
-</section>
+  </section>
 
-<section id="v-chat" class="view"><button class="back" onclick="home()">← Accueil</button>
-  <div id="chat-wrap">
-    <div id="chat-log"></div>
-    <div class="typing" id="typing">L'assistant réfléchit...</div>
-    <div id="chat-area">
-      <input type="text" id="chat-input" placeholder="Ex: Combien de boîtes de médicaments ai-je droit ?">
-      <button id="chat-send" onclick="sendChat()">Envoyer</button>
+  <!-- AGENT MÉDICAMENTS -->
+  <section id="v-agent-med" class="view">
+    <button class="back-btn" onclick="home()">← Accueil</button>
+    <div class="chat-container">
+      <div class="chat-header">
+        <div class="agent-avatar">M</div>
+        <div><div class="agent-title">Expert Médicaments</div><div class="agent-sub">Catégories A/B/C/D • Génériques • Accords</div></div>
+      </div>
+      <div id="chat-log-med"></div>
+      <div class="typing" id="typing-med">L'expert vérifie la nomenclature...</div>
+      <div class="chat-input-area">
+        <input type="text" class="chat-input" id="input-med" placeholder="Ex: Combien de boîtes de Xarelto sont remboursées ?">
+        <button class="send-btn" onclick="sendMsg('med')">Envoyer</button>
+      </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<footer>Données INAMI simplifiées • Licence MIT • Optimisé pour GitHub Pages</footer>
+  <!-- AGENT PARCOURS -->
+  <section id="v-agent-parcours" class="view">
+    <button class="back-btn" onclick="home()">← Accueil</button>
+    <div class="chat-container">
+      <div class="chat-header">
+        <div class="agent-avatar">P</div>
+        <div><div class="agent-title">Expert Parcours de Soins</div><div class="agent-sub">MDT • Tiers payant • Tickets modérateurs</div></div>
+      </div>
+      <div id="chat-log-parc"></div>
+      <div class="typing" id="typing-parc">L'expert prépare votre analyse...</div>
+      <div class="chat-input-area">
+        <input type="text" class="chat-input" id="input-parc" placeholder="Ex: Puis-je voir un cardiologue sans MDT ?">
+        <button class="send-btn" onclick="sendMsg('parc')">Envoyer</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- NOMENCLATURE -->
+  <section id="v-nom" class="view">
+    <button class="back-btn" onclick="home()">← Accueil</button>
+    <div class="card">
+      <h2>🔍 Recherche Nomenclature</h2>
+      <div class="search-row">
+        <input type="text" id="s-nom" placeholder="Code (ex: 502020) ou mot-clé">
+        <button class="search-btn" onclick="searchNom()">Rechercher</button>
+        <button class="search-btn" style="background:var(--primary)" onclick="updateDB()">🔄 Actualiser</button>
+      </div>
+      <div class="db-info" id="db-st">Base locale • Entrées: 0</div>
+      <div class="empty-state" id="nom-empty">Aucun résultat trouvé.</div>
+      <table><thead><tr><th>Code</th><th>Description</th><th>Catégorie</th><th>Tarif (€)</th></tr></thead><tbody id="nom-tbody"></tbody></table>
+    </div>
+  </section>
+</main>
+
+<footer>Application INAMI • Conception professionnelle • Mise à jour automatique disponible • Licence MIT</footer>
 
 <script>
+  // ⚙️ CONFIGURATION & DONNÉES
   const CFG = {
     DB_URL: 'https://raw.githubusercontent.com/UTILISATEUR/REPO/main/nomenclature.json',
-    STORAGE_KEY: 'inami_cache_v2',
-    QA: {
-      kine: { t:'🧘 Kinésithérapie', q:[
-        {q:'Faut-il une prescription ?', a:'Oui. L\'INAMI exige une ordonnance médicale. L\'accès direct n\'est pas remboursé légalement.'},
-        {q:'Combien de séances ?', a:'Forfaits de 9, 18, 30 ou 50 séances selon diagnostic. >18 → accord médecin-conseil requis.'},
-        {q:'Conventionné vs non ?', a:'Conventionné = tarif INAMI. Non conventionné = honoraire libre, remboursement limité au tarif de référence.'}
-      ]},
-      med: { t:'💊 Médicaments', q:[
-        {q:'Remboursement ?', a:'Catégories A, B, C, D. Ticket modérateur + franchise. Mutuelle complète souvent.'},
-        {q:'Forfait responsabilité ?', a:'Prix de référence générique. Différence à charge si marque plus chère.'},
-        {q:'Sans ordonnance ?', a:'Non remboursés par l\'INAMI. Sauf couverture mutualité spécifique.'}
-      ]},
-      parc: { t:'🩺 Parcours de soins', q:[
-        {q:'Médecin traitant ?', a:'Coordinateur. Réduit le ticket modérateur et simplifie les démarches.'},
-        {q:'Spécialiste direct ?', a:'Ticket majoré. Exceptions : gynéco, ophtalmo, psy, pédiatre, dermato (-16 ans).'},
-        {q:'Tiers payant ?', a:'Obligatoire à l\'hôpital. Progressif en ambulatoire. Vous ne payez que votre part.'}
-      ]}
+    STORAGE_KEY: 'inami_cache_v3',
+    KINE_PATHS: {
+      FA: [1, 2, 3, 4, 5],
+      FB: [1, 2, 3],
+      "18M": [1, 2, 3, 4],
+      PL: [1, 2, 3] // Pathologie Lourde
+    },
+    AGENT_KB: {
+      kine: {
+        intents: [
+          { keys:['fa','fb','18m','pathologie lourde','pl','forfait'], answer: 'Les forfaits <strong>FA/FB</strong> couvrent 9 à 18 séances standards. Le forfait <strong>18M</strong> et les <strong>pathologies lourdes</strong> nécessitent un protocole médical et un accord préalable du médecin-conseil pour dépasser 18 séances. Le remboursement atteint souvent 100% sous conditions BIM/ALD.' },
+          { keys:['séance','nombre','combien','limite'], answer: 'La nomenclature fixe des plafonds : <ul><li>Forfaits standards : 9, 18 ou 30 séances</li><li>>18 séances : accord médecin-conseil obligatoire</li><li>Pathologies lourdes : évaluation au cas par cas avec dossier clinique</li></ul>Votre mutualité complète souvent le ticket modérateur.' },
+          { keys:['accord','préalable','médecin conseil','refus'], answer: 'Un accord est requis si : <ul><li>Vous dépassez 18 séances</li><li>Vous relevez d\'un forfait spécialisé (18M/PL)</li><li>Le kiné demande des prolongations</li></ul>Le médecin traitant ou le kiné envoie le formulaire à votre mutualité. Délai moyen : 10 à 15 jours.' }
+        ]
+      },
+      med: {
+        intents: [
+          { keys:['boîte','nombre','durée','prescription'], answer: 'Le nombre de boîtes remboursées dépend de la <strong>posologie validée</strong> et de la <strong>durée du traitement</strong>. L\'INAMI impose des limites par ordonnance pour certains principes actifs (ex: antidépresseurs, antibiotiques). Votre pharmacien applique le <strong>forfait de responsabilité</strong> et le générique est prioritaire.' },
+          { keys:['a','b','c','d','catégorie','ticket'], answer: '<ul><li><strong>A</strong> : 100% (vie grave) ou ticket minimal</li><li><strong>B</strong> : 50% à 80% remboursé</li><li><strong>C</strong> : 30% à 40% remboursé</li><li><strong>D</strong> : 0% (confort/non reconnu)</li></ul>Le statut <strong>BIM/OMNIO</strong> réduit fortement la part patient.' },
+          { keys:['générique','substitution','marque','différence'], answer: 'La substitution par générique est <strong>automatique</strong> sauf mention "non substituable" du médecin. Si vous refusez sans justification clinique, le ticket modérateur peut être majoré. Le prix de référence (forfait de responsabilité) s\'applique toujours.' }
+        ]
+      },
+      parc: {
+        intents: [
+          { keys:['mdt','médecin traitant','coordinateur','parcours'], answer: 'Déclarer un <strong>MDT</strong> réduit votre ticket modérateur de 10% à 20%. Il coordonne vos spécialistes et simplifie les accords préalables. Sans MDT, les consultations hors exceptions sont remboursées au taux réduit.' },
+          { keys:['spécialiste','direct','sans','gynéco','ophtalmo'], answer: 'Vous pouvez consulter directement un spécialiste, mais le remboursement INAMI est réduit. <strong>Exceptions (toujours remboursées taux plein) :</strong> Gynécologue, Ophtalmologue, Psychiatre, Pédiatre, Dermatologue (-16 ans), Stomatologue.' },
+          { keys:['tiers','payant','avance','hôpital'], answer: 'Le <strong>tiers payant</strong> est obligatoire en hôpital. En ambulatoire, il se généralise via la carte SIS/eHealth. Le professionnel perçoit directement la part INAMI/Mutuelle, vous ne payez que votre quote-part.' }
+        ]
+      }
     },
     FALLBACK: [
       {c:'101010',d:'Consultation généraliste (visite)',cat:'Généraliste',t:26.50},
@@ -178,70 +270,74 @@
       {c:'901010',d:'Chirurgie ambulatoire',cat:'Hospitalisation',t:85.50},
       {c:'110210',d:'Vaccination grippe',cat:'Prévention',t:12.50},
       {c:'167101',d:'Accord préalable hospitalisation',cat:'Administratif',t:0.00}
-    ],
-    CHAT_RULES: [
-      { k: ['boîte','boites','médicament','medicament','droit médicament','nombre médicament','prescription médicament'], r: '<strong>Médicaments :</strong> Le nombre de boîtes dépend de la posologie prescrite et de la durée du traitement. L\'INAMI rembourse les quantités "raisonnables" selon le protocole. Pour les médicaments à délivrance contrôlée (ex: antidépresseurs, opioïdes), des limites mensuelles s\'appliquent. Vérifiez la catégorie A/B/C/D et le <strong>forfait de responsabilité</strong>.' },
-      { k: ['kiné','séance kiné','nombre séance','accord kiné','prolongation kiné'], r: '<strong>Kinésithérapie :</strong> Forfaits de 9, 18, 30 ou 50 séances. Au-delà de 18 séances, un <strong>accord préalable du médecin-conseil</strong> est généralement requis. Le type de kiné (respiratoire, neuro, post-op) influence les seuils et la prise en charge à 100%.' },
-      { k: ['accord préalable','préalable','autorisation','l113','médecin conseil'], r: '<strong>Accords Préalables :</strong> Nécessaires pour kiné >18 séances, certains médicaments hors liste, imagerie lourde hors parcours, hospitalisation programmée, prothèses, etc. Formulaire à envoyer au médecin-conseil de votre mutualité avec motif clinique.' },
-      { k: ['bim','omnio','viPO','intervention majorée','revenus modestes'], r: '<strong>Statut BIM/OMNIO :</strong> Réduit fortement le ticket modérateur, supprime certaines franchises et facilite l\'accès aux soins. Demande via votre mutualité avec justificatifs de revenus. Cumulable avec les protocoles de maladie chronique.' },
-      { k: ['mutuelle','complémentaire','remboursement','ticket modérateur','franchise'], r: '<strong>Remboursements :</strong> L\'INAMI couvre la base légale. Votre <strong>mutualité</strong> complète souvent le ticket modérateur (hospitalisation, kiné, lunettes, etc.). Contactez-les pour connaître votre formule exacte.' },
-      { k: ['générique','substitution','marque','différence prix'], r: '<strong>Génériques :</strong> Le pharmacien substitue automatiquement sauf mention "non substituable". Si vous refusez sans motif médical, le ticket modérateur peut être majoré. Le <strong>forfait de responsabilité</strong> fixe le prix de référence.' },
-      { k: ['nomenclature','code','tarif','recherche','prix acte'], r: '<strong>Nomenclature :</strong> Les actes sont identifiés par des codes à 6 chiffres. Les tarifs de référence sont fixés par arrêté royal. Utilisez l\'onglet <strong>🔍 Nomenclature</strong> pour rechercher un code ou un acte précis.' },
-      { k: ['aide','bonjour','salut','merci','info'], r: '<strong>Besoin d\'aide ?</strong> Posez-moi une question sur :<br>• Nombre de séances kiné / médicaments<br>• Accords préalables & médecin-conseil<br>• Statut BIM/OMNIO<br>• Recherche de codes nomenclature<br>Je réponds selon les règles INAMI actuelles.' }
     ]
   };
 
   let nomData = [...CFG.FALLBACK];
 
-  function init() {
-    const nav = document.getElementById('nav');
-    const views = { '❓ Droits': 'v-qa', '🧮 Simulateur': 'v-sim', '💬 Assistant': 'v-chat', '🔍 Nomenclature': 'v-nom' };
-    Object.entries(CFG.QA).forEach(([k,v]) => {
-      const b = document.createElement('button'); b.className='btn'; b.textContent=v.t; b.onclick=()=>show('v-qa', renderQA(k));
-      nav.appendChild(b);
-    });
-    Object.entries(views).forEach(([t,id]) => {
-      const b = document.createElement('button'); b.className='btn'; b.textContent=t; b.onclick=()=>show(id);
-      nav.appendChild(b);
-    });
-    loadDB();
-    addBot('👋 Bienvenue ! Posez une question sur vos droits INAMI, les accords préalables ou la nomenclature. Ex: <em>"Combien de boîtes de médicaments ai-je droit ?"</em>');
-  }
-
+  // 🧩 NAVIGATION
   function show(id) {
-    document.querySelectorAll('.view').forEach(v=>v.style.display='none');
-    document.getElementById(id).style.display='block';
-    document.getElementById('nav').style.display='none';
-    ['h1','.sub','#disclaimer'].forEach(s=>document.querySelector(s).style.display='none');
+    document.querySelectorAll('.view').forEach(v => v.style.display = 'none');
+    document.getElementById(`v-${id}`).style.display = 'block';
+    document.getElementById('nav').style.display = 'none';
+    document.querySelector('h1').style.display = 'none';
+    document.querySelector('.sub').style.display = 'none';
   }
   function home() {
-    document.querySelectorAll('.view').forEach(v=>v.style.display='none');
-    document.getElementById('nav').style.display='flex';
-    document.querySelector('h1').style.display='block';
-    document.querySelector('.sub').style.display='block';
-    document.getElementById('disclaimer').style.display='block';
-  }
-  function renderQA(k) {
-    const list = document.getElementById('qa-list'); list.innerHTML = '';
-    CFG.QA[k].q.forEach(i => {
-      const d = document.createElement('div'); d.className='card';
-      d.innerHTML = `<div class="q">❓ ${i.q}</div><button class="toggle" onclick="this.nextElementSibling.classList.toggle('show');this.textContent=this.nextElementSibling.classList.contains('show')?'Masquer':'Voir'">Voir</button><div class="a">${i.a}</div>`;
-      list.appendChild(d);
-    });
+    document.querySelectorAll('.view').forEach(v => v.style.display = 'none');
+    document.getElementById('nav').style.display = 'flex';
+    document.querySelector('h1').style.display = 'block';
+    document.querySelector('.sub').style.display = 'block';
   }
 
+  // 📊 SIMULATEUR
   function toggleCond() {
     const t = document.getElementById('type').value;
-    const c = document.getElementById('cond'); c.innerHTML='';
-    if(!t){c.style.display='none';return;} c.style.display='grid';
-    const f = {
-      kine: `<div class="grp"><label>Type de kiné</label><select id="s-kine-type"><option value="gen">Rééducation générale</option><option value="postop">Post-opératoire</option><option value="resp">Respiratoire</option><option value="neuro">Neurologique</option><option value="ped">Pédiatrique</option></select></div><div class="grp"><label>Séances demandées</label><input type="number" id="s-kine" min="1" max="100"></div>`,
-      med: `<div class="grp"><label>Catégorie</label><select id="s-med"><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option></select></div><div class="grp"><label>Accord préalable ?</label><select id="s-pri"><option value="0">Non</option><option value="1">Oui</option></select></div>`,
-      img: `<div class="grp"><label>Type</label><select id="s-img"><option value="radio">Radio</option><option value="echo">Écho</option><option value="irm">IRM</option><option value="scan">Scanner</option></select></div>`,
-      hosp: `<div class="grp"><label>Type</label><select id="s-hosp"><option value="urg">Urgence</option><option value="prog">Programmée</option></select></div>`,
-      chron: `<div class="grp"><label>Pathologie</label><input type="text" id="s-chron" placeholder="Ex: Diabète type 2"></div>`
-    };
-    c.innerHTML = f[t]||'';
+    const c = document.getElementById('cond'); c.innerHTML = '';
+    if (!t) { c.style.display = 'none'; return; }
+    c.style.display = 'grid';
+
+    if (t === 'kine') {
+      c.innerHTML = `
+        <div class="field"><label>Catégorie INAMI</label>
+          <select id="s-kine-cat" onchange="updatePathologies()">
+            <option value="FA">FA (Fonctionnel A)</option>
+            <option value="FB">FB (Fonctionnel B)</option>
+            <option value="18M">18M (Multidisciplinaire)</option>
+            <option value="PL">Pathologie Lourde</option>
+          </select>
+        </div>
+        <div class="field"><label>Numéro de pathologie</label><select id="s-kine-path"><option value="">-- Choisir catégorie --</option></select></div>
+        <div class="field"><label>Séances demandées</label><input type="number" id="s-kine-sess" min="1" max="100" placeholder="Ex: 20"></div>
+      `;
+      updatePathologies();
+    } else if (t === 'med') {
+      c.innerHTML = `
+        <div class="field"><label>Catégorie médicament</label><select id="s-med"><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option></select></div>
+        <div class="field"><label>Accord préalable requis ?</label><select id="s-pri"><option value="0">Non</option><option value="1">Oui</option></select></div>
+      `;
+    } else if (t === 'img') {
+      c.innerHTML = `<div class="field"><label>Type d'imagerie</label><select id="s-img"><option value="radio">Radio</option><option value="echo">Écho</option><option value="irm">IRM</option><option value="scan">Scanner</option></select></div>`;
+    } else if (t === 'hosp') {
+      c.innerHTML = `<div class="field"><label>Type</label><select id="s-hosp"><option value="urg">Urgence</option><option value="prog">Programmée</option></select></div>`;
+    } else if (t === 'chron') {
+      c.innerHTML = `<div class="field"><label>Pathologie déclarée</label><input type="text" id="s-chron" placeholder="Ex: Diabète, Insuffisance cardiaque..."></div>`;
+    } else {
+      c.innerHTML = '';
+    }
+  }
+
+  function updatePathologies() {
+    const cat = document.getElementById('s-kine-cat')?.value;
+    const pathSel = document.getElementById('s-kine-path');
+    if (!cat || !pathSel) return;
+    pathSel.innerHTML = '';
+    (CFG.KINE_PATHS[cat] || []).forEach(p => {
+      const opt = document.createElement('option');
+      opt.value = p;
+      opt.textContent = `Pathologie ${p}`;
+      pathSel.appendChild(opt);
+    });
   }
 
   function runSim() {
@@ -249,116 +345,149 @@
     const st = document.getElementById('status').value;
     const tp = document.getElementById('type').value;
     const mdt = document.getElementById('mdt').value;
-    if(isNaN(age)||age<0||!tp) return alert('Veuillez remplir l\'âge et le type de soins.');
+    if (isNaN(age) || age < 0 || !tp) return alert('Veuillez renseigner l\'âge et le type de soins.');
     
-    let r = {s:'',m:'',ref:[]};
-    const v=id=>document.getElementById(id)?.value;
+    let r = { s: '', m: '', ref: [] };
+    const v = id => document.getElementById(id)?.value;
 
-    if(tp==='kine'){
-      const n=+v('s-kine')||0, type=v('s-kine-type');
-      if(n<=0)return alert('Séances requises.');
-      r.s = mdt==='non'?'cond':'ok'; r.m=`Type : ${type}. Forfait ${n} séances.`;
-      if(n>18||['neuro','resp'].includes(type)){r.s='cond';r.m+=' Accord médecin-conseil requis.';r.ref.push('Art.114 Nomenclature / Protocole spécialisé');}
-    }else if(tp==='med'){
-      if(mdt==='non')return alert('Ordonnance obligatoire.');
-      const cat=v('s-med'), pri=+v('s-pri');
-      if(cat==='D')return alert('Catégorie D : hors nomenclature.');
-      r.s = pri?'cond':'ok'; r.m = pri?'Accord préalable requis.':`Remboursement cat. ${cat}.`;
-      r.ref.push('Classification INAMI');
-    }else if(tp==='img'){
-      const im=v('s-img');
-      if(mdt==='non'&&['irm','scan'].includes(im)){r.s='no';r.m='IRM/Scan hors parcours → refus.';r.ref.push('Conditions Imagerie');}
-      else{r.s='ok';r.m=`Remboursement ${im.toUpperCase()}.`;r.ref.push('Tarifs Imagerie');}
-    }else if(tp==='spec'){
-      r.s = mdt==='non'?'cond':'ok';
-      r.m = mdt==='non'?'Ticket majoré (hors parcours).':'Taux plein prévu.';
-      r.ref.push('Parcours Coordonné');
-    }else if(tp==='hosp'){
-      const h=v('s-hosp');
-      if(h==='urg'){r.s='ok';r.m='Prise en charge d\'office.';r.ref.push('Art.167bis');}
-      else{r.s='cond';r.m='Programmée → accord L113 requis.';r.ref.push('Procédure Hospitalière');}
-    }else if(tp==='chron'){
-      r.s='cond';r.m='Protocole médecin traitant + médecin-conseil. 100% soins liés.';
-      r.ref.push('Statut Chronique INAMI');
+    if (tp === 'kine') {
+      const n = +v('s-kine-sess') || 0, cat = v('s-kine-cat') || 'FA', path = v('s-kine-path');
+      if (n <= 0) return alert('Nombre de séances requis.');
+      r.s = mdt === 'non' ? 'cond' : 'ok';
+      r.m = `Catégorie : ${cat} (Path. ${path}). Séances : ${n}.`;
+      if (n > 18 || ['18M', 'PL'].includes(cat)) {
+        r.s = 'cond'; r.m += ' Accord médecin-conseil obligatoire.'; r.ref.push('Art.114 Nomenclature / Protocole spécialisé');
+      } else { r.ref.push('Forfaits Kinésithérapie INAMI 2024'); }
+    } else if (tp === 'med') {
+      if (mdt === 'non') return alert('Parcours/Ordonnance requis.');
+      const cat = v('s-med'), pri = +v('s-pri');
+      if (cat === 'D') return alert('Catégorie D : hors nomenclature INAMI.');
+      r.s = pri ? 'cond' : 'ok'; r.m = pri ? 'Accord préalable requis.' : `Remboursement cat. ${cat} standard.`; r.ref.push('Classification Pharmaceutique');
+    } else if (tp === 'img') {
+      const im = v('s-img');
+      if (mdt === 'non' && ['irm', 'scan'].includes(im)) { r.s = 'no'; r.m = 'IRM/Scanner hors parcours → non remboursé.'; r.ref.push('Conditions Imagerie'); }
+      else { r.s = 'ok'; r.m = `Remboursement ${im.toUpperCase()} prévu.`; r.ref.push('Tarifs Imagerie'); }
+    } else if (tp === 'spec') {
+      r.s = mdt === 'non' ? 'cond' : 'ok'; r.m = mdt === 'non' ? 'Ticket modérateur majoré.' : 'Taux plein coordonné.'; r.ref.push('Parcours de Soins Coordonnés');
+    } else if (tp === 'hosp') {
+      const h = v('s-hosp');
+      if (h === 'urg') { r.s = 'ok'; r.m = 'Prise en charge d\'office.'; r.ref.push('Art.167bis'); }
+      else { r.s = 'cond'; r.m = 'Programmée → accord L113 requis.'; r.ref.push('Procédure Hospitalière'); }
+    } else if (tp === 'chron') {
+      r.s = 'cond'; r.m = 'Protocole médical + validation médecin-conseil. 100% soins liés.'; r.ref.push('Statut Affection Longue Durée');
     }
 
-    if(st==='bim') r.m += ' Intervention Majorée (VIPO) appliquée.';
+    if (st === 'bim') r.m += ' Intervention Majorée (BIM/OMNIO) active.';
 
-    const el=document.getElementById('res'); el.style.display='block';
-    document.getElementById('r-status').className=`status ${r.s}`;
-    document.getElementById('r-status').textContent = r.s==='ok'?'✅ ACCORD PRÉVU':r.s==='no'?'❌ REFUS PROBABLE':'⚠️ ACCORD CONDITIONNEL';
-    document.getElementById('r-msg').textContent=r.m;
-    document.getElementById('r-ref').innerHTML=`<strong>📜 Références :</strong><br>`+r.ref.join('<br>');
-    el.scrollIntoView({behavior:'smooth'});
+    const el = document.getElementById('res'); el.style.display = 'block';
+    document.getElementById('r-status').className = `res-status ${r.s}`;
+    document.getElementById('r-status').textContent = r.s === 'ok' ? '✅ ACCORD PRÉVU' : r.s === 'no' ? '❌ REFUS PROBABLE' : '⚠️ ACCORD CONDITIONNEL';
+    document.getElementById('r-msg').textContent = r.m;
+    document.getElementById('r-ref').innerHTML = `<strong>📜 Références :</strong><br>` + r.ref.join('<br>');
+    el.scrollIntoView({ behavior: 'smooth' });
   }
+
+  // 💬 AGENTS CHAT
+  const chatCtx = {};
+  function initChat(type) {
+    const log = document.getElementById(`chat-log-${type}`);
+    if (!log.children.length) {
+      const greetings = {
+        kine: 'Bonjour. Je suis l\'expert Kinésithérapie. Précisez votre forfait (FA/FB/18M/PL), le nombre de séances et votre statut (BIM/Standard) pour une analyse précise.',
+        med: 'Bonjour. Expert Médicaments à votre écoute. Indiquez le nom du principe actif, sa catégorie (A/B/C/D) et votre situation pour vérifier le remboursement.',
+        parc: 'Bonjour. Expert Parcours de Soins. Posez votre question sur le MDT, les consultations directes, le tiers payant ou les tickets modérateurs.'
+      };
+      addMsg(type, 'agent', greetings[type]);
+      chatCtx[type] = { history: [] };
+    }
+  }
+  showAgent = initChat; // Alias pour appel depuis nav si besoin
+
+  function addMsg(type, sender, html) {
+    const log = document.getElementById(`chat-log-${type}`);
+    const div = document.createElement('div');
+    div.className = `msg ${sender}`;
+    div.innerHTML = html;
+    log.appendChild(div);
+    log.scrollTop = log.scrollHeight;
+  }
+
+  function sendMsg(type) {
+    initChat(type);
+    const inp = document.getElementById(`input-${type}`);
+    const txt = inp.value.trim(); if (!txt) return;
+    addMsg(type, 'user', txt); inp.value = '';
+    const typ = document.getElementById(`typing-${type}`); typ.style.display = 'block';
+
+    setTimeout(() => {
+      typ.style.display = 'none';
+      const res = analyzeAgent(type, txt.toLowerCase());
+      addMsg(type, 'agent', res);
+    }, 500 + Math.random() * 400);
+  }
+
+  function analyzeAgent(type, q) {
+    const kb = CFG.AGENT_KB[type]?.intents || [];
+    let best = null, max = 0;
+    kb.forEach(i => {
+      i.keys.forEach(k => {
+        if (q.includes(k) && k.length > max) { max = k.length; best = i.answer; }
+      });
+    });
+    
+    if (!best) {
+      const defaults = {
+        kine: 'Je n\'ai pas identifié de forfait ou de situation précise. Précisez : <strong>FA/FB/18M/Pathologie Lourde</strong>, le nombre de séances, et si vous avez une prescription.',
+        med: 'Pour une réponse exacte, merci d\'indiquer : la <strong>catégorie (A-D)</strong>, si un accord préalable est mentionné sur l\'ordonnance, et votre statut mutualité.',
+        parc: 'Je peux vous éclairer sur le parcours coordonné. Précisez : consultez-vous un <strong>spécialiste directement</strong> ? Avez-vous déclaré un <strong>MDT</strong> ? Votre question concerne-t-elle le <strong>tiers payant</strong> ?'
+      };
+      best = defaults[type];
+    }
+    return best;
+  }
+  // Écouteurs Enter pour chats
+  ['kine', 'med', 'parc'].forEach(t => {
+    document.getElementById(`input-${t}`).addEventListener('keypress', e => { if (e.key === 'Enter') sendMsg(t); });
+  });
 
   // 🔍 NOMENCLATURE
   function loadDB() {
     const c = localStorage.getItem(CFG.STORAGE_KEY);
-    if(c){ try{ const d=JSON.parse(c); nomData=d.data; updSt(d.ts); }catch(e){nomData=[...CFG.FALLBACK];} }
+    if (c) { try { const d = JSON.parse(c); nomData = d.data; updSt(d.ts); } catch(e) { nomData = [...CFG.FALLBACK]; } }
     renderNom(nomData);
   }
-  function updSt(ts){ document.getElementById('db-st').textContent = ts?`Base: ${nomData.length} entrées • Synchro: ${new Date(ts).toLocaleString('fr-BE')}`:`Base locale: ${nomData.length} entrées`; }
-  function renderNom(d){
-    const tb=document.getElementById('nom-tbody'), em=document.getElementById('nom-empty');
-    tb.innerHTML=''; if(!d.length){em.style.display='block';return;} em.style.display='none';
-    d.forEach(i=>{
-      const r=document.createElement('tr');
-      r.innerHTML=`<td class="code">${i.c}</td><td>${i.d}</td><td>${i.cat}</td><td>${i.t.toFixed(2)}</td>`;
+  function updSt(ts) { document.getElementById('db-st').textContent = ts ? `Base: ${nomData.length} entrées • Synchro: ${new Date(ts).toLocaleString('fr-BE')}` : `Base locale: ${nomData.length} entrées`; }
+  function renderNom(d) {
+    const tb = document.getElementById('nom-tbody'), em = document.getElementById('nom-empty');
+    tb.innerHTML = ''; if (!d.length) { em.style.display = 'block'; return; } em.style.display = 'none';
+    d.forEach(i => {
+      const r = document.createElement('tr');
+      r.innerHTML = `<td class="n-code">${i.c}</td><td>${i.d}</td><td>${i.cat}</td><td>${i.t.toFixed(2)}</td>`;
       tb.appendChild(r);
     });
   }
-  function searchNom(){
-    const q=document.getElementById('s-nom').value.trim().toLowerCase();
-    renderNom(q?nomData.filter(i=>i.c.includes(q)||i.d.toLowerCase().includes(q)||i.cat.toLowerCase().includes(q)):nomData);
+  function searchNom() {
+    const q = document.getElementById('s-nom').value.trim().toLowerCase();
+    renderNom(q ? nomData.filter(i => i.c.includes(q) || i.d.toLowerCase().includes(q) || i.cat.toLowerCase().includes(q)) : nomData);
   }
-  async function updateDB(){
-    const ld=document.getElementById('loader'); ld.style.display='block';
-    try{
-      const res=await fetch(CFG.DB_URL,{cache:'no-store'});
-      if(!res.ok)throw new Error('HTTP '+res.status);
-      const d=await res.json(); if(!Array.isArray(d))throw new Error('Format invalide');
-      nomData=d; localStorage.setItem(CFG.STORAGE_KEY,JSON.stringify({data:d,ts:Date.now()}));
+  async function updateDB() {
+    const ld = document.getElementById('db-st'); ld.textContent = '⏳ Synchronisation...';
+    try {
+      const res = await fetch(CFG.DB_URL, { cache: 'no-store' });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const d = await res.json(); if (!Array.isArray(d)) throw new Error('Format invalide');
+      nomData = d; localStorage.setItem(CFG.STORAGE_KEY, JSON.stringify({ data: d, ts: Date.now() }));
       updSt(Date.now()); renderNom(d); alert('✅ Base mise à jour.');
-    }catch(e){ console.warn(e); alert('⚠️ Sync échouée. Utilisation locale.'); nomData=[...CFG.FALLBACK]; renderNom(nomData); }
-    finally{ ld.style.display='none'; }
+    } catch(e) { console.warn(e); alert('⚠️ Sync échouée. Base locale conservée.'); nomData = [...CFG.FALLBACK]; renderNom(nomData); }
+    finally { loadDB(); }
   }
 
-  // 💬 CHAT
-  function addBot(html) {
-    const log = document.getElementById('chat-log');
-    const div = document.createElement('div'); div.className='msg bot'; div.innerHTML=html;
-    log.appendChild(div); log.scrollTop = log.scrollHeight;
-  }
-  function addUser(txt) {
-    const log = document.getElementById('chat-log');
-    const div = document.createElement('div'); div.className='msg user'; div.textContent=txt;
-    log.appendChild(div); log.scrollTop = log.scrollHeight;
-  }
-  function sendChat() {
-    const inp = document.getElementById('chat-input');
-    const txt = inp.value.trim(); if(!txt) return;
-    addUser(txt); inp.value = '';
-    const typ = document.getElementById('typing'); typ.style.display='block';
-    
-    setTimeout(() => {
-      typ.style.display='none';
-      const res = matchRule(txt.toLowerCase());
-      addBot(res);
-    }, 400);
-  }
-  function matchRule(q) {
-    let best = null; let max = 0;
-    CFG.CHAT_RULES.forEach(rule => {
-      rule.k.forEach(k => {
-        if(q.includes(k)) { max = k.length; best = rule.r; }
-      });
-    });
-    return best || '<strong>Je n\'ai pas trouvé de règle spécifique.</strong> Essayez de préciser : nombre de séances, type de médicament, accord préalable, ou utilisez l\'onglet 🔍 Nomenclature pour vérifier un code.';
-  }
-  document.getElementById('chat-input').addEventListener('keypress', e => { if(e.key==='Enter') sendChat(); });
-
-  init();
+  // 🚀 INIT
+  window.addEventListener('DOMContentLoaded', () => {
+    loadDB();
+    // Pré-initialiser les logs vides pour éviter erreurs si navigation directe
+    ['kine', 'med', 'parc'].forEach(t => document.getElementById(`chat-log-${t}`).innerHTML = '');
+  });
 </script>
 </body>
 </html>
