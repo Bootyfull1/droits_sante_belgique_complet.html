@@ -3,136 +3,108 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Simulateur INAMI & Assistants Experts | Nomenclature & Droits">
-  <title>INAMI Assistant | Simulateur & Experts</title>
+  <meta name="description" content="Assistant INAMI | Simulateur, Experts & Nomenclature">
+  <title>INAMI Assistant Pro</title>
   <style>
     :root {
-      --bg: #0b1120;
-      --surface: #111827;
-      --surface-light: #1f2937;
-      --text: #e5e7eb;
-      --text-muted: #9ca3af;
-      --primary: #3b82f6;
-      --primary-dark: #2563eb;
-      --accent: #10b981;
-      --border: #374151;
-      --warning: #f59e0b;
-      --danger: #ef4444;
-      --success: #10b981;
-      --shadow: 0 4px 12px rgba(0,0,0,0.3);
-      --shadow-lg: 0 10px 20px rgba(0,0,0,0.4);
+      --bg: #0b1120; --surface: #111827; --surface-light: #1f2937;
+      --text: #e5e7eb; --text-muted: #9ca3af;
+      --primary: #3b82f6; --primary-dark: #2563eb;
+      --accent: #10b981; --warning: #f59e0b; --danger: #ef4444;
+      --border: #374151; --shadow: 0 4px 12px rgba(0,0,0,0.3);
+      --radius: 10px; --radius-lg: 14px;
+      --chat-user: #3b82f6; --chat-agent: #1f2937;
       --font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-      --chat-user: #3b82f6;
-      --chat-agent: #1f2937;
-      --radius: 10px;
-      --radius-lg: 14px;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: var(--font);
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.55;
-      padding: 1rem;
-      min-height: 100vh;
-    }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.55; padding: 1rem; min-height: 100vh; }
     header { text-align: center; margin-bottom: 1.5rem; padding-top: 1rem; }
     h1 { font-size: 1.9rem; font-weight: 700; color: var(--primary); margin-bottom: 0.4rem; letter-spacing: -0.5px; }
-    .sub { color: var(--text-muted); font-size: 0.95rem; font-weight: 400; }
+    .sub { color: var(--text-muted); font-size: 0.95rem; }
     
-    #nav {
-      display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center; margin-bottom: 2rem;
-      padding: 0.5rem; background: var(--surface); border-radius: var(--radius-lg); box-shadow: var(--shadow);
-    }
-    .nav-btn {
-      background: transparent; border: 1px solid var(--border); color: var(--text-muted);
-      padding: 0.7rem 1rem; border-radius: var(--radius); cursor: pointer; font-weight: 500; transition: all 0.2s; font-size: 0.9rem;
-    }
+    #nav { display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center; margin-bottom: 2rem; padding: 0.5rem; background: var(--surface); border-radius: var(--radius-lg); box-shadow: var(--shadow); }
+    .nav-btn { background: transparent; border: 1px solid var(--border); color: var(--text-muted); padding: 0.7rem 1rem; border-radius: var(--radius); cursor: pointer; font-weight: 500; transition: 0.2s; font-size: 0.9rem; }
     .nav-btn:hover, .nav-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
 
-    .view { max-width: 960px; margin: 0 auto; display: none; animation: fadeIn 0.3s ease; }
-    @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+    .view { max-width: 980px; margin: 0 auto; display: none; animation: fadeIn 0.25s ease; }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
     .back-btn { background: var(--surface-light); color: var(--text-muted); border: 1px solid var(--border); padding: 0.6rem 1rem; border-radius: var(--radius); cursor: pointer; margin-bottom: 1rem; transition: 0.2s; }
     .back-btn:hover { background: var(--border); color: #fff; }
 
     .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.4rem; margin-bottom: 1.2rem; box-shadow: var(--shadow); }
     h2 { color: var(--primary); font-size: 1.3rem; margin-bottom: 1rem; font-weight: 600; }
     
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
     .field { display: flex; flex-direction: column; gap: 0.4rem; }
-    label { font-weight: 500; color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
-    input, select {
-      background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 0.75rem 0.9rem;
-      border-radius: var(--radius); font-size: 0.95rem; transition: 0.2s;
-    }
+    label { font-weight: 500; color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    input, select { background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 0.75rem 0.9rem; border-radius: var(--radius); font-size: 0.95rem; transition: 0.2s; }
     input:focus, select:focus { outline: 2px solid var(--primary); border-color: transparent; box-shadow: 0 0 0 3px rgba(59,130,246,0.2); }
     .btn-primary { background: var(--primary); color: #fff; border: none; padding: 0.85rem; border-radius: var(--radius); font-weight: 600; cursor: pointer; width: 100%; margin-top: 1rem; transition: 0.2s; }
-    .btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); }
+    .btn-primary:hover { background: var(--primary-dark); }
 
     .result-panel { margin-top: 1.5rem; padding: 1.2rem; border-radius: var(--radius-lg); background: var(--surface-light); border: 1px solid var(--border); display: none; }
     .res-status { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.4rem; }
-    .ok { color: var(--success); border-left: 4px solid var(--success); padding-left: 0.8rem; }
+    .ok { color: var(--accent); border-left: 4px solid var(--accent); padding-left: 0.8rem; }
     .no { color: var(--danger); border-left: 4px solid var(--danger); padding-left: 0.8rem; }
     .cond { color: var(--warning); border-left: 4px solid var(--warning); padding-left: 0.8rem; }
     .res-msg { margin-top: 0.5rem; color: var(--text); }
     .res-ref { margin-top: 0.8rem; font-size: 0.8rem; color: var(--text-muted); background: var(--bg); padding: 0.7rem; border-radius: 6px; }
+    .form-link { display: inline-block; margin-top: 0.8rem; color: var(--primary); text-decoration: underline; font-weight: 500; }
+    .form-link:hover { color: #fff; }
 
-    /* Chat Agent UI */
-    .chat-container { display: flex; flex-direction: column; height: 70vh; border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; background: var(--surface); box-shadow: var(--shadow-lg); }
-    .chat-header { padding: 1rem; background: var(--surface-light); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.8rem; }
-    .agent-avatar { width: 36px; height: 36px; background: var(--primary); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1rem; }
-    .agent-title { font-weight: 600; font-size: 1rem; }
-    .agent-sub { font-size: 0.8rem; color: var(--text-muted); }
+    .chat-container { display: flex; flex-direction: column; height: 65vh; border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; background: var(--surface); box-shadow: var(--shadow-lg); }
+    .chat-header { padding: 0.9rem; background: var(--surface-light); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.8rem; }
+    .agent-avatar { width: 34px; height: 34px; background: var(--primary); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem; }
+    .agent-title { font-weight: 600; font-size: 0.95rem; }
+    .agent-sub { font-size: 0.75rem; color: var(--text-muted); }
     
-    #chat-log { flex: 1; overflow-y: auto; padding: 1rem; display: flex; flex-direction: column; gap: 0.9rem; background: var(--bg); }
-    .msg { max-width: 85%; padding: 0.9rem 1rem; border-radius: 14px; font-size: 0.95rem; line-height: 1.5; animation: pop 0.25s ease; }
-    @keyframes pop { from { opacity:0; transform:scale(0.95) translateY(5px); } to { opacity:1; transform:scale(1) translateY(0); } }
-    .msg.user { align-self: flex-end; background: var(--chat-user); color: #fff; border-bottom-right-radius: 4px; box-shadow: var(--shadow); }
+    #chat-log { flex: 1; overflow-y: auto; padding: 0.9rem; display: flex; flex-direction: column; gap: 0.8rem; background: var(--bg); }
+    .msg { max-width: 88%; padding: 0.8rem 0.9rem; border-radius: 12px; font-size: 0.9rem; line-height: 1.45; animation: pop 0.2s ease; }
+    @keyframes pop { from { opacity:0; transform:scale(0.96) translateY(4px); } to { opacity:1; transform:scale(1) translateY(0); } }
+    .msg.user { align-self: flex-end; background: var(--chat-user); color: #fff; border-bottom-right-radius: 4px; }
     .msg.agent { align-self: flex-start; background: var(--chat-agent); border: 1px solid var(--border); border-bottom-left-radius: 4px; }
     .msg.agent strong { color: var(--primary); }
-    .msg.agent ul { margin: 0.4rem 0 0 1.1rem; }
-    .typing { font-style: italic; color: var(--text-muted); font-size: 0.8rem; margin-left: 1rem; display: none; padding: 0.5rem 0; }
+    .msg.agent ul { margin: 0.3rem 0 0 1.1rem; }
+    .typing { font-style: italic; color: var(--text-muted); font-size: 0.75rem; margin-left: 1rem; display: none; padding: 0.4rem 0; }
 
     .chat-input-area { display: flex; padding: 0.8rem; background: var(--surface-light); border-top: 1px solid var(--border); gap: 0.6rem; }
-    .chat-input { flex: 1; background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 0.8rem 1rem; border-radius: 24px; font-size: 0.95rem; }
+    .chat-input { flex: 1; background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 0.7rem 1rem; border-radius: 20px; font-size: 0.9rem; }
     .chat-input:focus { outline: none; border-color: var(--primary); }
-    .send-btn { background: var(--accent); color: #fff; border: none; padding: 0 1.4rem; border-radius: 24px; cursor: pointer; font-weight: 600; transition: 0.2s; }
-    .send-btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
+    .send-btn { background: var(--accent); color: #fff; border: none; padding: 0 1.2rem; border-radius: 20px; cursor: pointer; font-weight: 600; transition: 0.2s; }
+    .send-btn:hover { filter: brightness(1.1); }
 
-    /* Nomenclature */
     .search-row { display: flex; gap: 0.8rem; margin-bottom: 1rem; flex-wrap: wrap; }
     .search-row input { flex: 1; min-width: 200px; }
     .search-btn { background: var(--accent); color: #fff; border: none; padding: 0 1.2rem; border-radius: var(--radius); cursor: pointer; font-weight: 600; transition: 0.2s; }
-    .search-btn:hover { filter: brightness(1.1); }
     .db-info { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.6rem; text-align: right; }
     table { width: 100%; border-collapse: collapse; margin-top: 1rem; background: var(--surface); border-radius: var(--radius); overflow: hidden; }
-    th, td { text-align: left; padding: 0.9rem; border-bottom: 1px solid var(--border); }
-    th { background: var(--surface-light); color: var(--primary); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
-    tr:last-child td { border-bottom: none; }
+    th, td { text-align: left; padding: 0.8rem; border-bottom: 1px solid var(--border); }
+    th { background: var(--surface-light); color: var(--primary); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; }
     .n-code { font-family: monospace; color: var(--accent); font-weight: 600; }
     .empty-state { text-align: center; color: var(--text-muted); padding: 2rem 0; display: none; }
 
-    footer { text-align: center; margin-top: 2.5rem; padding: 1rem 0; border-top: 1px solid var(--border); color: var(--text-muted); font-size: 0.8rem; }
-    @media (max-width: 650px) { h1 { font-size: 1.5rem; } .nav-btn { flex: 1 1 100%; } th, td { padding: 0.7rem; font-size: 0.85rem; } .chat-container { height: 60vh; } }
+    footer { text-align: center; margin-top: 2.5rem; padding: 1rem 0; border-top: 1px solid var(--border); color: var(--text-muted); font-size: 0.75rem; }
+    @media (max-width: 650px) { h1 { font-size: 1.4rem; } .nav-btn { flex: 1 1 100%; } th, td { padding: 0.6rem; font-size: 0.8rem; } .chat-container { height: 55vh; } }
   </style>
 </head>
 <body>
 
 <header>
-  <h1>INAMI Assistant</h1>
-  <p class="sub">Simulateur • Experts Domaine • Nomenclature</p>
+  <h1>INAMI Assistant Pro</h1>
+  <p class="sub">Simulateur • Experts • Nomenclature</p>
 </header>
 
 <nav id="nav">
   <button class="nav-btn" onclick="show('sim')">📊 Simulateur</button>
-  <button class="nav-btn" onclick="show('agent-kine')">🦴 Expert Kinésithérapie</button>
-  <button class="nav-btn" onclick="show('agent-med')">💊 Expert Médicaments</button>
-  <button class="nav-btn" onclick="show('agent-parcours')">🩺 Expert Parcours</button>
+  <button class="nav-btn" onclick="show('agent-kine')">🦴 Kinésithérapie</button>
+  <button class="nav-btn" onclick="show('agent-med')">💊 Médicaments</button>
+  <button class="nav-btn" onclick="show('agent-parc')">🩺 Parcours de Soins</button>
+  <button class="nav-btn" onclick="show('agent-pall')">🕊️ Soins Palliatifs</button>
+  <button class="nav-btn" onclick="show('agent-mob')">♿ Aide à la Mobilité</button>
   <button class="nav-btn" onclick="show('nom')">🔍 Nomenclature</button>
 </nav>
 
 <main>
-  <!-- SIMULATEUR -->
   <section id="v-sim" class="view">
     <button class="back-btn" onclick="home()">← Accueil</button>
     <div class="card">
@@ -149,62 +121,61 @@
         <div id="r-status" class="res-status"></div>
         <div id="r-msg" class="res-msg"></div>
         <div id="r-ref" class="res-ref"></div>
+        <a id="r-form" href="#" target="_blank" class="form-link" style="display:none;">📥 Accéder au formulaire de demande officiel</a>
       </div>
     </div>
   </section>
 
-  <!-- AGENT KINÉ -->
   <section id="v-agent-kine" class="view">
     <button class="back-btn" onclick="home()">← Accueil</button>
     <div class="chat-container">
-      <div class="chat-header">
-        <div class="agent-avatar">K</div>
-        <div><div class="agent-title">Expert Kinésithérapie</div><div class="agent-sub">Nomenclature INAMI • Forfaits • Accords</div></div>
-      </div>
+      <div class="chat-header"><div class="agent-avatar">K</div><div><div class="agent-title">Expert Kinésithérapie</div><div class="agent-sub">Forfaits INAMI • Pathologies • Accords</div></div></div>
       <div id="chat-log-kine"></div>
-      <div class="typing" id="typing-kine">L'expert analyse votre situation...</div>
-      <div class="chat-input-area">
-        <input type="text" class="chat-input" id="input-kine" placeholder="Ex: J'ai une prescription pour 24 séances FA...">
-        <button class="send-btn" onclick="sendMsg('kine')">Envoyer</button>
-      </div>
+      <div class="typing" id="typing-kine">Analyse en cours...</div>
+      <div class="chat-input-area"><input type="text" class="chat-input" id="input-kine" placeholder="Ex: J'ai une prescription pour 24 séances FA..."><button class="send-btn" onclick="sendMsg('kine')">Envoyer</button></div>
     </div>
   </section>
 
-  <!-- AGENT MÉDICAMENTS -->
   <section id="v-agent-med" class="view">
     <button class="back-btn" onclick="home()">← Accueil</button>
     <div class="chat-container">
-      <div class="chat-header">
-        <div class="agent-avatar">M</div>
-        <div><div class="agent-title">Expert Médicaments</div><div class="agent-sub">Catégories A/B/C/D • Génériques • Accords</div></div>
-      </div>
+      <div class="chat-header"><div class="agent-avatar">M</div><div><div class="agent-title">Expert Médicaments</div><div class="agent-sub">Catégories • Conditions • Génériques</div></div></div>
       <div id="chat-log-med"></div>
-      <div class="typing" id="typing-med">L'expert vérifie la nomenclature...</div>
-      <div class="chat-input-area">
-        <input type="text" class="chat-input" id="input-med" placeholder="Ex: Combien de boîtes de Xarelto sont remboursées ?">
-        <button class="send-btn" onclick="sendMsg('med')">Envoyer</button>
-      </div>
+      <div class="typing" id="typing-med">Vérification nomenclature...</div>
+      <div class="chat-input-area"><input type="text" class="chat-input" id="input-med" placeholder="Ex: Mounjaro pour obésité ?"><button class="send-btn" onclick="sendMsg('med')">Envoyer</button></div>
     </div>
   </section>
 
-  <!-- AGENT PARCOURS -->
-  <section id="v-agent-parcours" class="view">
+  <section id="v-agent-parc" class="view">
     <button class="back-btn" onclick="home()">← Accueil</button>
     <div class="chat-container">
-      <div class="chat-header">
-        <div class="agent-avatar">P</div>
-        <div><div class="agent-title">Expert Parcours de Soins</div><div class="agent-sub">MDT • Tiers payant • Tickets modérateurs</div></div>
-      </div>
+      <div class="chat-header"><div class="agent-avatar">P</div><div><div class="agent-title">Expert Parcours de Soins</div><div class="agent-sub">MDT • Tiers payant • Tickets</div></div></div>
       <div id="chat-log-parc"></div>
-      <div class="typing" id="typing-parc">L'expert prépare votre analyse...</div>
-      <div class="chat-input-area">
-        <input type="text" class="chat-input" id="input-parc" placeholder="Ex: Puis-je voir un cardiologue sans MDT ?">
-        <button class="send-btn" onclick="sendMsg('parc')">Envoyer</button>
-      </div>
+      <div class="typing" id="typing-parc">Préparation analyse...</div>
+      <div class="chat-input-area"><input type="text" class="chat-input" id="input-parc" placeholder="Ex: Puis-je voir un cardiologue sans MDT ?"><button class="send-btn" onclick="sendMsg('parc')">Envoyer</button></div>
     </div>
   </section>
 
-  <!-- NOMENCLATURE -->
+  <section id="v-agent-pall" class="view">
+    <button class="back-btn" onclick="home()">← Accueil</button>
+    <div class="chat-container">
+      <div class="chat-header"><div class="agent-avatar">🕊️</div><div><div class="agent-title">Expert Soins Palliatifs</div><div class="agent-sub">Forfait • Équipes • Accompagnement</div></div></div>
+      <div id="chat-log-pall"></div>
+      <div class="typing" id="typing-pall">Recherche protocoles...</div>
+      <div class="chat-input-area"><input type="text" class="chat-input" id="input-pall" placeholder="Ex: Comment accéder au forfait palliatif ?"><button class="send-btn" onclick="sendMsg('pall')">Envoyer</button></div>
+    </div>
+  </section>
+
+  <section id="v-agent-mob" class="view">
+    <button class="back-btn" onclick="home()">← Accueil</button>
+    <div class="chat-container">
+      <div class="chat-header"><div class="agent-avatar">♿</div><div><div class="agent-title">Expert Aide à la Mobilité</div><div class="agent-sub">Fauteuils • Prothèses • Orthèses</div></div></div>
+      <div id="chat-log-mob"></div>
+      <div class="typing" id="typing-mob">Vérification tarifs INAMI...</div>
+      <div class="chat-input-area"><input type="text" class="chat-input" id="input-mob" placeholder="Ex: Fauteuil roulant électrique remboursé ?"><button class="send-btn" onclick="sendMsg('mob')">Envoyer</button></div>
+    </div>
+  </section>
+
   <section id="v-nom" class="view">
     <button class="back-btn" onclick="home()">← Accueil</button>
     <div class="card">
@@ -221,39 +192,63 @@
   </section>
 </main>
 
-<footer>Application INAMI • Conception professionnelle • Mise à jour automatique disponible • Licence MIT</footer>
+<footer>Application INAMI • Données réglementaires simplifiées • Mise à jour automatique • Licence MIT</footer>
 
 <script>
-  // ⚙️ CONFIGURATION & DONNÉES
   const CFG = {
     DB_URL: 'https://raw.githubusercontent.com/UTILISATEUR/REPO/main/nomenclature.json',
-    STORAGE_KEY: 'inami_cache_v3',
+    STORAGE_KEY: 'inami_cache_v4',
+    FORMS: {
+      kine: 'https://www.inami.fed.be/FR/citoyens/soins/pages/protocole-de-soins.aspx',
+      med: 'https://www.inami.fed.be/FR/citoyens/soins/pages/medicaments.aspx',
+      chron: 'https://www.inami.fed.be/FR/citoyens/soins/pages/protocole-de-soins.aspx',
+      hosp: 'https://www.inami.fed.be/FR/citoyens/soins/pages/hospitalisation.aspx',
+      pall: 'https://www.inami.fed.be/FR/citoyens/soins/pages/soins-palliatifs.aspx',
+      mob: 'https://www.inami.fed.be/FR/citoyens/soins/pages/orthoprotheses.aspx'
+    },
     KINE_PATHS: {
-      FA: [1, 2, 3, 4, 5],
-      FB: [1, 2, 3],
-      "18M": [1, 2, 3, 4],
-      PL: [1, 2, 3] // Pathologie Lourde
+      FA: [{id:1, name:'Rééducation fonctionnelle générale'}, {id:2, name:'Récupération post-immobilisation'}, {id:3, name:'Rééducation post-entorse/ligament'}],
+      FB: [{id:51, name:'Rééducation à la marche'}, {id:52, name:'Rééducation post-AVC'}, {id:53, name:'Rééducation post-fracture complexe'}],
+      '18M': [{id:101, name:'Pathologies complexes multidisciplinaires'}, {id:102, name:'Rééducation cardiaque'}, {id:103, name:'Rééducation pulmonaire'}],
+      PL: [{id:201, name:'Affections neurologiques graves'}, {id:202, name:'Cancers en rémission active'}, {id:203, name:'Polytraumatismes'}]
     },
     AGENT_KB: {
       kine: {
+        greeting: "Bonjour. Expert Kinésithérapie. Précisez votre forfait (FA/FB/18M/PL), le code pathologie, le nombre de séances et votre statut pour une analyse conforme à la nomenclature.",
         intents: [
-          { keys:['fa','fb','18m','pathologie lourde','pl','forfait'], answer: 'Les forfaits <strong>FA/FB</strong> couvrent 9 à 18 séances standards. Le forfait <strong>18M</strong> et les <strong>pathologies lourdes</strong> nécessitent un protocole médical et un accord préalable du médecin-conseil pour dépasser 18 séances. Le remboursement atteint souvent 100% sous conditions BIM/ALD.' },
-          { keys:['séance','nombre','combien','limite'], answer: 'La nomenclature fixe des plafonds : <ul><li>Forfaits standards : 9, 18 ou 30 séances</li><li>>18 séances : accord médecin-conseil obligatoire</li><li>Pathologies lourdes : évaluation au cas par cas avec dossier clinique</li></ul>Votre mutualité complète souvent le ticket modérateur.' },
-          { keys:['accord','préalable','médecin conseil','refus'], answer: 'Un accord est requis si : <ul><li>Vous dépassez 18 séances</li><li>Vous relevez d\'un forfait spécialisé (18M/PL)</li><li>Le kiné demande des prolongations</li></ul>Le médecin traitant ou le kiné envoie le formulaire à votre mutualité. Délai moyen : 10 à 15 jours.' }
+          { keys:['fa','fb','18m','pl','forfait'], answer: "Les forfaits <strong>FA/FB</strong> couvrent les cycles de 9 à 18 séances. <strong>18M/PL</strong> nécessitent un protocole médical validé et un accord préalable du médecin-conseil pour dépasser 18 séances. Le remboursement peut atteindre 100% sous conditions BIM/ALD." },
+          { keys:['séance','nombre','combien','limite'], answer: "Plafonds nomenclature : <ul><li>Forfaits standards : 9, 18 ou 30 séances</li><li>>18 séances : accord médecin-conseil obligatoire</li><li>Pathologies lourdes : évaluation clinique complète requise</li></ul>Votre mutualité complète souvent le ticket modérateur." },
+          { keys:['accord','préalable','médecin conseil','refus'], answer: "Accord requis si : <ul><li>Vous dépassez 18 séances</li><li>Vous relevez d'un forfait spécialisé (18M/PL)</li><li>Le kiné demande des prolongations</li></ul>Le médecin traitant ou le kiné envoie le formulaire à votre mutualité. Délai moyen : 10 à 15 jours." }
         ]
       },
       med: {
+        greeting: "Bonjour. Expert Médicaments. Indiquez le principe actif, sa catégorie (A/B/C/D) et votre indication clinique pour vérifier les conditions INAMI.",
         intents: [
-          { keys:['boîte','nombre','durée','prescription'], answer: 'Le nombre de boîtes remboursées dépend de la <strong>posologie validée</strong> et de la <strong>durée du traitement</strong>. L\'INAMI impose des limites par ordonnance pour certains principes actifs (ex: antidépresseurs, antibiotiques). Votre pharmacien applique le <strong>forfait de responsabilité</strong> et le générique est prioritaire.' },
-          { keys:['a','b','c','d','catégorie','ticket'], answer: '<ul><li><strong>A</strong> : 100% (vie grave) ou ticket minimal</li><li><strong>B</strong> : 50% à 80% remboursé</li><li><strong>C</strong> : 30% à 40% remboursé</li><li><strong>D</strong> : 0% (confort/non reconnu)</li></ul>Le statut <strong>BIM/OMNIO</strong> réduit fortement la part patient.' },
-          { keys:['générique','substitution','marque','différence'], answer: 'La substitution par générique est <strong>automatique</strong> sauf mention "non substituable" du médecin. Si vous refusez sans justification clinique, le ticket modérateur peut être majoré. Le prix de référence (forfait de responsabilité) s\'applique toujours.' }
+          { keys:['mounjaro','tirzepatide','obésité','diabète'], answer: "Le <strong>Mounjaro (tirzepatide)</strong> n'est pas remboursé par l'INAMI pour l'obésité isolée. Son remboursement est strictement réservé au <strong>diabète de type 2</strong>, sous conditions : échec d'au moins 2 antidiabétiques oraux, HbA1c ≥ 8%, prescription par diabétologue/endocrinologue. Si vous êtes diabétique de type 2 et éligible, un protocole de soins est requis." },
+          { keys:['boîte','nombre','durée','prescription'], answer: "Le nombre de boîtes dépend de la <strong>posologie validée</strong> et de la durée du traitement. L'INAMI impose des limites par ordonnance pour certains principes actifs. Votre pharmacien applique le <strong>forfait de responsabilité</strong> et privilégie le générique." },
+          { keys:['a','b','c','d','catégorie','ticket'], answer: "<ul><li><strong>A</strong> : 100% (vie grave) ou ticket minimal</li><li><strong>B</strong> : 50% à 80% remboursé</li><li><strong>C</strong> : 30% à 40% remboursé</li><li><strong>D</strong> : 0% (confort/non reconnu)</li></ul>Le statut <strong>BIM/OMNIO</strong> réduit fortement la part patient." }
         ]
       },
       parc: {
+        greeting: "Bonjour. Expert Parcours de Soins. Posez votre question sur le MDT, les consultations directes, le tiers payant ou les tickets modérateurs.",
         intents: [
-          { keys:['mdt','médecin traitant','coordinateur','parcours'], answer: 'Déclarer un <strong>MDT</strong> réduit votre ticket modérateur de 10% à 20%. Il coordonne vos spécialistes et simplifie les accords préalables. Sans MDT, les consultations hors exceptions sont remboursées au taux réduit.' },
-          { keys:['spécialiste','direct','sans','gynéco','ophtalmo'], answer: 'Vous pouvez consulter directement un spécialiste, mais le remboursement INAMI est réduit. <strong>Exceptions (toujours remboursées taux plein) :</strong> Gynécologue, Ophtalmologue, Psychiatre, Pédiatre, Dermatologue (-16 ans), Stomatologue.' },
-          { keys:['tiers','payant','avance','hôpital'], answer: 'Le <strong>tiers payant</strong> est obligatoire en hôpital. En ambulatoire, il se généralise via la carte SIS/eHealth. Le professionnel perçoit directement la part INAMI/Mutuelle, vous ne payez que votre quote-part.' }
+          { keys:['mdt','médecin traitant','coordinateur','parcours'], answer: "Déclarer un <strong>MDT</strong> réduit votre ticket modérateur de 10% à 20%. Il coordonne vos spécialistes et simplifie les accords préalables. Sans MDT, les consultations hors exceptions sont remboursées au taux réduit." },
+          { keys:['spécialiste','direct','sans','gynéco','ophtalmo'], answer: "Vous pouvez consulter directement un spécialiste, mais le remboursement INAMI est réduit. <strong>Exceptions (toujours remboursées taux plein) :</strong> Gynécologue, Ophtalmologue, Psychiatre, Pédiatre, Dermatologue (-16 ans)." },
+          { keys:['tiers','payant','avance','hôpital'], answer: "Le <strong>tiers payant</strong> est obligatoire en hôpital. En ambulatoire, il se généralise via la carte SIS/eHealth. Le professionnel perçoit directement la part INAMI/Mutuelle, vous ne payez que votre quote-part." }
+        ]
+      },
+      pall: {
+        greeting: "Bonjour. Expert Soins Palliatifs. Le forfait INAMI couvre l'accompagnement médical, psychologique et social. Précisez votre situation (domicile, institution, type de pathologie).",
+        intents: [
+          { keys:['forfait','équipe','réseau','domicile'], answer: "Le forfait soins palliatifs INAMI est pris en charge à <strong>100%</strong> (ticket modérateur nul). Il s'applique en domicile ou en institution, sur prescription médicale et validation par une équipe pluridisciplinaire agréée." },
+          { keys:['coût','remboursement','ticket'], answer: "Aucun frais n'est facturé au patient pour les prestations reprises dans le forfait. Les soins de confort non repris peuvent être couverts par votre mutualité ou le statut BIM." }
+        ]
+      },
+      mob: {
+        greeting: "Bonjour. Expert Aide à la Mobilité. Indiquez le matériel souhaité (fauteuil, béquilles, lit médicalisé, prothèse) pour vérifier les conditions INAMI.",
+        intents: [
+          { keys:['fauteuil','béquilles','lit','prothèse','orthèse'], answer: "Le remboursement dépend du <strong>degré d'invalidité</strong> et de la prescription médicale. Fauteuils manuels : tarif de référence INAMI couvert. Fauteuils électriques/prothèses complexes : accord préalable du médecin-conseil obligatoire." },
+          { keys:['accord','médecin conseil','formulaire'], answer: "Pour les aides techniques coûteuses, le fournisseur et le médecin remplissent le formulaire INAMI. L'accord est délivré sous 10 à 15 jours. Le statut BIM/OMNIO réduit fortement votre part." }
         ]
       }
     },
@@ -274,6 +269,7 @@
   };
 
   let nomData = [...CFG.FALLBACK];
+  const chats = {kine:false, med:false, parc:false, pall:false, mob:false};
 
   // 🧩 NAVIGATION
   function show(id) {
@@ -322,9 +318,7 @@
       c.innerHTML = `<div class="field"><label>Type</label><select id="s-hosp"><option value="urg">Urgence</option><option value="prog">Programmée</option></select></div>`;
     } else if (t === 'chron') {
       c.innerHTML = `<div class="field"><label>Pathologie déclarée</label><input type="text" id="s-chron" placeholder="Ex: Diabète, Insuffisance cardiaque..."></div>`;
-    } else {
-      c.innerHTML = '';
-    }
+    } else { c.innerHTML = ''; }
   }
 
   function updatePathologies() {
@@ -334,8 +328,8 @@
     pathSel.innerHTML = '';
     (CFG.KINE_PATHS[cat] || []).forEach(p => {
       const opt = document.createElement('option');
-      opt.value = p;
-      opt.textContent = `Pathologie ${p}`;
+      opt.value = p.id;
+      opt.textContent = `${p.id} : ${p.name}`;
       pathSel.appendChild(opt);
     });
   }
@@ -349,20 +343,22 @@
     
     let r = { s: '', m: '', ref: [] };
     const v = id => document.getElementById(id)?.value;
+    let formUrl = '#';
 
     if (tp === 'kine') {
-      const n = +v('s-kine-sess') || 0, cat = v('s-kine-cat') || 'FA', path = v('s-kine-path');
+      const n = +v('s-kine-sess') || 0, cat = v('s-kine-cat') || 'FA', path = +v('s-kine-path');
       if (n <= 0) return alert('Nombre de séances requis.');
       r.s = mdt === 'non' ? 'cond' : 'ok';
       r.m = `Catégorie : ${cat} (Path. ${path}). Séances : ${n}.`;
-      if (n > 18 || ['18M', 'PL'].includes(cat)) {
-        r.s = 'cond'; r.m += ' Accord médecin-conseil obligatoire.'; r.ref.push('Art.114 Nomenclature / Protocole spécialisé');
-      } else { r.ref.push('Forfaits Kinésithérapie INAMI 2024'); }
+      if (path === 51 && age < 65) { r.s = 'no'; r.m += ` ❌ REFUS : La pathologie FB 51 (Rééducation à la marche) exige un âge minimum de 65 ans. Âge saisi : ${age} ans.`; }
+      else if (n > 18 || ['18M', 'PL'].includes(cat)) {
+        r.s = 'cond'; r.m += ' Accord médecin-conseil obligatoire.'; r.ref.push('Art.114 Nomenclature / Protocole spécialisé'); formUrl = CFG.FORMS.kine;
+      } else { r.ref.push('Forfaits Kinésithérapie INAMI'); }
     } else if (tp === 'med') {
       if (mdt === 'non') return alert('Parcours/Ordonnance requis.');
       const cat = v('s-med'), pri = +v('s-pri');
       if (cat === 'D') return alert('Catégorie D : hors nomenclature INAMI.');
-      r.s = pri ? 'cond' : 'ok'; r.m = pri ? 'Accord préalable requis.' : `Remboursement cat. ${cat} standard.`; r.ref.push('Classification Pharmaceutique');
+      r.s = pri ? 'cond' : 'ok'; r.m = pri ? 'Accord préalable requis.' : `Remboursement cat. ${cat} standard.`; r.ref.push('Classification Pharmaceutique'); formUrl = pri ? CFG.FORMS.med : '#';
     } else if (tp === 'img') {
       const im = v('s-img');
       if (mdt === 'non' && ['irm', 'scan'].includes(im)) { r.s = 'no'; r.m = 'IRM/Scanner hors parcours → non remboursé.'; r.ref.push('Conditions Imagerie'); }
@@ -372,48 +368,37 @@
     } else if (tp === 'hosp') {
       const h = v('s-hosp');
       if (h === 'urg') { r.s = 'ok'; r.m = 'Prise en charge d\'office.'; r.ref.push('Art.167bis'); }
-      else { r.s = 'cond'; r.m = 'Programmée → accord L113 requis.'; r.ref.push('Procédure Hospitalière'); }
+      else { r.s = 'cond'; r.m = 'Programmée → accord L113 requis.'; r.ref.push('Procédure Hospitalière'); formUrl = CFG.FORMS.hosp; }
     } else if (tp === 'chron') {
-      r.s = 'cond'; r.m = 'Protocole médical + validation médecin-conseil. 100% soins liés.'; r.ref.push('Statut Affection Longue Durée');
+      r.s = 'cond'; r.m = 'Protocole médical + validation médecin-conseil. 100% soins liés.'; r.ref.push('Statut Affection Longue Durée'); formUrl = CFG.FORMS.chron;
     }
 
     if (st === 'bim') r.m += ' Intervention Majorée (BIM/OMNIO) active.';
+    if (r.s === 'ok' || r.s === 'cond') formUrl = CFG.FORMS[tp] || CFG.FORMS.kine;
 
     const el = document.getElementById('res'); el.style.display = 'block';
     document.getElementById('r-status').className = `res-status ${r.s}`;
-    document.getElementById('r-status').textContent = r.s === 'ok' ? '✅ ACCORD PRÉVU' : r.s === 'no' ? '❌ REFUS PROBABLE' : '⚠️ ACCORD CONDITIONNEL';
+    document.getElementById('r-status').textContent = r.s === 'ok' ? '✅ ACCORD POTENTIEL' : r.s === 'no' ? '❌ REFUS' : '⚠️ ACCORD CONDITIONNEL';
     document.getElementById('r-msg').textContent = r.m;
     document.getElementById('r-ref').innerHTML = `<strong>📜 Références :</strong><br>` + r.ref.join('<br>');
+    const link = document.getElementById('r-form');
+    link.href = formUrl; link.style.display = formUrl !== '#' ? 'inline-block' : 'none';
+    link.textContent = formUrl !== '#' ? '📥 Accéder au formulaire de demande officiel INAMI' : '';
     el.scrollIntoView({ behavior: 'smooth' });
   }
 
   // 💬 AGENTS CHAT
-  const chatCtx = {};
-  function initChat(type) {
-    const log = document.getElementById(`chat-log-${type}`);
-    if (!log.children.length) {
-      const greetings = {
-        kine: 'Bonjour. Je suis l\'expert Kinésithérapie. Précisez votre forfait (FA/FB/18M/PL), le nombre de séances et votre statut (BIM/Standard) pour une analyse précise.',
-        med: 'Bonjour. Expert Médicaments à votre écoute. Indiquez le nom du principe actif, sa catégorie (A/B/C/D) et votre situation pour vérifier le remboursement.',
-        parc: 'Bonjour. Expert Parcours de Soins. Posez votre question sur le MDT, les consultations directes, le tiers payant ou les tickets modérateurs.'
-      };
-      addMsg(type, 'agent', greetings[type]);
-      chatCtx[type] = { history: [] };
-    }
-  }
-  showAgent = initChat; // Alias pour appel depuis nav si besoin
-
   function addMsg(type, sender, html) {
     const log = document.getElementById(`chat-log-${type}`);
-    const div = document.createElement('div');
-    div.className = `msg ${sender}`;
-    div.innerHTML = html;
-    log.appendChild(div);
-    log.scrollTop = log.scrollHeight;
+    const div = document.createElement('div'); div.className = `msg ${sender}`; div.innerHTML = html;
+    log.appendChild(div); log.scrollTop = log.scrollHeight;
   }
 
   function sendMsg(type) {
-    initChat(type);
+    if (!chats[type]) {
+      addMsg(type, 'agent', CFG.AGENT_KB[type].greeting);
+      chats[type] = true;
+    }
     const inp = document.getElementById(`input-${type}`);
     const txt = inp.value.trim(); if (!txt) return;
     addMsg(type, 'user', txt); inp.value = '';
@@ -423,31 +408,36 @@
       typ.style.display = 'none';
       const res = analyzeAgent(type, txt.toLowerCase());
       addMsg(type, 'agent', res);
-    }, 500 + Math.random() * 400);
+    }, 400 + Math.random() * 300);
   }
 
   function analyzeAgent(type, q) {
     const kb = CFG.AGENT_KB[type]?.intents || [];
     let best = null, max = 0;
-    kb.forEach(i => {
-      i.keys.forEach(k => {
-        if (q.includes(k) && k.length > max) { max = k.length; best = i.answer; }
-      });
-    });
+    kb.forEach(i => { i.keys.forEach(k => { if (q.includes(k) && k.length > max) { max = k.length; best = i.answer; } }); });
     
     if (!best) {
-      const defaults = {
-        kine: 'Je n\'ai pas identifié de forfait ou de situation précise. Précisez : <strong>FA/FB/18M/Pathologie Lourde</strong>, le nombre de séances, et si vous avez une prescription.',
-        med: 'Pour une réponse exacte, merci d\'indiquer : la <strong>catégorie (A-D)</strong>, si un accord préalable est mentionné sur l\'ordonnance, et votre statut mutualité.',
-        parc: 'Je peux vous éclairer sur le parcours coordonné. Précisez : consultez-vous un <strong>spécialiste directement</strong> ? Avez-vous déclaré un <strong>MDT</strong> ? Votre question concerne-t-elle le <strong>tiers payant</strong> ?'
+      const defs = {
+        kine: 'Précisez : <strong>FA/FB/18M/Pathologie Lourde</strong>, le code pathologie, le nombre de séances et votre statut BIM.',
+        med: 'Indiquez : <strong>nom du médicament</strong>, catégorie (A-D), et votre indication clinique.',
+        parc: 'Précisez si vous consultez un <strong>spécialiste</strong>, avez un <strong>MDT</strong> ou concerne le <strong>tiers payant</strong>.',
+        pall: 'Le forfait est pris en charge à 100%. Précisez si la demande est pour le <strong>domicile</strong> ou une <strong>institution</strong>.',
+        mob: 'Précisez le matériel (ex: <strong>fauteuil électrique, béquilles, prothèse</strong>) et si vous avez une prescription médicale.'
       };
-      best = defaults[type];
+      best = defs[type];
+    }
+    
+    // Injecte lien formulaire si éligibilité détectée dans la réponse
+    if (q.includes('accord') || q.includes('rembours') || q.includes('diabète') || q.includes('18') || q.includes('pal')) {
+      best += `<br><a href="${CFG.FORMS[type] || CFG.FORMS.kine}" target="_blank" class="form-link">📥 Formulaire de demande INAMI associé</a>`;
     }
     return best;
   }
-  // Écouteurs Enter pour chats
-  ['kine', 'med', 'parc'].forEach(t => {
-    document.getElementById(`input-${t}`).addEventListener('keypress', e => { if (e.key === 'Enter') sendMsg(t); });
+
+  // Écouteurs
+  ['kine','med','parc','pall','mob'].forEach(t => {
+    const inp = document.getElementById(`input-${t}`);
+    inp.addEventListener('keypress', e => { if(e.key==='Enter') sendMsg(t); });
   });
 
   // 🔍 NOMENCLATURE
@@ -466,28 +456,15 @@
       tb.appendChild(r);
     });
   }
-  function searchNom() {
-    const q = document.getElementById('s-nom').value.trim().toLowerCase();
-    renderNom(q ? nomData.filter(i => i.c.includes(q) || i.d.toLowerCase().includes(q) || i.cat.toLowerCase().includes(q)) : nomData);
-  }
+  function searchNom() { renderNom(document.getElementById('s-nom').value.trim().toLowerCase() ? nomData.filter(i => i.c.includes(document.getElementById('s-nom').value.toLowerCase()) || i.d.toLowerCase().includes(document.getElementById('s-nom').value.toLowerCase())) : nomData); }
   async function updateDB() {
     const ld = document.getElementById('db-st'); ld.textContent = '⏳ Synchronisation...';
-    try {
-      const res = await fetch(CFG.DB_URL, { cache: 'no-store' });
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-      const d = await res.json(); if (!Array.isArray(d)) throw new Error('Format invalide');
-      nomData = d; localStorage.setItem(CFG.STORAGE_KEY, JSON.stringify({ data: d, ts: Date.now() }));
-      updSt(Date.now()); renderNom(d); alert('✅ Base mise à jour.');
-    } catch(e) { console.warn(e); alert('⚠️ Sync échouée. Base locale conservée.'); nomData = [...CFG.FALLBACK]; renderNom(nomData); }
+    try { const res = await fetch(CFG.DB_URL, {cache:'no-store'}); if(!res.ok) throw new Error(); const d=await res.json(); if(!Array.isArray(d)) throw new Error(); nomData=d; localStorage.setItem(CFG.STORAGE_KEY,JSON.stringify({data:d,ts:Date.now()})); updSt(Date.now()); renderNom(d); alert('✅ Base mise à jour.'); }
+    catch(e) { alert('⚠️ Sync échouée.'); nomData=[...CFG.FALLBACK]; renderNom(nomData); }
     finally { loadDB(); }
   }
 
-  // 🚀 INIT
-  window.addEventListener('DOMContentLoaded', () => {
-    loadDB();
-    // Pré-initialiser les logs vides pour éviter erreurs si navigation directe
-    ['kine', 'med', 'parc'].forEach(t => document.getElementById(`chat-log-${t}`).innerHTML = '');
-  });
+  window.addEventListener('DOMContentLoaded', loadDB);
 </script>
 </body>
 </html>
