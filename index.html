@@ -7,108 +7,49 @@
   <title>Assistant INAMI</title>
   <style>
     :root {
-      --bg: #0f172a;
-      --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-      --surface: rgba(30, 41, 59, 0.85);
-      --surface-hover: rgba(51, 65, 85, 0.95);
-      --text: #f1f5f9;
-      --text-muted: #94a3b8;
-      --primary: #3b82f6;
-      --primary-hover: #2563eb;
-      --accent: #10b981;
-      --warning: #f59e0b;
-      --danger: #ef4444;
-      --border: rgba(148, 163, 184, 0.2);
-      --shadow: 0 12px 40px -8px rgba(0, 0, 0, 0.5);
-      --shadow-soft: 0 4px 12px -2px rgba(0, 0, 0, 0.3);
-      --glow: 0 0 15px rgba(59, 130, 246, 0.3);
-      --radius: 14px;
-      --radius-lg: 20px;
-      --radius-xl: 24px;
+      --bg: #0f172a; --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      --surface: rgba(30, 41, 59, 0.85); --surface-hover: rgba(51, 65, 85, 0.95);
+      --text: #f1f5f9; --text-muted: #94a3b8; --primary: #3b82f6; --primary-hover: #2563eb;
+      --accent: #10b981; --warning: #f59e0b; --danger: #ef4444;
+      --border: rgba(148, 163, 184, 0.2); --shadow: 0 12px 40px -8px rgba(0,0,0,0.5);
+      --shadow-soft: 0 4px 12px -2px rgba(0,0,0,0.3); --glow: 0 0 15px rgba(59,130,246,0.3);
+      --radius: 14px; --radius-lg: 20px; --radius-xl: 24px;
       --font: system-ui, -apple-system, "Inter", "Segoe UI", Roboto, sans-serif;
-      --spacing-xs: 0.3rem;
-      --spacing-sm: 0.6rem;
-      --spacing-md: 1.2rem;
-      --spacing-lg: 1.8rem;
-      --spacing-xl: 2.5rem;
-      --spacing-xxl: 4rem;
+      --spacing-xs: 0.3rem; --spacing-sm: 0.6rem; --spacing-md: 1.2rem;
+      --spacing-lg: 1.8rem; --spacing-xl: 2.5rem; --spacing-xxl: 4rem;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
-    body { 
-      font-family: var(--font); 
-      background: var(--bg-gradient); 
-      color: var(--text); 
-      line-height: 1.6; 
-      padding: var(--spacing-md); 
-      min-height: 100vh;
-      -webkit-font-smoothing: antialiased;
-      overflow-x: hidden;
-    }
+    body { font-family: var(--font); background: var(--bg-gradient); color: var(--text); line-height: 1.6; padding: var(--spacing-md); min-height: 100vh; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    ::-webkit-scrollbar { width: 8px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
     
-    ::-webkit-scrollbar { width: 8px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+    .sync-status { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.75rem; color: var(--text-muted); background: var(--surface); border: 1px solid var(--border); padding: 0.3rem 0.7rem; border-radius: 20px; }
+    .sync-dot { width: 8px; height: 8px; border-radius: 50%; } .sync-online { background: var(--accent); box-shadow: 0 0 6px var(--accent); } .sync-offline { background: var(--warning); }
 
-    /* Sync Status Indicator */
-    .sync-status {
-      display: inline-flex; align-items: center; gap: 0.4rem;
-      font-size: 0.75rem; color: var(--text-muted);
-      background: var(--surface); border: 1px solid var(--border);
-      padding: 0.3rem 0.7rem; border-radius: 20px;
-    }
-    .sync-dot { width: 8px; height: 8px; border-radius: 50%; }
-    .sync-online { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
-    .sync-offline { background: var(--warning); }
-
-    #login-screen {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: var(--bg-gradient);
-      display: flex; align-items: center; justify-content: center;
-      z-index: 1000;
-    }
-    .login-card {
-      background: var(--surface);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xl);
-      padding: var(--spacing-xl);
-      width: 90%; max-width: 420px;
-      box-shadow: var(--shadow);
-      text-align: center;
-      animation: slideUp 0.4s ease-out;
-    }
+    #login-screen { position: fixed; top:0; left:0; width:100%; height:100%; background: var(--bg-gradient); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+    .login-card { background: var(--surface); backdrop-filter: blur(20px); border: 1px solid var(--border); border-radius: var(--radius-xl); padding: var(--spacing-xl); width: 90%; max-width: 420px; box-shadow: var(--shadow); text-align: center; animation: slideUp 0.4s ease-out; }
     @keyframes slideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
     .login-card h1 { font-size: 2rem; font-weight: 700; margin-bottom: var(--spacing-xs); color: var(--text); letter-spacing: -1px; }
     .login-card h1 span { color: var(--primary); }
-    .login-card p { color: var(--text-muted); margin-bottom: var(--spacing-lg); font-size: 0.9rem; font-weight: 500; }
-    .login-input {
-      width: 100%; padding: 0.9rem 1rem;
-      background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border);
-      border-radius: var(--radius); color: var(--text); font-size: 1rem; transition: all 0.3s ease;
-    }
-    .login-input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15); background: rgba(15, 23, 42, 0.8); }
-    .login-btn {
-      width: 100%; padding: 0.9rem; background: var(--primary); color: #fff;
-      border: none; border-radius: var(--radius); font-weight: 600; cursor: pointer; font-size: 1rem; transition: all 0.2s ease; box-shadow: var(--glow);
-    }
-    .login-btn:hover { background: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 8px 25px -5px rgba(59, 130, 246, 0.5); }
+    .login-card p { color: var(--text-muted); margin-bottom: var(--spacing-lg); font-size: 0.9rem; }
+    .login-input { width: 100%; padding: 0.9rem 1rem; background: rgba(15,23,42,0.6); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); font-size: 1rem; margin-bottom: var(--spacing-md); transition: 0.3s; }
+    .login-input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(59,130,246,0.15); }
+    .login-btn { width: 100%; padding: 0.9rem; background: var(--primary); color: #fff; border: none; border-radius: var(--radius); font-weight: 600; cursor: pointer; font-size: 1rem; transition: 0.2s; box-shadow: var(--glow); }
+    .login-btn:hover { background: var(--primary-hover); transform: translateY(-2px); }
     .login-error { color: var(--danger); font-size: 0.85rem; margin-top: var(--spacing-sm); display: none; }
     .login-help { margin-top: var(--spacing-lg); font-size: 0.8rem; }
     .login-help a { color: var(--primary); text-decoration: none; cursor: pointer; }
 
     #main-app { display: none; max-width: 1000px; margin: 0 auto; }
     header { text-align: center; margin-bottom: var(--spacing-xl); padding: var(--spacing-md) 0; }
-    h1 { font-size: 1.8rem; font-weight: 700; color: var(--text); letter-spacing: -0.5px; margin-bottom: var(--spacing-xs); }
+    h1 { font-size: 1.8rem; font-weight: 700; color: var(--text); margin-bottom: var(--spacing-xs); }
     .sub { color: var(--text-muted); font-size: 0.9rem; }
     .header-actions { display: flex; gap: var(--spacing-sm); justify-content: center; margin-top: var(--spacing-sm); align-items: center; flex-wrap: wrap; }
-    .lang-toggle, .global-search { background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 0.5rem 0.8rem; border-radius: var(--radius); font-size: 0.85rem; cursor: pointer; transition: 0.2s; }
+    .lang-toggle, .global-search { background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 0.5rem 0.8rem; border-radius: var(--radius); font-size: 0.85rem; cursor: pointer; }
     .global-search { flex: 1; max-width: 300px; text-align: left; }
-    .logout-btn { background: none; border: 1px solid var(--border); color: var(--text-muted); padding: 0.5rem 0.8rem; border-radius: var(--radius); cursor: pointer; font-size: 0.85rem; }
+    .logout-btn { background: none; border: 1px solid var(--border); color: var(--text-muted); padding: 0.5rem 0.8rem; border-radius: var(--radius); cursor: pointer; }
 
-    #nav { display: flex; flex-direction: column; gap: var(--spacing-md); margin-bottom: var(--spacing-xl); padding: var(--spacing-md); width: 100%; max-width: 400px; margin: 0 auto var(--spacing-xl) auto; }
-    .nav-btn { background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 1.2rem 1.5rem; border-radius: var(--radius-lg); cursor: pointer; font-weight: 600; font-size: 1.1rem; transition: all 0.25s ease; text-align: center; box-shadow: var(--shadow-soft); backdrop-filter: blur(12px); }
+    #nav { display: flex; flex-direction: column; gap: var(--spacing-md); margin: 0 auto var(--spacing-xl) auto; width: 100%; max-width: 400px; padding: var(--spacing-md); }
+    .nav-btn { background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 1.2rem 1.5rem; border-radius: var(--radius-lg); cursor: pointer; font-weight: 600; font-size: 1.1rem; transition: 0.25s; text-align: center; box-shadow: var(--shadow-soft); backdrop-filter: blur(12px); }
     .nav-btn:hover { background: var(--primary); color: #fff; border-color: var(--primary); transform: translateY(-3px); box-shadow: var(--glow); }
 
     .view { display: none; animation: fadeIn 0.3s ease; }
@@ -122,68 +63,56 @@
     .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--spacing-lg); margin-bottom: var(--spacing-lg); }
     .field { display: flex; flex-direction: column; gap: var(--spacing-sm); }
     label { font-weight: 500; color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; }
-    input, select { background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border); color: var(--text); padding: 0.9rem 1rem; border-radius: var(--radius); font-size: 0.95rem; transition: 0.2s; width: 100%; }
-    input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); }
+    input, select { background: rgba(15,23,42,0.6); border: 1px solid var(--border); color: var(--text); padding: 0.9rem 1rem; border-radius: var(--radius); font-size: 0.95rem; transition: 0.2s; width: 100%; }
+    input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(59,130,246,0.2); }
+    input.valid { border-color: var(--accent); }
+    input.warning { border-color: var(--warning); }
+    input.error { border-color: var(--danger); }
     
     .toggle-group { display: flex; gap: var(--spacing-sm); align-items: center; flex-wrap: wrap; }
-    .toggle-option { display: flex; align-items: center; gap: 0.4rem; cursor: pointer; padding: 0.6rem 1rem; border-radius: var(--radius); transition: 0.2s; background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border); font-size: 0.9rem; }
+    .toggle-option { display: flex; align-items: center; gap: 0.4rem; cursor: pointer; padding: 0.6rem 1rem; border-radius: var(--radius); transition: 0.2s; background: rgba(15,23,42,0.6); border: 1px solid var(--border); font-size: 0.9rem; }
     .toggle-option.selected { background: var(--primary); border-color: var(--primary); color: #fff; }
     
     .btn-primary { background: var(--primary); color: #fff; border: none; padding: 0.9rem; border-radius: var(--radius); font-weight: 600; cursor: pointer; width: 100%; margin-top: var(--spacing-sm); transition: 0.2s; }
     .btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); box-shadow: var(--glow); }
     .btn-secondary { background: var(--surface-hover); color: var(--text); border: 1px solid var(--border); padding: 0.7rem; border-radius: var(--radius); cursor: pointer; width: 100%; margin-top: var(--spacing-sm); }
-    .btn-small { background: var(--surface); color: var(--text-muted); border: 1px solid var(--border); padding: 0.4rem 0.8rem; border-radius: var(--radius); cursor: pointer; font-size: 0.85rem; }
-
-    /* Result Panel */
+    
     .result-panel { margin-top: var(--spacing-lg); padding: var(--spacing-lg); border-radius: var(--radius-lg); background: var(--bg); border: 1px solid var(--border); display: none; }
     .res-status { font-size: 1.1rem; font-weight: 700; margin-bottom: var(--spacing-sm); }
     .ok { color: var(--accent); border-left: 4px solid var(--accent); padding-left: var(--spacing-md); }
     .no { color: var(--danger); border-left: 4px solid var(--danger); padding-left: var(--spacing-md); }
     .cond { color: var(--warning); border-left: 4px solid var(--warning); padding-left: var(--spacing-md); }
-    .res-msg { margin-top: var(--spacing-sm); color: var(--text); }
+    .res-msg { margin-top: var(--spacing-sm); color: var(--text); line-height: 1.5; }
     .res-ref { margin-top: var(--spacing-md); font-size: 0.85rem; color: var(--text-muted); background: var(--surface); padding: var(--spacing-md); border-radius: var(--radius); border-left: 3px solid var(--border); }
 
-    /* Chat Interface */
+    /* Chat */
     .chat-container { display: flex; flex-direction: column; height: 75vh; border: 1px solid var(--border); border-radius: var(--radius-xl); overflow: hidden; background: var(--surface); box-shadow: var(--shadow); backdrop-filter: blur(16px); }
-    .chat-header { padding: var(--spacing-md); background: rgba(15, 23, 42, 0.9); border-bottom: 1px solid var(--border); display: flex; flex-direction: column; gap: var(--spacing-sm); }
+    .chat-header { padding: var(--spacing-md); background: rgba(15,23,42,0.9); border-bottom: 1px solid var(--border); }
     .agent-title { font-weight: 700; font-size: 1.1rem; color: var(--text); }
     .agent-sub { font-size: 0.8rem; color: var(--text-muted); }
-    
-    .topic-selector { display: flex; gap: var(--spacing-xs); overflow-x: auto; padding-bottom: var(--spacing-xs); scrollbar-width: none; }
+    .topic-selector { display: flex; gap: var(--spacing-xs); overflow-x: auto; padding: var(--spacing-sm) 0; scrollbar-width: none; }
     .topic-selector::-webkit-scrollbar { display: none; }
-    .topic-btn { background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border); color: var(--text-muted); padding: 0.4rem 0.8rem; border-radius: 20px; font-size: 0.8rem; cursor: pointer; white-space: nowrap; transition: 0.2s; }
-    .topic-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4); }
+    .topic-btn { background: rgba(15,23,42,0.6); border: 1px solid var(--border); color: var(--text-muted); padding: 0.4rem 0.8rem; border-radius: 20px; font-size: 0.8rem; cursor: pointer; white-space: nowrap; transition: 0.2s; }
+    .topic-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
     
-    #chat-log-agent { flex: 1; overflow-y: auto; padding: var(--spacing-lg); display: flex; flex-direction: column; gap: var(--spacing-md); background: rgba(15, 23, 42, 0.4); scroll-behavior: smooth; }
+    #chat-log-agent { flex: 1; overflow-y: auto; padding: var(--spacing-lg); display: flex; flex-direction: column; gap: var(--spacing-md); background: rgba(15,23,42,0.4); }
     .msg { max-width: 85%; padding: 0.9rem 1.2rem; border-radius: var(--radius-lg); font-size: 0.95rem; line-height: 1.5; animation: slideIn 0.25s ease; }
     @keyframes slideIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
     .msg.user { align-self: flex-end; background: var(--primary); color: #fff; border-bottom-right-radius: 4px; }
     .msg.agent { align-self: flex-start; background: var(--surface-hover); border: 1px solid var(--border); border-bottom-left-radius: 4px; }
     
-    /* Visual Summary Card (Point 3b) */
-    .summary-card-chat {
-      margin-top: var(--spacing-sm);
-      background: rgba(15, 23, 42, 0.8);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: var(--spacing-md);
-      display: grid;
-      grid-template-columns: auto 1fr;
-      gap: var(--spacing-sm) var(--spacing-md);
-      font-size: 0.9rem;
-    }
+    .summary-card-chat { margin-top: var(--spacing-sm); background: rgba(15,23,42,0.8); border: 1px solid var(--border); border-radius: var(--radius); padding: var(--spacing-md); display: grid; grid-template-columns: auto 1fr; gap: var(--spacing-sm) var(--spacing-md); font-size: 0.9rem; }
     .summary-label { color: var(--text-muted); font-weight: 500; }
-    .summary-value { color: var(--text); }
     .status-pill { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 12px; font-weight: 600; font-size: 0.8rem; }
-    .pill-ok { background: rgba(16, 185, 129, 0.2); color: var(--accent); border: 1px solid rgba(16, 185, 129, 0.4); }
-    .pill-cond { background: rgba(245, 158, 11, 0.2); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.4); }
-    .pill-no { background: rgba(239, 68, 68, 0.2); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.4); }
+    .pill-ok { background: rgba(16,185,129,0.2); color: var(--accent); border: 1px solid rgba(16,185,129,0.4); }
+    .pill-cond { background: rgba(245,158,11,0.2); color: var(--warning); border: 1px solid rgba(245,158,11,0.4); }
+    .pill-no { background: rgba(239,68,68,0.2); color: var(--danger); border: 1px solid rgba(239,68,68,0.4); }
 
     .chat-input-area { display: flex; padding: var(--spacing-md); background: var(--surface-hover); border-top: 1px solid var(--border); gap: var(--spacing-sm); }
     .chat-input { flex: 1; background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 0.8rem 1.2rem; border-radius: var(--radius-lg); }
     .send-btn { background: var(--accent); color: #fff; border: none; padding: 0 1.4rem; border-radius: var(--radius-lg); cursor: pointer; font-weight: 600; }
 
-    /* Nomenclature Enhancements */
+    /* Nomenclature */
     .nomo-controls { display: flex; gap: var(--spacing-md); margin-bottom: var(--spacing-lg); flex-wrap: wrap; align-items: end; }
     .nomo-search { flex: 2; min-width: 250px; }
     .toggle-container { display: flex; align-items: center; gap: var(--spacing-sm); cursor: pointer; }
@@ -199,21 +128,19 @@
     .nomo-results { max-height: 500px; overflow-y: auto; }
     .nomo-item { display: flex; justify-content: space-between; align-items: center; padding: var(--spacing-md); border-bottom: 1px solid var(--border); transition: background 0.2s; }
     .nomo-item:hover { background: var(--surface-hover); }
-    .nomo-item.selected { background: rgba(59, 130, 246, 0.15); border-left: 3px solid var(--primary); }
+    .nomo-item.selected { background: rgba(59,130,246,0.15); border-left: 3px solid var(--primary); }
     .nomo-code { font-family: ui-monospace, monospace; color: var(--accent); font-weight: 600; min-width: 80px; }
     .nomo-desc { flex: 1; margin: 0 var(--spacing-md); }
     .nomo-cat { font-size: 0.75rem; color: var(--text-muted); background: var(--bg); padding: 0.2rem 0.6rem; border-radius: 12px; border: 1px solid var(--border); }
     .nomo-price { font-weight: 600; color: var(--accent); }
     .nomo-checkbox { width: 18px; height: 18px; margin-right: var(--spacing-sm); cursor: pointer; }
 
-    /* Comparison View (Point 4b) */
     .comparison-panel { display: none; margin-top: var(--spacing-lg); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: var(--spacing-lg); }
     .comparison-panel.active { display: block; }
     .comparison-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--spacing-lg); margin-top: var(--spacing-md); }
     .comp-card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: var(--spacing-md); text-align: center; }
     .comp-code { font-family: monospace; font-size: 1.2rem; color: var(--primary); font-weight: 700; margin-bottom: var(--spacing-xs); }
     .comp-row { display: flex; justify-content: space-between; padding: 0.4rem 0; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
-    .comp-row:last-child { border-bottom: none; }
 
     footer { text-align: center; margin-top: var(--spacing-xxl); padding: var(--spacing-lg) 0; border-top: 1px solid var(--border); color: var(--text-muted); font-size: 0.75rem; }
     
@@ -224,19 +151,17 @@
       .header-actions { flex-direction: column; }
       .global-search { max-width: 100%; }
       .nomo-controls { flex-direction: column; }
-      .nomo-item { flex-direction: column; align-items: flex-start; gap: var(--spacing-sm); }
       .comparison-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
 
-<!-- Login Screen -->
 <div id="login-screen">
   <div class="login-card">
     <h1>Assistant <span>INAMI</span></h1>
     <p>Acces securise</p>
-    <input type="password" id="login-password" class="login-input" placeholder="Mot de passe" onkeypress="if(event.key==='Enter')attemptLogin()" style="margin-bottom:var(--spacing-md);">
+    <input type="password" id="login-password" class="login-input" placeholder="Mot de passe" onkeypress="if(event.key==='Enter')attemptLogin()">
     <button class="login-btn" onclick="attemptLogin()">Valider</button>
     <div class="login-error" id="login-error">Mot de passe incorrect</div>
     <div class="login-help"><a onclick="document.getElementById('password-note').style.display='block'">Mot de passe oublie ?</a></div>
@@ -244,7 +169,6 @@
   </div>
 </div>
 
-<!-- Main App -->
 <div id="main-app">
 <header>
   <h1>Assistant INAMI</h1>
@@ -264,18 +188,25 @@
 </nav>
 
 <main>
-  <!-- SIMULATEUR -->
   <section id="v-sim" class="view">
     <button class="back-btn" onclick="home()">&larr; Retour</button>
     <div class="card">
       <h2>Simulateur d'Eligibilite</h2>
       <div class="grid">
-        <div class="field"><label>Age</label><input type="number" id="age" min="0" max="120"></div>
-        <div class="field"><label>Statut</label><select id="status"><option value="std">Standard</option><option value="bim">BIM</option></select></div>
-        <div class="field"><label>Type</label><select id="type" onchange="toggleCond()"><option value="">-- Choisir --</option><option value="kine">Kine</option><option value="med">Medicaments</option><option value="log">Logopedie</option></select></div>
+        <div class="field"><label>Age du patient</label><input type="number" id="age" min="0" max="120" placeholder="Ex: 68" oninput="validateFields()"></div>
+        <div class="field"><label>Statut mutualite</label><select id="status" onchange="validateFields()"><option value="std">Standard</option><option value="bim">BIM / OMNIO</option></select></div>
+        <div class="field"><label>Type de soins</label>
+          <select id="type" onchange="toggleCond()">
+            <option value="">-- Selectionner --</option>
+            <option value="kine">Kinesitherapie</option>
+            <option value="med">Medicaments</option>
+            <option value="log">Logopedie</option>
+          </select>
+        </div>
       </div>
       <div id="cond" class="grid" style="display:none;"></div>
-      <button class="btn-primary" onclick="runSim()">Verifier</button>
+      <div id="validation-msg" style="margin-top:var(--spacing-sm); font-size:0.9rem; min-height:1.5em;"></div>
+      <button class="btn-primary" onclick="runSim()">Verifier mon eligibilite</button>
       <div id="res" class="result-panel">
         <div id="r-status" class="res-status"></div>
         <div id="r-msg" class="res-msg"></div>
@@ -284,7 +215,6 @@
     </div>
   </section>
 
-  <!-- NOMENCLATURE -->
   <section id="v-nom" class="view">
     <button class="back-btn" onclick="home()">&larr; Retour</button>
     <div class="card">
@@ -293,32 +223,21 @@
         <div class="nomo-tab active" onclick="switchNomoTab('search')">Recherche</div>
         <div class="nomo-tab" onclick="switchNomoTab('compare')">Comparaison</div>
       </div>
-      
       <div id="nomo-search-tab">
         <div class="nomo-controls">
-          <div class="field nomo-search">
-            <label>Recherche instantanee</label>
-            <input type="text" id="nomo-search-input" placeholder="Tapez un code ou un mot..." oninput="updateNomoList()">
-          </div>
-          <div class="toggle-container" onclick="togglePrices()">
-            <label>Afficher tarifs</label>
-            <div class="toggle-switch" id="price-toggle"></div>
-          </div>
+          <div class="field nomo-search"><label>Recherche instantanee</label><input type="text" id="nomo-search-input" placeholder="Code ou mot-cle..." oninput="updateNomoList()"></div>
+          <div class="toggle-container" onclick="togglePrices()"><label>Afficher tarifs</label><div class="toggle-switch" id="price-toggle"></div></div>
         </div>
         <div class="nomo-count" id="nomo-count">0 codes</div>
         <div class="nomo-results" id="nomo-results"></div>
       </div>
-
       <div id="nomo-compare-tab" style="display:none;">
-        <p style="color:var(--text-muted); margin-bottom:var(--spacing-md);">Selectionnez 2 ou 3 codes dans l'onglet Recherche pour les comparer ici.</p>
-        <div class="comparison-panel active" id="comparison-view">
-          <div class="comparison-grid" id="comparison-grid"></div>
-        </div>
+        <p style="color:var(--text-muted); margin-bottom:var(--spacing-md);">Selectionnez 2 ou 3 codes dans l'onglet Recherche pour les comparer.</p>
+        <div class="comparison-panel active"><div class="comparison-grid" id="comparison-grid"></div></div>
       </div>
     </div>
   </section>
 
-  <!-- SUPER AGENT -->
   <section id="v-agent" class="view">
     <button class="back-btn" onclick="home()">&larr; Retour</button>
     <div class="chat-container">
@@ -339,54 +258,69 @@
     </div>
   </section>
 
-  <!-- MUTUALITES -->
   <section id="v-mutualites" class="view">
     <button class="back-btn" onclick="home()">&larr; Retour</button>
-    <div class="card"><h2>Mutualites</h2><p style="color:var(--text-muted);">Liste officielle en chargement...</p></div>
+    <div class="card"><h2>Mutualites</h2><p style="color:var(--text-muted);">Liste officielle disponible prochainement.</p></div>
   </section>
 </main>
 
-<footer>
-  <span class="sync-status"><span class="sync-dot sync-offline"></span> Regles INAMI a jour : Janvier 2025</span>
-</footer>
+<footer><span class="sync-status"><span class="sync-dot sync-offline"></span> Regles INAMI a jour : Janvier 2025</span></footer>
 </div>
 
 <script>
-  // CONFIGURATION & DATA
+  // CONFIGURATION CENTRALE
   const CFG = {
     PASSWORD_HASH: btoa('inami2025'),
     DB_URLS: {
       medicaments: 'https://raw.githubusercontent.com/Bootyfull1/inami-database/main/medicaments.json',
       kine: 'https://raw.githubusercontent.com/Bootyfull1/inami-database/main/kine-codes.json'
     },
+    // Base médicaments avec critères INAMI
     DRUGS_DB: {
-      'mounjaro': {name:'Mounjaro (tirzepatide)', cat:'B', indications:{'diabete':'Rembourse sous conditions strictes (echec tritherapie, HbA1c>=8%, prescription diabetologue/endocrinologue)','obesite':'Non rembourse pour obesite isolee'}},
-      'insuline': {name:'Insuline', cat:'A', indications:{'diabete':'Rembourse a 100% pour diabete insulinodependant'}}
+      'mounjaro': {name:'Mounjaro (tirzepatide)', cat:'B', indications:{'diabete':'Rembourse sous conditions strictes (echec tritherapie, HbA1c>=8%, prescription diabetologue/endocrinologue)','obesite':'Non rembourse pour obesite isolee'}, prescripteur:'specialiste'},
+      'tirzepatide': {name:'Mounjaro (tirzepatide)', cat:'B', indications:{'diabete':'Rembourse sous conditions strictes','obesite':'Non rembourse'}, prescripteur:'specialiste'},
+      'dafalgan': {name:'Dafalgan (paracetamol)', cat:'B', indications:{'douleur':'Rembourse a 50%, ticket modulateur standard','fievre':'Rembourse a 50%'}, prescripteur:'generaliste'},
+      'paracetamol': {name:'Paracetamol (generique)', cat:'B', indications:{'douleur':'Rembourse a 50%, privilegier le generique'}, prescripteur:'generaliste'},
+      'ozempic': {name:'Ozempic (semaglutide)', cat:'B', indications:{'diabete':'Rembourse sous conditions','obesite':'Non rembourse'}, prescripteur:'specialiste'},
+      'wegovy': {name:'Wegovy (semaglutide)', cat:'C', indications:{'obesite':'Rembourse sous conditions tres strictes'}, prescripteur:'specialiste'},
+      'insuline': {name:'Insuline', cat:'A', indications:{'diabete':'Rembourse a 100% pour diabete insulinodependant'}, prescripteur:'generaliste'}
     },
-    KINE_LISTS: {
+    // Pathologies Kiné avec critères INAMI stricts
+    KINE_PATHS: {
       FA: [
-        {id:1, name:'Fractures et luxations', codes:['100101','100102'], validityMonths:12},
-        {id:2, name:'Lesions ligamentaires', codes:['100301'], validityMonths:12}
+        {id:1, name:'Fractures et luxations (traumatiques)', requiresSurgicalCode:true, maxSessions:18, validityMonths:12},
+        {id:2, name:'Lesions ligamentaires et musculaires', requiresSurgicalCode:false, maxSessions:18, validityMonths:12},
+        {id:3, name:'Interventions orthopediques post-operatoires', requiresSurgicalCode:true, maxSessions:18, validityMonths:12}
       ],
-      FB: [{id:51, name:'Reeducation marche (>=65 ans)', minAge:65, validityMonths:24}],
-      E: [{id:'E-b', name:'SEP / Parkinson', validityMonths:12}]
+      FB: [
+        {id:51, name:'Reeducation a la marche', requiresSurgicalCode:false, maxSessions:18, validityMonths:24, minAge:65, criteria:'Age >= 65 ans requis'},
+        {id:52, name:'Retard developpement psychomoteur', requiresSurgicalCode:false, maxSessions:18, validityMonths:24, maxAge:15, criteria:'Age < 16 ans requis'}
+      ],
+      E: [
+        {id:'E-b', name:'Affections neurologiques centrales (SEP, Parkinson)', requiresSurgicalCode:false, maxSessions:'Illimite avec accord', validityMonths:12, priorAgreement:true}
+      ]
     },
+    LOG_CATEGORIES: {
+      'log-langage': {name:'Langage oral et Dysphasie', article:'Art. 36', validityMonths:24},
+      'log-dyslexie': {name:'Dyslexie', article:'Art. 36', validityMonths:24},
+      'log-begaiement': {name:'Begaiement', article:'Art. 36', validityMonths:24}
+    },
+    // Codes nomenclature (uniquement pour l'onglet Nomenclature)
     NOMO_CODES: {
       'med-b': [{code:'601050', desc:'Mounjaro', cat:'Medicaments B', price:85.00}, {code:'601020', desc:'Metformine', cat:'Medicaments B', price:4.80}],
       'kine-fa': [{code:'501001', desc:'Seance individuelle Fa', cat:'Kine Fa', price:18.75}],
       'kine-fb': [{code:'502020', desc:'Protocole Fb-51', cat:'Kine Fb', price:28.00}]
     },
     KNOWLEDGE_BASE: {
-      'mounjaro': 'Mounjaro (tirzepatide) est un medicament de categorie B. Il est rembourse pour le diabete de type 2 uniquement si echec de la tritherapie precedente et HbA1c >= 8%. Prescription reservee aux specialistes. Non rembourse pour l obesite simple.',
-      'fa': 'La kinesitherapie Fa (aigue) couvre les pathologies traumatiques recentes. Forfait de 18 seances/an renouvelable apres evaluation. Code operatoire souvent requis pour Fa-1.',
-      'fb': 'La kinesitherapie Fb (chronique) s adresse aux pathologies de longue duree. Fb-51 exige >= 65 ans. Renouvellement sur base de bilans fonctionnels.',
-      'bim': 'Le statut BIM (Intervention Majorée) réduit le ticket modérateur à ~20-30% selon les prestations. Vérifiez votre attestation auprès de votre mutualité.'
+      'mounjaro': 'Mounjaro (tirzepatide) est un medicament de categorie B. Il est rembourse pour le diabete de type 2 uniquement si echec de la tritherapie precedente et HbA1c >= 8%. Prescription reservee aux specialistes.',
+      'bim': 'Le statut BIM (Intervention Majorée) réduit le ticket modérateur à ~20-30% selon les prestations.'
     }
   };
 
   let showPrices = false;
   let currentTopic = 'auto';
   let selectedCompareCodes = [];
+  let currentPathology = null;
 
   // LOGIN
   function attemptLogin() {
@@ -395,31 +329,19 @@
       document.getElementById('login-screen').style.display = 'none';
       document.getElementById('main-app').style.display = 'block';
       loadExternalData();
-    } else {
-      document.getElementById('login-error').style.display = 'block';
-    }
+    } else { document.getElementById('login-error').style.display = 'block'; }
   }
   function logout() { localStorage.removeItem('inami_session'); location.reload(); }
-  if (localStorage.getItem('inami_session') === 'active') {
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('main-app').style.display = 'block';
-    loadExternalData();
-  }
+  if (localStorage.getItem('inami_session') === 'active') { document.getElementById('login-screen').style.display = 'none'; document.getElementById('main-app').style.display = 'block'; loadExternalData(); }
 
-  // SYNC INDICATOR (Point 5a)
+  // SYNC INDICATOR
   function updateSyncStatus() {
     const dot = document.querySelector('.sync-dot');
-    const text = document.querySelector('.sync-status');
-    if (navigator.onLine) {
-      dot.className = 'sync-dot sync-online';
-      text.lastChild.textContent = ' Synchronise (Donnees a jour)';
-    } else {
-      dot.className = 'sync-dot sync-offline';
-      text.lastChild.textContent = ' Mode hors-ligne actif';
-    }
+    const txt = document.querySelector('.sync-status');
+    if (navigator.onLine) { dot.className = 'sync-dot sync-online'; txt.lastChild.textContent = ' Synchronise'; }
+    else { dot.className = 'sync-dot sync-offline'; txt.lastChild.textContent = ' Mode hors-ligne'; }
   }
-  window.addEventListener('online', updateSyncStatus);
-  window.addEventListener('offline', updateSyncStatus);
+  window.addEventListener('online', updateSyncStatus); window.addEventListener('offline', updateSyncStatus);
 
   async function loadExternalData() {
     updateSyncStatus();
@@ -427,15 +349,13 @@
       const res = await fetch(CFG.DB_URLS.medicaments);
       if (res.ok) {
         const data = await res.json();
-        // Merge external DB
         data.medicaments.forEach(m => {
           const key = m.principeActif.toLowerCase().split(' ')[0];
-          CFG.DRUGS_DB[key] = {name: m.nom, cat: m.categorie, indications: {}};
+          CFG.DRUGS_DB[key] = {name: m.nom, cat: m.categorie, indications: {}, prescripteur: m.prescripteur || 'generaliste'};
           m.indications.forEach(ind => CFG.DRUGS_DB[key].indications[ind] = `Rembourse ${m.remboursement}%`);
         });
-        updateNomoList();
       }
-    } catch(e) { console.log('Utilisation base locale'); }
+    } catch(e) { console.log('Base locale utilisee'); }
   }
 
   // NAVIGATION
@@ -445,70 +365,248 @@
     document.querySelector('h1').style.display = id === 'home' ? 'block' : 'none';
     document.querySelector('.sub').style.display = id === 'home' ? 'block' : 'none';
     document.querySelector('.header-actions').style.display = id === 'home' ? 'flex' : 'none';
-    const el = document.getElementById('v-' + id);
-    if (el) el.style.display = 'block';
+    const el = document.getElementById('v-' + id); if (el) el.style.display = 'block';
     if (id === 'nom') updateNomoList();
   }
   function home() { show('home'); }
   function globalSearch(e) { if(e.key==='Enter') { show('agent'); document.getElementById('input-agent').value = e.target.value; sendMsg('agent'); } }
 
-  // SIMULATOR
+  // SIMULATEUR - MODE GUIDÉ ET INTELLIGENT
   function toggleCond() {
     const t = document.getElementById('type').value;
-    const c = document.getElementById('cond');
-    c.innerHTML = '';
+    const c = document.getElementById('cond'); 
+    c.innerHTML = ''; 
+    document.getElementById('validation-msg').textContent = '';
+    
     if (!t) { c.style.display = 'none'; return; }
     c.style.display = 'grid';
-    if (t === 'med') {
-      c.innerHTML = `<div class="field"><label>Nom medicament</label><input id="s-med-name" list="med-list"><datalist id="med-list"></datalist></div><div class="field"><label>Pathologie</label><input id="s-med-patho"></div>`;
+
+    if (t === 'kine') {
+      c.innerHTML = `
+        <div class="field"><label>Categorie INAMI</label>
+          <select id="s-cat" onchange="updatePaths()">
+            <option value="">-- Choisir --</option>
+            <option value="FA">Fa (Aigue)</option>
+            <option value="FB">Fb (Chronique)</option>
+            <option value="E">Liste E (Pathologies Lourdes)</option>
+          </select>
+        </div>
+        <div class="field" id="path-field" style="display:none">
+          <label>Pathologie</label>
+          <select id="s-path" onchange="updatePathLogic()"><option value="">-- Selectionner --</option></select>
+        </div>
+        <div class="field" id="op-code-field" style="display:none">
+          <label>Code operatoire chirurgical</label>
+          <input type="text" id="s-op-code" placeholder="Ex: 100101" maxlength="6" oninput="validateFields()">
+        </div>
+        <div class="field"><label>Seances demandees</label><input type="number" id="s-sess" min="1" oninput="validateFields()"></div>
+      `;
+    } 
+    else if (t === 'med') {
+      c.innerHTML = `
+        <div class="field"><label>Rechercher un medicament</label>
+          <input type="text" id="s-med-search" placeholder="Ex: Mounjaro, insuline..." list="med-list" oninput="filterMedSuggestions(this.value); validateFields()">
+          <datalist id="med-list"></datalist>
+        </div>
+        <div class="field"><label>Pathologie concernee</label><input type="text" id="s-med-patho" placeholder="Ex: diabete, obesite..." oninput="validateFields()"></div>
+        <div class="field"><label>Type de prescripteur</label><select id="s-med-presc" onchange="validateFields()"><option value="generaliste">Generaliste</option><option value="specialiste">Specialiste</option></select></div>
+      `;
       setTimeout(() => {
         const dl = document.getElementById('med-list');
         dl.innerHTML = '';
         Object.values(CFG.DRUGS_DB).forEach(m => { const o = document.createElement('option'); o.value = m.name; dl.appendChild(o); });
-      }, 100);
-    } else if (t === 'kine') {
-      c.innerHTML = `<div class="field"><label>Categorie</label><select id="s-cat"><option value="FA">Fa</option><option value="FB">Fb</option></select></div><div class="field"><label>Seances</label><input type="number" id="s-sess"></div>`;
+      }, 50);
+    }
+    else if (t === 'log') {
+      c.innerHTML = `
+        <div class="field"><label>Categorie logopedie</label>
+          <select id="s-log-cat" onchange="validateFields()">
+            ${Object.entries(CFG.LOG_CATEGORIES).map(([k,v])=>`<option value="${k}">${v.name}</option>`).join('')}
+          </select>
+        </div>
+        <div class="field"><label>Seances</label><input type="number" id="s-log-sess" oninput="validateFields()"></div>
+      `;
     }
   }
 
+  function updatePaths() {
+    const cat = document.getElementById('s-cat').value;
+    const pathField = document.getElementById('path-field');
+    const pathSel = document.getElementById('s-path');
+    pathSel.innerHTML = '<option value="">-- Selectionner --</option>';
+    
+    if (cat && CFG.KINE_PATHS[cat]) {
+      pathField.style.display = 'flex';
+      CFG.KINE_PATHS[cat].forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.id;
+        opt.textContent = `${p.id} : ${p.name}`;
+        pathSel.appendChild(opt);
+      });
+    } else {
+      pathField.style.display = 'none';
+      document.getElementById('op-code-field').style.display = 'none';
+    }
+  }
+
+  function updatePathLogic() {
+    const cat = document.getElementById('s-cat').value;
+    const pathId = document.getElementById('s-path').value;
+    const opField = document.getElementById('op-code-field');
+    
+    if (cat && pathId) {
+      currentPathology = CFG.KINE_PATHS[cat].find(p => p.id == pathId);
+      // Afficher champ code opératoire UNIQUEMENT si requis par INAMI pour cette pathologie
+      if (currentPathology.requiresSurgicalCode) {
+        opField.style.display = 'flex';
+      } else {
+        opField.style.display = 'none';
+      }
+    }
+    validateFields();
+  }
+
+  function filterMedSuggestions(val) {
+    const dl = document.getElementById('med-list');
+    if(!dl) return;
+    dl.innerHTML = '';
+    const lower = val.toLowerCase();
+    Object.values(CFG.DRUGS_DB).forEach(m => {
+      if (m.name.toLowerCase().includes(lower)) {
+        const o = document.createElement('option'); o.value = m.name; dl.appendChild(o);
+      }
+    });
+  }
+
+  // VALIDATION TEMPS RÉEL & VÉRIFICATION CROISÉE
+  function validateFields() {
+    const msgEl = document.getElementById('validation-msg');
+    msgEl.textContent = '';
+    const age = +document.getElementById('age').value;
+    const type = document.getElementById('type').value;
+
+    // Règle 1: Âge + Pathologie Kiné (Fact-checking INAMI strict)
+    if (type === 'kine' && currentPathology) {
+      if (currentPathology.minAge && age < currentPathology.minAge) {
+        msgEl.innerHTML = `<span style="color:var(--danger)">⚠️ ${currentPathology.name} exige un âge minimum de ${currentPathology.minAge} ans.</span>`;
+        return;
+      }
+      if (currentPathology.maxAge && age >= currentPathology.maxAge) {
+        msgEl.innerHTML = `<span style="color:var(--danger)">️ ${currentPathology.name} est réservée aux patients de moins de ${currentPathology.maxAge + 1} ans.</span>`;
+        return;
+      }
+    }
+
+    // Règle 2: Médicament + Prescripteur (Fact-checking INAMI strict)
+    if (type === 'med') {
+      const drugName = document.getElementById('s-med-search').value.toLowerCase();
+      const presc = document.getElementById('s-med-presc').value;
+      let drug = null;
+      for(let k in CFG.DRUGS_DB) { if(drugName.includes(k) || CFG.DRUGS_DB[k].name.toLowerCase().includes(drugName)) drug = CFG.DRUGS_DB[k]; }
+      
+      if (drug && drug.prescripteur === 'specialiste' && presc === 'generaliste') {
+        msgEl.innerHTML = `<span style="color:var(--warning)">️ ${drug.name} nécessite une prescription par un spécialiste (diabétologue/endocrinologue).</span>`;
+      }
+    }
+
+    // Règle 3: Code opératoire (Format uniquement)
+    if (type === 'kine' && currentPathology && currentPathology.requiresSurgicalCode) {
+      const opCode = document.getElementById('s-op-code').value;
+      if (opCode && !/^\d{6}$/.test(opCode)) {
+        msgEl.innerHTML = `<span style="color:var(--warning)">⚠️ Le code opératoire doit contenir 6 chiffres.</span>`;
+      }
+    }
+  }
+
+  // EXÉCUTION DU SIMULATEUR
   function runSim() {
     const tp = document.getElementById('type').value;
+    const age = +document.getElementById('age').value;
+    const st = document.getElementById('status').value;
     const res = document.getElementById('res');
     res.style.display = 'block';
     
+    // Nettoyage visuel des champs
+    document.querySelectorAll('input, select').forEach(el => el.classList.remove('valid','warning','error'));
+
     if (tp === 'med') {
-      const name = document.getElementById('s-med-name').value.toLowerCase();
-      const patho = document.getElementById('s-med-patho').value.toLowerCase();
-      let found = null;
-      for (const k in CFG.DRUGS_DB) { if (name.includes(k) || CFG.DRUGS_DB[k].name.toLowerCase().includes(name)) found = CFG.DRUGS_DB[k]; }
+      const searchVal = document.getElementById('s-med-search').value.trim().toLowerCase();
+      const patho = document.getElementById('s-med-patho').value.trim().toLowerCase();
+      const presc = document.getElementById('s-med-presc').value;
       
-      if (found) {
-        const indKey = Object.keys(found.indications).find(k => patho.includes(k));
-        const info = indKey ? found.indications[indKey] : 'Indication non precisee';
-        document.getElementById('r-status').className = 'res-status ok';
-        document.getElementById('r-status').textContent = 'INFO MEDICAMENT';
-        document.getElementById('r-msg').innerHTML = `<strong>${found.name}</strong> (Cat. ${found.cat})<br>${info}`;
+      if (!searchVal) return alert('Entrez un nom de medicament.');
+      if (!patho) return alert('Precisez la pathologie.');
+
+      let drug = null;
+      for (let k in CFG.DRUGS_DB) {
+        if (searchVal.includes(k) || CFG.DRUGS_DB[k].name.toLowerCase().includes(searchVal)) { drug = CFG.DRUGS_DB[k]; break; }
+      }
+
+      if (drug) {
+        const indKey = Object.keys(drug.indications).find(k => patho.includes(k));
+        const info = indKey ? drug.indications[indKey] : 'Indication non precisee dans la base.';
+        
+        let status = 'ok', msg = `<strong>${drug.name}</strong> (Categorie ${drug.cat}) pour ${patho} :<br>${info}`;
+        
+        // Fact-checking croisé INAMI
+        if (drug.prescripteur === 'specialiste' && presc !== 'specialiste') {
+          status = 'refus'; msg += '<br><strong>Refus :</strong> Prescription par specialiste obligatoire selon INAMI.';
+        } else if (info.includes('Non rembourse')) { status = 'refus'; }
+        else if (info.includes('conditions')) { status = 'cond'; }
+
+        if (st === 'bim' && status !== 'refus') msg += '<br><em>Statut BIM actif : ticket modérateur réduit.</em>';
+
+        document.getElementById('r-status').className = `res-status ${status === 'ok' ? 'ok' : (status === 'cond' ? 'cond' : 'no')}`;
+        document.getElementById('r-status').textContent = status === 'ok' ? 'ELIGIBLE' : (status === 'cond' ? 'CONDITIONNEL' : 'REFUS');
+        document.getElementById('r-msg').innerHTML = msg;
+        document.getElementById('r-ref').innerHTML = `<strong>Source :</strong> Nomenclature Pharmaceutique INAMI`;
       } else {
         document.getElementById('r-status').className = 'res-status cond';
         document.getElementById('r-status').textContent = 'NON TROUVE';
-        document.getElementById('r-msg').textContent = 'Verifiez l orthographe ou consultez la nomenclature complete.';
+        document.getElementById('r-msg').textContent = `Aucun medicament correspondant. Verifiez l orthographe.`;
       }
-    } else if (tp === 'kine') {
-      const cat = document.getElementById('s-cat').value;
+    } 
+    else if (tp === 'kine') {
+      if (!currentPathology) return alert('Selectionnez une pathologie.');
       const sess = +document.getElementById('s-sess').value;
-      if (cat === 'FB' && sess > 18) {
-        document.getElementById('r-status').className = 'res-status cond';
-        document.getElementById('r-status').textContent = 'ACCORD CONDITIONNEL';
-        document.getElementById('r-msg').textContent = 'Depassement du forfait annuel. Accord prealable du medecin-conseil requis (formulaire 05a).';
-      } else {
-        document.getElementById('r-status').className = 'res-status ok';
-        document.getElementById('r-status').textContent = 'ELIGIBLE';
-        document.getElementById('r-msg').textContent = `Forfait ${cat} standard valide pour ${sess} seances.`;
+      const opCode = document.getElementById('s-op-code')?.value.trim();
+
+      if (!sess) return alert('Nombre de seances requis.');
+      
+      // Vérification Code Opératoire (Fact-checking INAMI pour Fa-1 etc.)
+      if (currentPathology.requiresSurgicalCode && !opCode) {
+        return alert(`Le code operatoire chirurgical est obligatoire pour ${currentPathology.name} selon INAMI.`);
       }
+
+      let status = 'ok', msg = `<strong>${currentPathology.name}</strong><br>Remboursement prevu pour ${sess} seances.`;
+      
+      // Règles INAMI strictes
+      if (sess > currentPathology.maxSessions) { 
+        status = 'cond'; 
+        msg = `Depassement du forfait annuel (${currentPathology.maxSessions} seances). Accord prealable du medecin-conseil requis.`; 
+      }
+      if (currentPathology.priorAgreement) {
+        status = 'cond'; msg = 'Pathologie lourde (Liste E). Accord prealable et bilan specialise obligatoires.';
+      }
+      if (st === 'bim') msg += '<br>Ticket modérateur réduit (BIM).';
+
+      document.getElementById('r-status').className = `res-status ${status === 'ok' ? 'ok' : 'cond'}`;
+      document.getElementById('r-status').textContent = status === 'ok' ? 'ELIGIBLE' : 'CONDITIONNEL';
+      document.getElementById('r-msg').innerHTML = msg;
+      document.getElementById('r-ref').innerHTML = `<strong>Source :</strong> Annexe 05a INAMI - Critères pathologie ${currentPathology.id}`;
+    }
+    else if (tp === 'log') {
+      const cat = document.getElementById('s-log-cat').value;
+      const sess = +document.getElementById('s-log-sess').value;
+      if (!sess) return alert('Nombre de seances requis.');
+      const info = CFG.LOG_CATEGORIES[cat];
+      document.getElementById('r-status').className = 'res-status ok';
+      document.getElementById('r-status').textContent = 'ELIGIBLE';
+      document.getElementById('r-msg').innerHTML = `<strong>${info.name}</strong><br>Remboursement prevu pour ${sess} seances.<br>${info.article}`;
     }
   }
 
-  // NOMENCLATURE (Points 4a & 4b)
+  // NOMENCLATURE
   function switchNomoTab(tab) {
     document.querySelectorAll('.nomo-tab').forEach(t => t.classList.remove('active'));
     event.target.classList.add('active');
@@ -516,152 +614,90 @@
     document.getElementById('nomo-compare-tab').style.display = tab === 'compare' ? 'block' : 'none';
     if (tab === 'search') updateNomoList();
   }
-
-  function togglePrices() {
-    showPrices = !showPrices;
-    document.getElementById('price-toggle').classList.toggle('active', showPrices);
-    updateNomoList();
-  }
-
+  function togglePrices() { showPrices = !showPrices; document.getElementById('price-toggle').classList.toggle('active', showPrices); updateNomoList(); }
   function updateNomoList() {
     const query = document.getElementById('nomo-search-input').value.toLowerCase();
-    const container = document.getElementById('nomo-results');
-    container.innerHTML = '';
+    const container = document.getElementById('nomo-results'); container.innerHTML = '';
     let count = 0;
-    
     for (const cat in CFG.NOMO_CODES) {
       CFG.NOMO_CODES[cat].forEach(item => {
         if (item.code.includes(query) || item.desc.toLowerCase().includes(query)) {
           count++;
           const div = document.createElement('div');
           div.className = 'nomo-item' + (selectedCompareCodes.includes(item.code) ? ' selected' : '');
-          div.innerHTML = `
-            <input type="checkbox" class="nomo-checkbox" ${selectedCompareCodes.includes(item.code)?'checked':''} onchange="toggleCompare('${item.code}')">
-            <span class="nomo-code">${item.code}</span>
-            <span class="nomo-desc">${item.desc}</span>
-            <span class="nomo-cat">${item.cat}</span>
-            ${showPrices ? `<span class="nomo-price">${item.price} EUR</span>` : ''}
-          `;
+          div.innerHTML = `<input type="checkbox" class="nomo-checkbox" ${selectedCompareCodes.includes(item.code)?'checked':''} onchange="toggleCompare('${item.code}')"><span class="nomo-code">${item.code}</span><span class="nomo-desc">${item.desc}</span><span class="nomo-cat">${item.cat}</span>${showPrices?`<span class="nomo-price">${item.price} EUR</span>`:''}`;
           container.appendChild(div);
         }
       });
     }
     document.getElementById('nomo-count').textContent = `${count} codes`;
   }
-
   function toggleCompare(code) {
     if (selectedCompareCodes.includes(code)) selectedCompareCodes = selectedCompareCodes.filter(c => c !== code);
     else if (selectedCompareCodes.length < 3) selectedCompareCodes.push(code);
-    else alert('Maximum 3 codes pour la comparaison');
-    updateNomoList();
-    renderComparison();
+    else alert('Maximum 3 codes');
+    updateNomoList(); renderComparison();
   }
-
   function renderComparison() {
-    const grid = document.getElementById('comparison-grid');
-    grid.innerHTML = '';
+    const grid = document.getElementById('comparison-grid'); grid.innerHTML = '';
     selectedCompareCodes.forEach(code => {
       let item = null;
       for (const cat in CFG.NOMO_CODES) { const f = CFG.NOMO_CODES[cat].find(i => i.code === code); if(f) item = f; }
-      if (item) {
-        grid.innerHTML += `
-          <div class="comp-card">
-            <div class="comp-code">${item.code}</div>
-            <div class="comp-row"><span>Categorie</span><span>${item.cat}</span></div>
-            <div class="comp-row"><span>Description</span><span>${item.desc}</span></div>
-            <div class="comp-row"><span>Tarif</span><span>${item.price} EUR</span></div>
-          </div>
-        `;
-      }
+      if (item) grid.innerHTML += `<div class="comp-card"><div class="comp-code">${item.code}</div><div class="comp-row"><span>Categorie</span><span>${item.cat}</span></div><div class="comp-row"><span>Description</span><span>${item.desc}</span></div><div class="comp-row"><span>Tarif</span><span>${item.price} EUR</span></div></div>`;
     });
   }
 
-  // SUPER AGENT (Knowledge-Based + Point 3b)
+  // SUPER AGENT
   function setTopic(topic) {
     currentTopic = topic;
     document.querySelectorAll('.topic-btn').forEach(b => b.classList.remove('active'));
     event.target.classList.add('active');
   }
-
   function addMsg(sender, html) {
     const log = document.getElementById('chat-log-agent');
-    const div = document.createElement('div');
-    div.className = `msg ${sender}`;
-    div.innerHTML = html;
-    log.appendChild(div);
-    log.scrollTop = log.scrollHeight;
+    const div = document.createElement('div'); div.className = `msg ${sender}`; div.innerHTML = html;
+    log.appendChild(div); log.scrollTop = log.scrollHeight;
   }
-
   function sendMsg(type) {
     const input = document.getElementById('input-agent');
-    const txt = input.value.trim();
-    if (!txt) return;
-    addMsg('user', txt);
-    input.value = '';
-
+    const txt = input.value.trim(); if (!txt) return;
+    addMsg('user', txt); input.value = '';
     const lower = txt.toLowerCase();
-    let response = '';
-    let summaryData = null;
-
-    // Intent Detection & Knowledge Retrieval
-    const isEligibility = /eligible|remboursé|accord|droit|puis-je|valide|condition/i.test(lower);
+    let response = ''; let summaryData = null;
+    const isEligibility = /eligible|rembours|accord|droit|puis-je|valide|condition/i.test(lower);
     
-    // Search Knowledge Base
     let matchedKnowledge = null;
-    for (const key in CFG.KNOWLEDGE_BASE) {
-      if (lower.includes(key)) { matchedKnowledge = CFG.KNOWLEDGE_BASE[key]; break; }
-    }
-    
-    // Search Drugs DB
+    for (const key in CFG.KNOWLEDGE_BASE) { if (lower.includes(key)) { matchedKnowledge = CFG.KNOWLEDGE_BASE[key]; break; } }
     let drugInfo = null;
-    for (const key in CFG.DRUGS_DB) {
-      if (lower.includes(key) || lower.includes(CFG.DRUGS_DB[key].name.toLowerCase())) { drugInfo = CFG.DRUGS_DB[key]; break; }
-    }
+    for (const key in CFG.DRUGS_DB) { if (lower.includes(key) || lower.includes(CFG.DRUGS_DB[key].name.toLowerCase())) { drugInfo = CFG.DRUGS_DB[key]; break; } }
 
-    // Generate Conversational Response
     if (drugInfo) {
       const indKey = Object.keys(drugInfo.indications).find(k => lower.includes(k));
-      const indication = indKey ? drugInfo.indications[indKey] : 'Veuillez preciser la pathologie pour une evaluation exacte.';
-      response = `Concernant <strong>${drugInfo.name}</strong> (Categorie ${drugInfo.cat}) :<br>${indication}<br><br>Selon la nomenclature INAMI, le remboursement depend du Service Medical Rendu (SMR) et des conditions specifiques. Souhaitez-vous verifier une eligibilite precise ?`;
+      const indication = indKey ? drugInfo.indications[indKey] : 'Veuillez preciser la pathologie.';
+      response = `Concernant <strong>${drugInfo.name}</strong> (Cat. ${drugInfo.cat}) :<br>${indication}`;
       if (isEligibility && indKey) {
         const status = indication.includes('Non') ? 'no' : (indication.includes('strictes') ? 'cond' : 'ok');
-        summaryData = { status, text: indication, ref: 'Nomenclature Pharmaceutique INAMI', validity: '6 mois' };
+        summaryData = { status, text: indication, ref: 'Nomenclature INAMI', validity: '6 mois' };
       }
     } else if (matchedKnowledge) {
       response = matchedKnowledge;
-      if (isEligibility) {
-        summaryData = { status: 'info', text: 'Voir details ci-dessus', ref: 'Reglement INAMI', validity: '-' };
-      }
+      if (isEligibility) summaryData = { status: 'info', text: 'Voir details ci-dessus', ref: 'Reglement INAMI', validity: '-' };
     } else if (lower.includes('bonjour') || lower.includes('salut')) {
-      response = "Bonjour. Je suis le Super Agent INAMI. Je peux vous expliquer les regles de remboursement, les conditions d'accord prealable, ou verifier une eligibilite. Que souhaitez-vous savoir ?";
+      response = "Bonjour. Je peux expliquer les regles de remboursement, les conditions d'accord, ou verifier une eligibilite. Que souhaitez-vous savoir ?";
     } else {
-      response = "Je n'ai pas trouve d'information precise dans ma base pour cette requete. Essayez de mentionner un medicament, une pathologie (ex: 'Fa-1', 'Mounjaro'), ou une notion ('BIM', 'accord prealable').";
+      response = "Je n'ai pas trouve d'information precise. Essayez de mentionner un medicament, une pathologie ('Fa-1', 'Mounjaro'), ou une notion ('BIM').";
     }
 
-    // Build Message with Summary Card (Point 3b)
     let finalHtml = response;
     if (summaryData) {
       const pillClass = summaryData.status === 'ok' ? 'pill-ok' : (summaryData.status === 'cond' ? 'pill-cond' : 'pill-no');
       const statusText = summaryData.status === 'ok' ? 'ELIGIBLE' : (summaryData.status === 'cond' ? 'CONDITIONNEL' : 'NON ELIGIBLE');
-      finalHtml += `
-        <div class="summary-card-chat">
-          <span class="summary-label">Statut</span><span class="summary-value"><span class="status-pill ${pillClass}">${statusText}</span></span>
-          <span class="summary-label">Details</span><span class="summary-value">${summaryData.text}</span>
-          <span class="summary-label">Reference</span><span class="summary-value">${summaryData.ref}</span>
-          <span class="summary-label">Validite</span><span class="summary-value">${summaryData.validity}</span>
-        </div>
-      `;
+      finalHtml += `<div class="summary-card-chat"><span class="summary-label">Statut</span><span class="status-pill ${pillClass}">${statusText}</span><span class="summary-label">Details</span><span>${summaryData.text}</span><span class="summary-label">Reference</span><span>${summaryData.ref}</span><span class="summary-label">Validite</span><span>${summaryData.validity}</span></div>`;
     }
-
     setTimeout(() => addMsg('agent', finalHtml), 400);
   }
-
   document.getElementById('input-agent').addEventListener('keypress', e => { if(e.key==='Enter') sendMsg('agent'); });
-
-  // INIT
-  window.addEventListener('DOMContentLoaded', () => {
-    updateSyncStatus();
-  });
+  window.addEventListener('DOMContentLoaded', updateSyncStatus);
 </script>
 </body>
 </html>
