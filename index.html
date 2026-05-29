@@ -50,6 +50,17 @@
     ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
     ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
 
+    /* Sync Status Indicator */
+    .sync-status {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      font-size: 0.75rem; color: var(--text-muted);
+      background: var(--surface); border: 1px solid var(--border);
+      padding: 0.3rem 0.7rem; border-radius: 20px;
+    }
+    .sync-dot { width: 8px; height: 8px; border-radius: 50%; }
+    .sync-online { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
+    .sync-offline { background: var(--warning); }
+
     #login-screen {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: var(--bg-gradient);
@@ -69,460 +80,152 @@
       animation: slideUp 0.4s ease-out;
     }
     @keyframes slideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
-    .login-card h1 {
-      font-size: 2rem; font-weight: 700; margin-bottom: var(--spacing-xs);
-      color: var(--text); letter-spacing: -1px;
-    }
+    .login-card h1 { font-size: 2rem; font-weight: 700; margin-bottom: var(--spacing-xs); color: var(--text); letter-spacing: -1px; }
     .login-card h1 span { color: var(--primary); }
     .login-card p { color: var(--text-muted); margin-bottom: var(--spacing-lg); font-size: 0.9rem; font-weight: 500; }
-    .login-input-group { position: relative; margin-bottom: var(--spacing-md); }
     .login-input {
       width: 100%; padding: 0.9rem 1rem;
       background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border);
-      border-radius: var(--radius); color: var(--text); font-size: 1rem;
-      transition: all 0.3s ease;
+      border-radius: var(--radius); color: var(--text); font-size: 1rem; transition: all 0.3s ease;
     }
-    .login-input:focus { 
-      border-color: var(--primary); 
-      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15); 
-      background: rgba(15, 23, 42, 0.8);
-    }
+    .login-input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15); background: rgba(15, 23, 42, 0.8); }
     .login-btn {
       width: 100%; padding: 0.9rem; background: var(--primary); color: #fff;
-      border: none; border-radius: var(--radius); font-weight: 600; cursor: pointer;
-      font-size: 1rem; transition: all 0.2s ease;
-      box-shadow: var(--glow);
+      border: none; border-radius: var(--radius); font-weight: 600; cursor: pointer; font-size: 1rem; transition: all 0.2s ease; box-shadow: var(--glow);
     }
-    .login-btn:hover { 
-      background: var(--primary-hover); 
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px -5px rgba(59, 130, 246, 0.5);
-    }
-    .login-error { color: var(--danger); font-size: 0.85rem; margin-top: var(--spacing-sm); display: none; font-weight: 500; }
+    .login-btn:hover { background: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 8px 25px -5px rgba(59, 130, 246, 0.5); }
+    .login-error { color: var(--danger); font-size: 0.85rem; margin-top: var(--spacing-sm); display: none; }
     .login-help { margin-top: var(--spacing-lg); font-size: 0.8rem; }
-    .login-help a { color: var(--primary); text-decoration: none; cursor: pointer; font-weight: 500; }
-    .login-help a:hover { text-decoration: underline; }
-    .password-note {
-      display: none; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3);
-      border-radius: var(--radius); padding: var(--spacing-md); margin-top: var(--spacing-md);
-      font-size: 0.8rem; color: var(--text-muted); text-align: left;
-    }
+    .login-help a { color: var(--primary); text-decoration: none; cursor: pointer; }
 
     #main-app { display: none; max-width: 1000px; margin: 0 auto; }
-    
-    header { 
-      text-align: center; margin-bottom: var(--spacing-xl); 
-      padding: var(--spacing-md) 0;
-    }
+    header { text-align: center; margin-bottom: var(--spacing-xl); padding: var(--spacing-md) 0; }
     h1 { font-size: 1.8rem; font-weight: 700; color: var(--text); letter-spacing: -0.5px; margin-bottom: var(--spacing-xs); }
-    .sub { color: var(--text-muted); font-size: 0.9rem; font-weight: 400; }
-    .header-actions { display: flex; gap: var(--spacing-sm); justify-content: center; margin-top: var(--spacing-sm); align-items: center; }
-    .lang-toggle, .global-search { 
-      background: var(--surface); border: 1px solid var(--border); 
-      color: var(--text); padding: 0.5rem 0.8rem; border-radius: var(--radius); 
-      font-size: 0.85rem; cursor: pointer; transition: 0.2s;
-    }
-    .lang-toggle:hover, .global-search:hover { background: var(--surface-hover); border-color: var(--primary); }
+    .sub { color: var(--text-muted); font-size: 0.9rem; }
+    .header-actions { display: flex; gap: var(--spacing-sm); justify-content: center; margin-top: var(--spacing-sm); align-items: center; flex-wrap: wrap; }
+    .lang-toggle, .global-search { background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 0.5rem 0.8rem; border-radius: var(--radius); font-size: 0.85rem; cursor: pointer; transition: 0.2s; }
     .global-search { flex: 1; max-width: 300px; text-align: left; }
-    .global-search::placeholder { color: var(--text-muted); }
-    
-    .logout-btn {
-      background: none; border: 1px solid var(--border); color: var(--text-muted);
-      padding: 0.5rem 0.8rem; border-radius: var(--radius); cursor: pointer;
-      font-size: 0.85rem; transition: 0.2s;
-    }
-    .logout-btn:hover { background: var(--surface-hover); color: var(--text); border-color: var(--danger); }
+    .logout-btn { background: none; border: 1px solid var(--border); color: var(--text-muted); padding: 0.5rem 0.8rem; border-radius: var(--radius); cursor: pointer; font-size: 0.85rem; }
 
-    #nav { 
-      display: flex; flex-direction: column; gap: var(--spacing-md); 
-      margin-bottom: var(--spacing-xl); padding: var(--spacing-md); 
-      width: 100%; max-width: 400px; margin: 0 auto var(--spacing-xl) auto;
-    }
-    .nav-btn { 
-      background: var(--surface); border: 1px solid var(--border); 
-      color: var(--text); padding: 1.2rem 1.5rem; 
-      border-radius: var(--radius-lg); cursor: pointer; 
-      font-weight: 600; font-size: 1.1rem; 
-      transition: all 0.25s ease;
-      text-align: center;
-      box-shadow: var(--shadow-soft);
-      backdrop-filter: blur(12px);
-    }
-    .nav-btn:hover, .nav-btn.active { 
-      background: var(--primary); color: #fff; 
-      border-color: var(--primary); 
-      transform: translateY(-3px);
-      box-shadow: var(--glow);
-    }
+    #nav { display: flex; flex-direction: column; gap: var(--spacing-md); margin-bottom: var(--spacing-xl); padding: var(--spacing-md); width: 100%; max-width: 400px; margin: 0 auto var(--spacing-xl) auto; }
+    .nav-btn { background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 1.2rem 1.5rem; border-radius: var(--radius-lg); cursor: pointer; font-weight: 600; font-size: 1.1rem; transition: all 0.25s ease; text-align: center; box-shadow: var(--shadow-soft); backdrop-filter: blur(12px); }
+    .nav-btn:hover { background: var(--primary); color: #fff; border-color: var(--primary); transform: translateY(-3px); box-shadow: var(--glow); }
 
     .view { display: none; animation: fadeIn 0.3s ease; }
     @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
-    
-    .back-btn { 
-      background: var(--surface); color: var(--text-muted); 
-      border: 1px solid var(--border); padding: 0.7rem 1.2rem; 
-      border-radius: var(--radius); cursor: pointer; 
-      margin-bottom: var(--spacing-lg); font-size: 0.9rem; 
-      transition: 0.2s; display: inline-flex; align-items: center; gap: 0.5rem;
-      font-weight: 500;
-    }
-    .back-btn:hover { background: var(--surface-hover); color: var(--text); border-color: var(--primary); }
+    .back-btn { background: var(--surface); color: var(--text-muted); border: 1px solid var(--border); padding: 0.7rem 1.2rem; border-radius: var(--radius); cursor: pointer; margin-bottom: var(--spacing-lg); font-size: 0.9rem; display: inline-flex; align-items: center; gap: 0.5rem; }
+    .back-btn:hover { background: var(--surface-hover); color: var(--text); }
 
-    .card { 
-      background: var(--surface); border: 1px solid var(--border); 
-      border-radius: var(--radius-lg); padding: var(--spacing-xl); 
-      margin-bottom: var(--spacing-lg); 
-      box-shadow: var(--shadow-soft);
-      backdrop-filter: blur(16px);
-    }
-    h2 { 
-      color: var(--primary); font-size: 1.3rem; 
-      margin-bottom: var(--spacing-lg); font-weight: 600; 
-      padding-bottom: var(--spacing-sm); border-bottom: 1px solid var(--border);
-    }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: var(--spacing-xl); margin-bottom: var(--spacing-lg); box-shadow: var(--shadow-soft); backdrop-filter: blur(16px); }
+    h2 { color: var(--primary); font-size: 1.3rem; margin-bottom: var(--spacing-lg); font-weight: 600; padding-bottom: var(--spacing-sm); border-bottom: 1px solid var(--border); }
     
-    .grid { 
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
-      gap: var(--spacing-lg); margin-bottom: var(--spacing-lg); 
-    }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--spacing-lg); margin-bottom: var(--spacing-lg); }
     .field { display: flex; flex-direction: column; gap: var(--spacing-sm); }
-    label { 
-      font-weight: 500; color: var(--text-muted); 
-      font-size: 0.8rem; text-transform: uppercase; 
-      letter-spacing: 0.5px; display: flex; align-items: center; gap: 0.3rem;
-    }
-    
-    input, select, datalist { 
-      background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border); 
-      color: var(--text); padding: 0.9rem 1rem; 
-      border-radius: var(--radius); font-size: 0.95rem; 
-      transition: 0.2s; width: 100%;
-    }
-    input:focus, select:focus { 
-      outline: none; border-color: var(--primary); 
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
-    }
+    label { font-weight: 500; color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    input, select { background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border); color: var(--text); padding: 0.9rem 1rem; border-radius: var(--radius); font-size: 0.95rem; transition: 0.2s; width: 100%; }
+    input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); }
     
     .toggle-group { display: flex; gap: var(--spacing-sm); align-items: center; flex-wrap: wrap; }
-    .toggle-option {
-      display: flex; align-items: center; gap: 0.4rem;
-      cursor: pointer; padding: 0.6rem 1rem;
-      border-radius: var(--radius); transition: 0.2s;
-      background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border);
-      font-size: 0.9rem; font-weight: 500;
-    }
-    .toggle-option:hover { background: var(--surface-hover); }
-    .toggle-option.selected {
-      background: var(--primary); border-color: var(--primary); color: #fff;
-    }
-    .toggle-option input { display: none; }
+    .toggle-option { display: flex; align-items: center; gap: 0.4rem; cursor: pointer; padding: 0.6rem 1rem; border-radius: var(--radius); transition: 0.2s; background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border); font-size: 0.9rem; }
+    .toggle-option.selected { background: var(--primary); border-color: var(--primary); color: #fff; }
     
-    .btn-primary { 
-      background: var(--primary); color: #fff; border: none; 
-      padding: 0.9rem; border-radius: var(--radius); 
-      font-weight: 600; cursor: pointer; width: 100%; 
-      margin-top: var(--spacing-sm); transition: 0.2s;
-      font-size: 0.95rem;
-    }
+    .btn-primary { background: var(--primary); color: #fff; border: none; padding: 0.9rem; border-radius: var(--radius); font-weight: 600; cursor: pointer; width: 100%; margin-top: var(--spacing-sm); transition: 0.2s; }
     .btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); box-shadow: var(--glow); }
-    .btn-secondary {
-      background: var(--surface-hover); color: var(--text); border: 1px solid var(--border);
-      padding: 0.7rem; border-radius: var(--radius); font-weight: 500;
-      cursor: pointer; width: 100%; margin-top: var(--spacing-sm);
-      transition: 0.2s; font-size: 0.9rem;
-    }
-    .btn-secondary:hover { background: var(--border); }
-    .btn-small {
-      background: var(--surface); color: var(--text-muted); border: 1px solid var(--border);
-      padding: 0.4rem 0.8rem; border-radius: var(--radius); font-weight: 500;
-      cursor: pointer; transition: 0.2s; font-size: 0.85rem;
-    }
-    .btn-small:hover { background: var(--surface-hover); color: var(--text); }
+    .btn-secondary { background: var(--surface-hover); color: var(--text); border: 1px solid var(--border); padding: 0.7rem; border-radius: var(--radius); cursor: pointer; width: 100%; margin-top: var(--spacing-sm); }
+    .btn-small { background: var(--surface); color: var(--text-muted); border: 1px solid var(--border); padding: 0.4rem 0.8rem; border-radius: var(--radius); cursor: pointer; font-size: 0.85rem; }
 
-    .result-panel { 
-      margin-top: var(--spacing-lg); padding: var(--spacing-lg); 
-      border-radius: var(--radius-lg); background: var(--bg); 
-      border: 1px solid var(--border); display: none;
-    }
-    .res-status { font-size: 1.1rem; font-weight: 700; margin-bottom: var(--spacing-sm); display: flex; align-items: center; gap: 0.5rem; }
+    /* Result Panel */
+    .result-panel { margin-top: var(--spacing-lg); padding: var(--spacing-lg); border-radius: var(--radius-lg); background: var(--bg); border: 1px solid var(--border); display: none; }
+    .res-status { font-size: 1.1rem; font-weight: 700; margin-bottom: var(--spacing-sm); }
     .ok { color: var(--accent); border-left: 4px solid var(--accent); padding-left: var(--spacing-md); }
     .no { color: var(--danger); border-left: 4px solid var(--danger); padding-left: var(--spacing-md); }
     .cond { color: var(--warning); border-left: 4px solid var(--warning); padding-left: var(--spacing-md); }
-    .res-msg { margin-top: var(--spacing-sm); color: var(--text); font-size: 0.95rem; }
-    .res-ref { 
-      margin-top: var(--spacing-md); font-size: 0.85rem; 
-      color: var(--text-muted); background: var(--surface); 
-      padding: var(--spacing-md); border-radius: var(--radius);
-      border-left: 3px solid var(--border);
-    }
-    .form-link { 
-      display: inline-block; margin-top: var(--spacing-md); 
-      color: var(--primary); text-decoration: none; 
-      font-weight: 500; font-size: 0.9rem; 
-      border-bottom: 1px dashed var(--primary);
-      transition: 0.2s;
-    }
-    .form-link:hover { border-bottom-style: solid; color: var(--primary-hover); }
-    
-    .summary-card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius-lg); padding: var(--spacing-lg);
-      margin-top: var(--spacing-md);
-    }
-    .summary-item { display: flex; justify-content: space-between; margin: 0.4rem 0; font-size: 0.9rem; }
-    .summary-label { color: var(--text-muted); }
-    .summary-value { font-weight: 500; }
-    .countdown { color: var(--primary); font-weight: 600; }
-    
-    .checklist { margin-top: var(--spacing-md); }
-    .checklist-item { 
-      display: flex; align-items: flex-start; gap: 0.5rem; 
-      margin: 0.4rem 0; font-size: 0.9rem; 
-    }
-    .checklist-item input { margin-top: 0.2rem; width: auto; }
+    .res-msg { margin-top: var(--spacing-sm); color: var(--text); }
+    .res-ref { margin-top: var(--spacing-md); font-size: 0.85rem; color: var(--text-muted); background: var(--surface); padding: var(--spacing-md); border-radius: var(--radius); border-left: 3px solid var(--border); }
 
-    .chat-container { 
-      display: flex; flex-direction: column; height: 75vh; 
-      border: 1px solid var(--border); border-radius: var(--radius-xl); 
-      overflow: hidden; background: var(--surface);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(16px);
-    }
-    .chat-header { 
-      padding: var(--spacing-md); background: rgba(15, 23, 42, 0.9); 
-      border-bottom: 1px solid var(--border);
-      display: flex; flex-direction: column; gap: var(--spacing-sm);
-    }
+    /* Chat Interface */
+    .chat-container { display: flex; flex-direction: column; height: 75vh; border: 1px solid var(--border); border-radius: var(--radius-xl); overflow: hidden; background: var(--surface); box-shadow: var(--shadow); backdrop-filter: blur(16px); }
+    .chat-header { padding: var(--spacing-md); background: rgba(15, 23, 42, 0.9); border-bottom: 1px solid var(--border); display: flex; flex-direction: column; gap: var(--spacing-sm); }
     .agent-title { font-weight: 700; font-size: 1.1rem; color: var(--text); }
     .agent-sub { font-size: 0.8rem; color: var(--text-muted); }
     
-    .topic-selector {
-      display: flex; gap: var(--spacing-xs); overflow-x: auto; padding-bottom: var(--spacing-xs);
-      scrollbar-width: none;
-    }
+    .topic-selector { display: flex; gap: var(--spacing-xs); overflow-x: auto; padding-bottom: var(--spacing-xs); scrollbar-width: none; }
     .topic-selector::-webkit-scrollbar { display: none; }
-    .topic-btn {
-      background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border);
-      color: var(--text-muted); padding: 0.4rem 0.8rem; border-radius: 20px;
-      font-size: 0.8rem; cursor: pointer; white-space: nowrap; transition: 0.2s;
-    }
-    .topic-btn:hover { background: var(--surface-hover); color: var(--text); }
-    .topic-btn.active {
-      background: var(--primary); color: #fff; border-color: var(--primary);
-      box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
-    }
+    .topic-btn { background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border); color: var(--text-muted); padding: 0.4rem 0.8rem; border-radius: 20px; font-size: 0.8rem; cursor: pointer; white-space: nowrap; transition: 0.2s; }
+    .topic-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4); }
     
-    .progress-bar { 
-      height: 3px; background: var(--border); border-radius: 2px; 
-      overflow: hidden;
-    }
-    .progress-fill { 
-      height: 100%; background: var(--accent); 
-      transition: width 0.3s ease; border-radius: 2px;
-    }
-    
-    #chat-log-agent { 
-      flex: 1; overflow-y: auto; padding: var(--spacing-lg); 
-      display: flex; flex-direction: column; gap: var(--spacing-md); 
-      background: rgba(15, 23, 42, 0.4); scroll-behavior: smooth;
-    }
-    .msg { 
-      max-width: 85%; padding: 0.8rem 1.1rem; 
-      border-radius: var(--radius-lg); font-size: 0.95rem; 
-      line-height: 1.5; animation: slideIn 0.25s ease;
-    }
+    #chat-log-agent { flex: 1; overflow-y: auto; padding: var(--spacing-lg); display: flex; flex-direction: column; gap: var(--spacing-md); background: rgba(15, 23, 42, 0.4); scroll-behavior: smooth; }
+    .msg { max-width: 85%; padding: 0.9rem 1.2rem; border-radius: var(--radius-lg); font-size: 0.95rem; line-height: 1.5; animation: slideIn 0.25s ease; }
     @keyframes slideIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
-    .msg.user { 
-      align-self: flex-end; background: var(--primary); 
-      color: #fff; border-bottom-right-radius: 4px;
-      box-shadow: var(--shadow-soft);
-    }
-    .msg.agent { 
-      align-self: flex-start; background: var(--surface-hover); 
-      border: 1px solid var(--border); border-bottom-left-radius: 4px;
-    }
-    .msg.agent strong { color: var(--text); }
-    .msg.agent .source-link {
-      display: inline-block; margin-top: var(--spacing-sm);
-      color: var(--primary); text-decoration: none; font-weight: 500; font-size: 0.85rem;
-    }
-    .msg.agent .source-link:hover { text-decoration: underline; }
+    .msg.user { align-self: flex-end; background: var(--primary); color: #fff; border-bottom-right-radius: 4px; }
+    .msg.agent { align-self: flex-start; background: var(--surface-hover); border: 1px solid var(--border); border-bottom-left-radius: 4px; }
     
-    .typing { 
-      font-style: italic; color: var(--text-muted); 
-      font-size: 0.8rem; margin-left: var(--spacing-md); 
-      display: none; padding: var(--spacing-sm) 0;
+    /* Visual Summary Card (Point 3b) */
+    .summary-card-chat {
+      margin-top: var(--spacing-sm);
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: var(--spacing-md);
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: var(--spacing-sm) var(--spacing-md);
+      font-size: 0.9rem;
     }
+    .summary-label { color: var(--text-muted); font-weight: 500; }
+    .summary-value { color: var(--text); }
+    .status-pill { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 12px; font-weight: 600; font-size: 0.8rem; }
+    .pill-ok { background: rgba(16, 185, 129, 0.2); color: var(--accent); border: 1px solid rgba(16, 185, 129, 0.4); }
+    .pill-cond { background: rgba(245, 158, 11, 0.2); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.4); }
+    .pill-no { background: rgba(239, 68, 68, 0.2); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.4); }
 
-    .chat-input-area { 
-      display: flex; padding: var(--spacing-md); 
-      background: var(--surface-hover); 
-      border-top: 1px solid var(--border); gap: var(--spacing-sm);
-    }
-    .chat-input { 
-      flex: 1; background: var(--bg); border: 1px solid var(--border); 
-      color: var(--text); padding: 0.8rem 1.2rem; 
-      border-radius: var(--radius-lg); font-size: 0.95rem;
-    }
-    .chat-input:focus { outline: none; border-color: var(--primary); }
-    .send-btn { 
-      background: var(--accent); color: #fff; border: none; 
-      padding: 0 1.4rem; border-radius: var(--radius-lg); 
-      cursor: pointer; font-weight: 600; font-size: 0.9rem; 
-      transition: 0.2s;
-    }
-    .send-btn:hover { filter: brightness(1.05); transform: translateY(-1px); }
+    .chat-input-area { display: flex; padding: var(--spacing-md); background: var(--surface-hover); border-top: 1px solid var(--border); gap: var(--spacing-sm); }
+    .chat-input { flex: 1; background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 0.8rem 1.2rem; border-radius: var(--radius-lg); }
+    .send-btn { background: var(--accent); color: #fff; border: none; padding: 0 1.4rem; border-radius: var(--radius-lg); cursor: pointer; font-weight: 600; }
 
+    /* Nomenclature Enhancements */
     .nomo-controls { display: flex; gap: var(--spacing-md); margin-bottom: var(--spacing-lg); flex-wrap: wrap; align-items: end; }
-    .nomo-select { flex: 1; min-width: 200px; }
     .nomo-search { flex: 2; min-width: 250px; }
     .toggle-container { display: flex; align-items: center; gap: var(--spacing-sm); cursor: pointer; }
-    .toggle-switch {
-      position: relative; width: 44px; height: 22px;
-      background: var(--border); border-radius: 12px; cursor: pointer;
-      transition: 0.3s;
-    }
+    .toggle-switch { position: relative; width: 44px; height: 22px; background: var(--border); border-radius: 12px; cursor: pointer; transition: 0.3s; }
     .toggle-switch.active { background: var(--primary); }
-    .toggle-switch::after {
-      content: ''; position: absolute; top: 2px; left: 2px;
-      width: 18px; height: 18px; background: #fff; border-radius: 50%;
-      transition: 0.3s;
-    }
+    .toggle-switch::after { content: ''; position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; background: #fff; border-radius: 50%; transition: 0.3s; }
     .toggle-switch.active::after { transform: translateX(22px); }
     
     .nomo-tabs { display: flex; gap: var(--spacing-sm); margin-bottom: var(--spacing-lg); }
-    .nomo-tab {
-      padding: 0.6rem 1rem; background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius); cursor: pointer; transition: 0.2s;
-      color: var(--text-muted); font-size: 0.9rem; font-weight: 500;
-    }
+    .nomo-tab { padding: 0.6rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); cursor: pointer; transition: 0.2s; color: var(--text-muted); font-size: 0.9rem; }
     .nomo-tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
     
     .nomo-results { max-height: 500px; overflow-y: auto; }
-    .nomo-item { 
-      display: flex; justify-content: space-between; align-items: center;
-      padding: var(--spacing-md); border-bottom: 1px solid var(--border);
-      transition: background 0.2s;
-    }
+    .nomo-item { display: flex; justify-content: space-between; align-items: center; padding: var(--spacing-md); border-bottom: 1px solid var(--border); transition: background 0.2s; }
     .nomo-item:hover { background: var(--surface-hover); }
-    .nomo-item:last-child { border-bottom: none; }
-    .nomo-code { 
-      font-family: ui-monospace, monospace; color: var(--accent); 
-      font-weight: 600; font-size: 1rem; min-width: 80px; display: flex; align-items: center; gap: 0.5rem;
-    }
-    .copy-code-btn {
-      background: none; border: none; color: var(--text-muted); cursor: pointer;
-      font-size: 0.9rem; padding: 0.2rem; transition: 0.2s; opacity: 0;
-    }
-    .nomo-item:hover .copy-code-btn { opacity: 1; }
-    .copy-code-btn:hover { color: var(--primary); }
-    .nomo-desc { flex: 1; margin: 0 var(--spacing-md); font-size: 0.95rem; }
-    .nomo-cat { 
-      font-size: 0.75rem; color: var(--text-muted); 
-      background: var(--bg); padding: 0.2rem 0.6rem; 
-      border-radius: 12px; white-space: nowrap; border: 1px solid var(--border);
-    }
-    .nomo-price { font-weight: 600; color: var(--accent); min-width: 60px; text-align: right; }
-    .nomo-empty { text-align: center; color: var(--text-muted); padding: var(--spacing-xl); display: none; }
-    .nomo-count { font-size: 0.85rem; color: var(--text-muted); margin-bottom: var(--spacing-sm); }
+    .nomo-item.selected { background: rgba(59, 130, 246, 0.15); border-left: 3px solid var(--primary); }
+    .nomo-code { font-family: ui-monospace, monospace; color: var(--accent); font-weight: 600; min-width: 80px; }
+    .nomo-desc { flex: 1; margin: 0 var(--spacing-md); }
+    .nomo-cat { font-size: 0.75rem; color: var(--text-muted); background: var(--bg); padding: 0.2rem 0.6rem; border-radius: 12px; border: 1px solid var(--border); }
+    .nomo-price { font-weight: 600; color: var(--accent); }
+    .nomo-checkbox { width: 18px; height: 18px; margin-right: var(--spacing-sm); cursor: pointer; }
 
-    .cumul-container { display: none; }
-    .cumul-container.active { display: block; }
-    .cumul-inputs { display: flex; flex-wrap: wrap; gap: var(--spacing-sm); margin-bottom: var(--spacing-md); }
-    .cumul-input {
-      width: 100px; padding: 0.6rem; text-align: center;
-      background: var(--bg); border: 1px solid var(--border);
-      border-radius: var(--radius); color: var(--text); font-size: 1rem;
-    }
-    .cumul-input:focus { outline: none; border-color: var(--primary); }
-    .cumul-add-btn {
-      width: 40px; height: 40px; background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius); color: var(--text-muted); cursor: pointer;
-      font-size: 1.2rem; display: flex; align-items: center; justify-content: center;
-      transition: 0.2s;
-    }
-    .cumul-add-btn:hover { background: var(--primary); color: #fff; }
-    .cumul-results { margin-top: var(--spacing-md); }
-    .cumul-item {
-      padding: var(--spacing-md); border-radius: var(--radius); margin-bottom: var(--spacing-sm);
-      display: flex; justify-content: space-between; align-items: center;
-    }
-    .cumul-ok { background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: var(--accent); }
-    .cumul-no { background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: var(--danger); }
-    .cumul-cond { background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); color: var(--warning); }
+    /* Comparison View (Point 4b) */
+    .comparison-panel { display: none; margin-top: var(--spacing-lg); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: var(--spacing-lg); }
+    .comparison-panel.active { display: block; }
+    .comparison-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--spacing-lg); margin-top: var(--spacing-md); }
+    .comp-card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: var(--spacing-md); text-align: center; }
+    .comp-code { font-family: monospace; font-size: 1.2rem; color: var(--primary); font-weight: 700; margin-bottom: var(--spacing-xs); }
+    .comp-row { display: flex; justify-content: space-between; padding: 0.4rem 0; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+    .comp-row:last-child { border-bottom: none; }
 
-    .mutualite-card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius-lg); padding: var(--spacing-lg);
-      margin-bottom: var(--spacing-md); transition: 0.2s;
-      backdrop-filter: blur(12px);
-    }
-    .mutualite-card:hover { border-color: var(--primary); transform: translateY(-2px); }
-    .mutualite-name { font-weight: 600; font-size: 1.05rem; color: var(--text); margin-bottom: var(--spacing-sm); }
-    .mutualite-info { font-size: 0.9rem; color: var(--text-muted); margin: 0.3rem 0; }
-    .mutualite-link { 
-      display: inline-block; margin-top: var(--spacing-sm); 
-      color: var(--primary); text-decoration: none; font-weight: 500;
-    }
-    .mutualite-link:hover { text-decoration: underline; }
-    
-    .mutualite-filters { 
-      display: flex; gap: var(--spacing-md); margin-bottom: var(--spacing-lg); 
-      flex-wrap: wrap; align-items: center;
-    }
-    .mutualite-filters input, .mutualite-filters select { max-width: 250px; }
-
-    footer { 
-      text-align: center; margin-top: var(--spacing-xxl); 
-      padding: var(--spacing-lg) 0; border-top: 1px solid var(--border); 
-      color: var(--text-muted); font-size: 0.75rem;
-    }
-    .badge-inami {
-      display: inline-flex; align-items: center; gap: 0.4rem;
-      background: var(--surface); border: 1px solid var(--border);
-      padding: 0.3rem 0.6rem; border-radius: 20px;
-      font-size: 0.75rem; color: var(--text-muted);
-    }
-    
-    .shortcuts-help {
-      position: fixed; bottom: var(--spacing-lg); right: var(--spacing-lg);
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius-lg); padding: var(--spacing-lg);
-      box-shadow: var(--shadow); backdrop-filter: blur(12px);
-      display: none; z-index: 200;
-    }
-    .shortcuts-help.visible { display: block; }
-    .shortcuts-help h4 { color: var(--primary); margin-bottom: var(--spacing-sm); }
-    .shortcut-item { display: flex; justify-content: space-between; margin: 0.3rem 0; font-size: 0.85rem; }
-    .shortcut-key { background: var(--bg); padding: 0.2rem 0.5rem; border-radius: 4px; font-family: monospace; }
-
-    @media print {
-      body { background: #fff; color: #000; padding: 0; }
-      header, #nav, .back-btn, .btn-primary, .btn-secondary, .chat-container, .toggle-group, .topic-selector { display: none !important; }
-      .card { background: #fff; border: 1px solid #ddd; box-shadow: none; backdrop-filter: none; }
-      .result-panel { display: block !important; border: 1px solid #ddd; }
-      .res-status { color: #000 !important; }
-      .ok { border-left-color: #10b981; }
-      .no { border-left-color: #ef4444; }
-      .cond { border-left-color: #f59e0b; }
-    }
+    footer { text-align: center; margin-top: var(--spacing-xxl); padding: var(--spacing-lg) 0; border-top: 1px solid var(--border); color: var(--text-muted); font-size: 0.75rem; }
     
     @media (max-width: 700px) { 
-      h1 { font-size: 1.5rem; } 
       .nav-btn { font-size: 1rem; padding: 1rem; }
-      th, td { padding: var(--spacing-sm); font-size: 0.85rem; } 
       .chat-container { height: 70vh; }
       .grid { grid-template-columns: 1fr; }
-      .header-actions { flex-direction: column; align-items: center; }
+      .header-actions { flex-direction: column; }
       .global-search { max-width: 100%; }
       .nomo-controls { flex-direction: column; }
       .nomo-item { flex-direction: column; align-items: flex-start; gap: var(--spacing-sm); }
-      .topic-selector { gap: 0.4rem; }
-      .topic-btn { font-size: 0.75rem; padding: 0.3rem 0.6rem; }
-    }
-    
-    @media (prefers-reduced-motion: reduce) {
-      * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+      .comparison-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -533,17 +236,11 @@
   <div class="login-card">
     <h1>Assistant <span>INAMI</span></h1>
     <p>Acces securise</p>
-    <div class="login-input-group">
-      <input type="password" id="login-password" class="login-input" placeholder="Mot de passe" onkeypress="if(event.key==='Enter')attemptLogin()">
-    </div>
+    <input type="password" id="login-password" class="login-input" placeholder="Mot de passe" onkeypress="if(event.key==='Enter')attemptLogin()" style="margin-bottom:var(--spacing-md);">
     <button class="login-btn" onclick="attemptLogin()">Valider</button>
     <div class="login-error" id="login-error">Mot de passe incorrect</div>
-    <div class="login-help">
-      <a onclick="showPasswordNote()">Mot de passe oublie ?</a>
-    </div>
-    <div class="password-note" id="password-note">
-      <strong>Note :</strong> Le mot de passe par defaut est <code>inami2025</code>. Si vous l'avez modifie et oublie, contactez l'administrateur du systeme ou videz le cache de votre navigateur pour reinitialiser.
-    </div>
+    <div class="login-help"><a onclick="document.getElementById('password-note').style.display='block'">Mot de passe oublie ?</a></div>
+    <div id="password-note" style="display:none; background:rgba(59,130,246,0.1); border:1px solid rgba(59,130,246,0.3); border-radius:var(--radius); padding:var(--spacing-md); margin-top:var(--spacing-md); font-size:0.8rem; color:var(--text-muted);">Mot de passe par defaut: <code>inami2025</code></div>
   </div>
 </div>
 
@@ -553,13 +250,12 @@
   <h1>Assistant INAMI</h1>
   <p class="sub">Vos droits de sante en Belgique, simplifies</p>
   <div class="header-actions">
-    <button class="lang-toggle" onclick="toggleLang()">FR</button>
-    <input type="text" class="global-search" placeholder="Rechercher : diabete, kine, IRM..." onkeypress="globalSearch(event)">
+    <div id="sync-indicator" class="sync-status"><span class="sync-dot sync-offline"></span> Verrouillage local</div>
+    <input type="text" class="global-search" placeholder="Rechercher..." onkeypress="globalSearch(event)">
     <button class="logout-btn" onclick="logout()">Deconnexion</button>
   </div>
 </header>
 
-<!-- Menu Principal -->
 <nav id="nav">
   <button class="nav-btn" onclick="show('sim')">Simulateur</button>
   <button class="nav-btn" onclick="show('nom')">Nomenclature et Codes</button>
@@ -574,161 +270,49 @@
     <div class="card">
       <h2>Simulateur d'Eligibilite</h2>
       <div class="grid">
-        <div class="field"><label>Age du patient</label><input type="number" id="age" min="0" max="120" placeholder="Ex: 68"></div>
-        <div class="field"><label>Statut mutualite</label><select id="status"><option value="std">Standard</option><option value="bim">BIM / OMNIO</option></select></div>
-        <div class="field"><label>Type de soins</label><select id="type" onchange="toggleCond()"><option value="">-- Selectionner --</option><option value="kine">Kinesitherapie</option><option value="log">Logopedie</option><option value="med">Medicaments</option><option value="nurs">Soins infirmiers</option><option value="diet">Dietetique</option><option value="img">Imagerie</option><option value="spec">Specialiste</option><option value="hosp">Hospitalisation</option><option value="chron">Maladie Chronique</option></select></div>
-        <div class="field"><label>Parcours coordonne</label>
-          <div class="toggle-group">
-            <label class="toggle-option selected" onclick="toggleSelect(this, 'mdt', 'oui')"><input type="radio" name="mdt" value="oui" checked>Oui</label>
-            <label class="toggle-option" onclick="toggleSelect(this, 'mdt', 'non')"><input type="radio" name="mdt" value="non">Non</label>
-          </div>
-        </div>
+        <div class="field"><label>Age</label><input type="number" id="age" min="0" max="120"></div>
+        <div class="field"><label>Statut</label><select id="status"><option value="std">Standard</option><option value="bim">BIM</option></select></div>
+        <div class="field"><label>Type</label><select id="type" onchange="toggleCond()"><option value="">-- Choisir --</option><option value="kine">Kine</option><option value="med">Medicaments</option><option value="log">Logopedie</option></select></div>
       </div>
       <div id="cond" class="grid" style="display:none;"></div>
-      <button class="btn-primary" onclick="runSim()">Verifier mon eligibilite</button>
+      <button class="btn-primary" onclick="runSim()">Verifier</button>
       <div id="res" class="result-panel">
         <div id="r-status" class="res-status"></div>
         <div id="r-msg" class="res-msg"></div>
         <div id="r-ref" class="res-ref"></div>
-        
-        <div class="summary-card" id="summary-card" style="display:none;">
-          <div class="summary-item"><span class="summary-label">Statut</span><span class="summary-value" id="sum-status"></span></div>
-          <div class="summary-item"><span class="summary-label">Seances couvertes</span><span class="summary-value" id="sum-sessions"></span></div>
-          <div class="summary-item"><span class="summary-label">Ticket modulateur</span><span class="summary-value" id="sum-ticket"></span></div>
-          <div class="summary-item"><span class="summary-label">Valable jusqu'au</span><span class="summary-value" id="sum-validity"></span></div>
-          <div class="summary-item"><span class="summary-label">Jours restants</span><span class="summary-value countdown" id="sum-countdown"></span></div>
-        </div>
-        
-        <div class="checklist" id="checklist" style="display:none;">
-          <strong>A faire maintenant :</strong>
-          <label class="checklist-item"><input type="checkbox"> Parler a votre medecin traitant</label>
-          <label class="checklist-item"><input type="checkbox"> Telecharger le formulaire</label>
-          <label class="checklist-item"><input type="checkbox"> Envoyer a votre mutualite</label>
-        </div>
-        
-        <a id="r-form" href="#" target="_blank" rel="noopener" class="form-link" style="display:none;">Telecharger le formulaire de demande officiel</a>
-        <div style="margin-top:var(--spacing-md);display:flex;gap:var(--spacing-sm)">
-          <button class="btn-secondary" onclick="exportReport()">Exporter le rapport</button>
-          <button class="btn-secondary" onclick="window.print()">Imprimer</button>
-          <button class="btn-secondary" onclick="copyResultLink()">Copier le lien</button>
-          <button class="btn-small" onclick="toggleFavorite()">Ajouter aux favoris</button>
-        </div>
-        
-        <div class="favorites-section" id="favorites-section" style="display:none; margin-top:var(--spacing-lg); padding-top:var(--spacing-lg); border-top:1px solid var(--border);">
-          <strong>Mes favoris :</strong>
-          <div id="favorites-list" style="margin-top:var(--spacing-sm);"></div>
-        </div>
       </div>
     </div>
   </section>
 
-  <!-- NOMENCLATURE & CODES -->
+  <!-- NOMENCLATURE -->
   <section id="v-nom" class="view">
     <button class="back-btn" onclick="home()">&larr; Retour</button>
     <div class="card">
-      <h2>Nomenclature et Codes INAMI</h2>
-      
+      <h2>Nomenclature et Codes</h2>
       <div class="nomo-tabs">
         <div class="nomo-tab active" onclick="switchNomoTab('search')">Recherche</div>
-        <div class="nomo-tab" onclick="switchNomoTab('cumul')">Verification Cumul Autorise</div>
-        <div class="nomo-tab" onclick="switchNomoTab('changelog')">Historique</div>
+        <div class="nomo-tab" onclick="switchNomoTab('compare')">Comparaison</div>
       </div>
       
       <div id="nomo-search-tab">
         <div class="nomo-controls">
-          <div class="field nomo-select">
-            <label>Categorie</label>
-            <select id="nomo-category" onchange="updateNomoList()">
-              <option value="all">Toutes les categories</option>
-              <optgroup label="Kinesitherapie">
-                <option value="kine-fa">Kinesitherapie Fa (Aigue)</option>
-                <option value="kine-fb">Kinesitherapie Fb (Chronique)</option>
-                <option value="kine-e">Kinesitherapie Pathologies Lourdes (Liste E)</option>
-              </optgroup>
-              <optgroup label="Logopedie">
-                <option value="log-langage">Langage oral et Dysphasie</option>
-                <option value="log-dyslexie">Dyslexie</option>
-                <option value="log-dysorthographie">Dysorthographie</option>
-                <option value="log-dyscalculie">Dyscalculie</option>
-                <option value="log-voix">Troubles de la voix</option>
-                <option value="log-begaiement">Begaiement</option>
-              </optgroup>
-              <optgroup label="Medicaments">
-                <option value="med-a">Medicaments Categorie A</option>
-                <option value="med-b">Medicaments Categorie B</option>
-                <option value="med-c">Medicaments Categorie C</option>
-              </optgroup>
-              <optgroup label="Soins Infirmiers">
-                <option value="nurs-pansements">Pansements et Soins de plaies</option>
-                <option value="nurs-injections">Injections et Prelevements</option>
-                <option value="nurs-diabete">Surveillance diabete</option>
-              </optgroup>
-              <optgroup label="Dietetique">
-                <option value="diet-consult">Consultations dietetiques</option>
-                <option value="diet-suivi">Suivi nutritionnel</option>
-              </optgroup>
-              <optgroup label="Imagerie">
-                <option value="img-radio">Radiographie</option>
-                <option value="img-echo">Echographie</option>
-                <option value="img-irm">IRM</option>
-                <option value="img-scan">Scanner (TDM)</option>
-              </optgroup>
-              <optgroup label="Consultations">
-                <option value="consul-gp">Medecin generaliste</option>
-                <option value="consul-spec">Specialistes</option>
-              </optgroup>
-              <optgroup label="Aide a la Mobilite">
-                <option value="mob-fauteuil">Fauteuils roulants</option>
-                <option value="mob-orthese">Ortheses et Protheses</option>
-              </optgroup>
-            </select>
-          </div>
-          
           <div class="field nomo-search">
-            <label>Rechercher un code ou mot-cle</label>
-            <input type="text" id="nomo-code-search" placeholder="Ex: 502020 ou reeducation" oninput="updateNomoList()">
+            <label>Recherche instantanee</label>
+            <input type="text" id="nomo-search-input" placeholder="Tapez un code ou un mot..." oninput="updateNomoList()">
           </div>
-          
           <div class="toggle-container" onclick="togglePrices()">
-            <label style="font-size:0.85rem; color:var(--text-muted); cursor:pointer;">Afficher les tarifs</label>
+            <label>Afficher tarifs</label>
             <div class="toggle-switch" id="price-toggle"></div>
           </div>
         </div>
-        
-        <div class="nomo-count" id="nomo-count">0 codes trouves</div>
-        <div class="nomo-empty" id="nomo-empty">Aucun code trouve pour cette recherche.</div>
-        
+        <div class="nomo-count" id="nomo-count">0 codes</div>
         <div class="nomo-results" id="nomo-results"></div>
       </div>
-      
-      <div id="nomo-cumul-tab" class="cumul-container">
-        <h3>Verification Cumul Autorise</h3>
-        <p style="color:var(--text-muted); margin-bottom:var(--spacing-md); font-size:0.95rem;">
-          Entrez les codes nomenclature a verifier. Le systeme analysera leur compatibilite selon les regles INAMI.
-        </p>
-        
-        <div class="cumul-inputs" id="cumul-inputs">
-          <input type="text" class="cumul-input" placeholder="Code 1" maxlength="6">
-          <input type="text" class="cumul-input" placeholder="Code 2" maxlength="6">
-          <button class="cumul-add-btn" onclick="addCumulInput()">+</button>
-        </div>
-        
-        <button class="btn-primary" onclick="checkCumul()" style="max-width:300px;">Verifier le cumul autorise</button>
-        
-        <div class="cumul-results" id="cumul-results"></div>
-      </div>
-      
-      <div id="nomo-changelog-tab" class="cumul-container">
-        <h3>Historique des mises a jour</h3>
-        <div style="margin-top:var(--spacing-md); color:var(--text-muted); font-size:0.9rem; line-height:1.8;">
-          <p><strong style="color:var(--primary);">Janvier 2025</strong></p>
-          <ul style="margin-left:1.2rem;">
-            <li>Mise a jour des listes logopedie (6 categories officielles INAMI)</li>
-            <li>Extension des listes kinesitherapie (Fa: 18 pathologies, Fb: 15, E: 12)</li>
-            <li>Nouveaux seuils BIM/OMNIO pour 2025</li>
-            <li>Correction regles cumul kinesitherapie Fa/Fb</li>
-            <li>Mise a jour formulaires INAMI (Annexes 05a/05b)</li>
-          </ul>
+
+      <div id="nomo-compare-tab" style="display:none;">
+        <p style="color:var(--text-muted); margin-bottom:var(--spacing-md);">Selectionnez 2 ou 3 codes dans l'onglet Recherche pour les comparer ici.</p>
+        <div class="comparison-panel active" id="comparison-view">
+          <div class="comparison-grid" id="comparison-grid"></div>
         </div>
       </div>
     </div>
@@ -739,30 +323,17 @@
     <button class="back-btn" onclick="home()">&larr; Retour</button>
     <div class="chat-container">
       <div class="chat-header">
-        <div>
-          <div class="agent-title">Super Agent INAMI</div>
-          <div class="agent-sub">Detection automatique ou selection manuelle</div>
-        </div>
-        <div style="text-align:right">
-          <div style="font-size:0.8rem;color:var(--text-muted)">Question <span id="prog-agent">1</span>/<span id="total-agent">4</span></div>
-          <div class="progress-bar"><div class="progress-fill" id="prog-fill-agent" style="width:25%"></div></div>
-        </div>
+        <div><div class="agent-title">Super Agent INAMI</div><div class="agent-sub">Reponses basees sur les regles officielles</div></div>
       </div>
-      
       <div class="topic-selector" id="topic-selector">
-        <button class="topic-btn active" onclick="setTopic('auto')">Auto-Detection</button>
-        <button class="topic-btn" onclick="setTopic('kine')">Kinesitherapie</button>
-        <button class="topic-btn" onclick="setTopic('log')">Logopedie</button>
+        <button class="topic-btn active" onclick="setTopic('auto')">Auto</button>
+        <button class="topic-btn" onclick="setTopic('kine')">Kine</button>
         <button class="topic-btn" onclick="setTopic('med')">Medicaments</button>
-        <button class="topic-btn" onclick="setTopic('nurs')">Soins Infirmiers</button>
-        <button class="topic-btn" onclick="setTopic('diet')">Dietetique</button>
-        <button class="topic-btn" onclick="setTopic('parc')">Parcours</button>
+        <button class="topic-btn" onclick="setTopic('log')">Logopedie</button>
       </div>
-      
       <div id="chat-log-agent"></div>
-      <div class="typing" id="typing-agent">Analyse en cours...</div>
       <div class="chat-input-area">
-        <input type="text" class="chat-input" id="input-agent" placeholder="Ex: Mounjaro pour diabete T2 ? / Fb-51 reeducation marche...">
+        <input type="text" class="chat-input" id="input-agent" placeholder="Posez votre question...">
         <button class="send-btn" onclick="sendMsg('agent')">Envoyer</button>
       </div>
     </div>
@@ -771,407 +342,100 @@
   <!-- MUTUALITES -->
   <section id="v-mutualites" class="view">
     <button class="back-btn" onclick="home()">&larr; Retour</button>
-    <div class="card">
-      <h2>Mutualites Belges - Contacts Officiels</h2>
-      <div class="mutualite-filters">
-        <input type="text" id="mut-search" placeholder="Rechercher une mutualite..." oninput="filterMutualites()">
-        <select id="mut-region" onchange="filterMutualites()">
-          <option value="">Toutes les regions</option>
-          <option value="Bruxelles">Bruxelles</option>
-          <option value="Wallonie">Wallonie</option>
-          <option value="Flandre">Flandre</option>
-          <option value="National">National</option>
-        </select>
-      </div>
-      <div id="mut-list"></div>
-      <div style="font-size:0.8rem; color:var(--text-muted); margin-top:var(--spacing-md); text-align:right;">Source: INAMI - Contactez les mutualites</div>
-    </div>
+    <div class="card"><h2>Mutualites</h2><p style="color:var(--text-muted);">Liste officielle en chargement...</p></div>
   </section>
 </main>
 
 <footer>
-  <span class="badge-inami">Regles INAMI a jour : Janvier 2025</span>
-  <p style="margin-top:var(--spacing-sm); font-size:0.75rem;">Cet outil est informatif. La decision finale revient a votre medecin-conseil.</p>
-  <div style="margin-top:var(--spacing-sm)">
-    <button class="btn-small" onclick="toggleShortcutsHelp()">Aide raccourcis clavier</button>
-  </div>
+  <span class="sync-status"><span class="sync-dot sync-offline"></span> Regles INAMI a jour : Janvier 2025</span>
 </footer>
-
-<div class="shortcuts-help" id="shortcuts-help">
-  <h4>Raccourcis Clavier</h4>
-  <div class="shortcut-item"><span>Ouvrir recherche</span><span class="shortcut-key">Ctrl + K</span></div>
-  <div class="shortcut-item"><span>Lancer simulateur</span><span class="shortcut-key">Ctrl + S</span></div>
-  <div class="shortcut-item"><span>Retour accueil</span><span class="shortcut-key">Esc</span></div>
-  <div class="shortcut-item"><span>Valider champ</span><span class="shortcut-key">Entree</span></div>
-  <div class="shortcut-item"><span>Aide</span><span class="shortcut-key">F1</span></div>
-</div>
-
 </div>
 
 <script>
+  // CONFIGURATION & DATA
   const CFG = {
     PASSWORD_HASH: btoa('inami2025'),
-    
     DB_URLS: {
       medicaments: 'https://raw.githubusercontent.com/Bootyfull1/inami-database/main/medicaments.json',
       kine: 'https://raw.githubusercontent.com/Bootyfull1/inami-database/main/kine-codes.json'
     },
-    
-    FORMS: {
-      kine: 'https://www.inami.fgov.be/SiteCollectionDocuments/formulaire_reglement20030728_annexe_05a.pdf',
-      kine_prolong: 'https://www.inami.fgov.be/SiteCollectionDocuments/formulaire_reglement20030728_annexe_05b.pdf',
-      log: 'https://www.inami.fgov.be/fr/professionnels/professionnels-de-la-sante/logopedes/formulaires',
-      med: 'https://www.health.belgium.be/sites/default/files/media/files/2025-11/m_at_formulaire_accord_prealable_fr.pdf',
-      chron: 'https://www.inami.fgov.be/fr/professionnels/professionnels-de-la-sante/medecins/formulaires-pour-les-medecins',
-      hosp: 'https://www.health.belgium.be/sites/default/files/media/files/2025-11/m_at_formulaire_accord_prealable_fr.pdf',
-      nurs: 'https://www.inami.fgov.be/fr/citoyens/soins/pages/soins-infirmiers.aspx',
-      diet: 'https://www.inami.fgov.be/fr/citoyens/soins/pages/dietetique.aspx'
-    },
-    
-    KINE_LISTS: {
-      FA: [
-        {id:1, name:'Fractures et luxations (traumatiques)', codes:['100101','100102','100201','100202'], validityMonths:12},
-        {id:2, name:'Lesions ligamentaires et musculaires', codes:['100301','100302','100401'], validityMonths:12},
-        {id:3, name:'Interventions orthopediques post-operatoires', codes:['100501','100502','100601'], validityMonths:12},
-        {id:4, name:'Interventions neurochirurgicales', codes:['100701','100702'], validityMonths:12},
-        {id:5, name:'Affections rhumatologiques inflammatoires aigues', codes:['100801','100802'], validityMonths:12},
-        {id:6, name:'Affections de l\'epaule (periarthrite, coiffe)', codes:['100901','100902'], validityMonths:12},
-        {id:7, name:'Affections du coude (epicondylite, luxation)', codes:['101001','101002'], validityMonths:12},
-        {id:8, name:'Affections du poignet/main (fracture scaphoide, canal carpien)', codes:['101101','101102'], validityMonths:12},
-        {id:9, name:'Affections de la hanche (coxarthrose aigue, bursite)', codes:['101201','101202'], validityMonths:12},
-        {id:10, name:'Affections du genou (meniscectomie, ligament croise)', codes:['101301','101302'], validityMonths:12},
-        {id:11, name:'Affections de la cheville/pied (entorse grave, fracture malleole)', codes:['101401','101402'], validityMonths:12},
-        {id:12, name:'Affections du rachis cervical (whiplash, hernie cervicale)', codes:['101501','101502'], validityMonths:12},
-        {id:13, name:'Affections du rachis dorsal/lombaire (lombalgie aigue, sciatique)', codes:['101601','101602'], validityMonths:12},
-        {id:14, name:'Polytraumatismes legers', codes:['101701'], validityMonths:12},
-        {id:15, name:'Etats post-immobilisation platree', codes:['101801'], validityMonths:12},
-        {id:16, name:'Brulures aigues (phase initiale)', codes:['101901'], validityMonths:12},
-        {id:17, name:'Affections vasculaires peripheriques aigues', codes:['102001'], validityMonths:12},
-        {id:18, name:'Etats post-chirurgie generale (abdominale, thoracique)', codes:['102101'], validityMonths:12}
-      ],
-      FB: [
-        {id:51, name:'Reeducation a la marche (age >= 65 ans)', minAge:65, validityMonths:24},
-        {id:52, name:'Retard ou trouble du developpement psychomoteur (age < 16 ans)', maxAge:15, validityMonths:24},
-        {id:53, name:'Lymphoedeme chronique avec criteres valides', validityMonths:24},
-        {id:54, name:'Affections neurologiques chroniques non evolutives', validityMonths:24},
-        {id:55, name:'Reeducation fonctionnelle post-brulures', validityMonths:24},
-        {id:56, name:'Affections rhumatologiques chroniques (arthrose evoluee)', validityMonths:24},
-        {id:57, name:'Sequelles de pathologies neurologiques peripheriques', validityMonths:24},
-        {id:58, name:'Affections respiratoires chroniques (hors liste E)', validityMonths:24},
-        {id:59, name:'Reeducation post-chirurgie cardiaque', validityMonths:24},
-        {id:60, name:'Pathologies vasculaires peripheriques chroniques', validityMonths:24},
-        {id:61, name:'Reeducation post-AVC (phase chronique)', validityMonths:24},
-        {id:62, name:'Affections degeneratives du rachis (chroniques)', validityMonths:24},
-        {id:63, name:'Syndromes douloureux chroniques regionaux complexes', validityMonths:24},
-        {id:64, name:'Reeducation post-prothese articulaire (phase chronique)', validityMonths:24},
-        {id:65, name:'Affections neuromusculaires chroniques non evolutives', validityMonths:24}
-      ],
-      E: [
-        {id:'E-a', name:'Paralysie peripherique etendue (Guillain-Barre, etc.)', validityMonths:12},
-        {id:'E-b', name:'Affections neurologiques centrales evolutives (SEP, Parkinson, SLA)', validityMonths:12},
-        {id:'E-c', name:'Sequelles motrices etendues (IMC, hemiplegie, spina bifida)', validityMonths:12},
-        {id:'E-d', name:'Suites de brulures graves (membres/cou, phase evolutive)', validityMonths:12},
-        {id:'E-e', name:'Perte fonctionnelle majeure d\'un membre (amputation, agenesie)', validityMonths:12},
-        {id:'E-f', name:'Pied bot varus equin (enfant < 2 ans)', validityMonths:12},
-        {id:'E-g', name:'Dysfonction articulaire grave (hemophilie, scoliose >=15deg <18 ans)', validityMonths:12},
-        {id:'E-h', name:'Polyarthrites chroniques inflammatoires (PR, spondylarthrite, lupus)', validityMonths:12},
-        {id:'E-i', name:'Myopathies (dystrophies musculaires, polymyosite)', validityMonths:12},
-        {id:'E-j', name:'Affections respiratoires chroniques (mucoviscidose, BPCO severe)', validityMonths:12},
-        {id:'E-k', name:'Lymphoedeme (post-radio/chirurgical avec criteres objectifs)', validityMonths:12},
-        {id:'E-l', name:'Anomalie structurelle locomotrice ou affection rare (<5/10.000)', validityMonths:12}
-      ]
-    },
-    
-    LOG_CATEGORIES: {
-      'log-langage': {name:'Langage oral et Dysphasie', article:'Art. 36, 2, b), 2deg et 2, f)', validityMonths:24},
-      'log-dyslexie': {name:'Dyslexie', article:'Art. 36, 2, b), 3deg', validityMonths:24},
-      'log-dysorthographie': {name:'Dysorthographie', article:'Art. 36, 2, b), 3deg', validityMonths:24},
-      'log-dyscalculie': {name:'Dyscalculie', article:'Art. 36, 2, b), 3deg', validityMonths:24},
-      'log-voix': {name:'Troubles de la voix', article:'Art. 36, 2, c), 2deg', validityMonths:12},
-      'log-begaiement': {name:'Begaiement', article:'Art. 36, 2, b), 6deg, 6.4', validityMonths:24, note:'Test D obligatoire + Test E si >=10 ans'}
-    },
-    
     DRUGS_DB: {
       'mounjaro': {name:'Mounjaro (tirzepatide)', cat:'B', indications:{'diabete':'Rembourse sous conditions strictes (echec tritherapie, HbA1c>=8%, prescription diabetologue/endocrinologue)','obesite':'Non rembourse pour obesite isolee'}},
-      'tirzepatide': {name:'Mounjaro (tirzepatide)', cat:'B', indications:{'diabete':'Rembourse sous conditions strictes','obesite':'Non rembourse'}},
-      'dafalgan': {name:'Dafalgan (paracetamol)', cat:'B', indications:{'douleur':'Rembourse a 50%, ticket modulateur standard','fievre':'Rembourse a 50%'}},
-      'paracetamol': {name:'Paracetamol (generique)', cat:'B', indications:{'douleur':'Rembourse a 50%, privilegier le generique'}},
-      'ozempic': {name:'Ozempic (semaglutide)', cat:'B', indications:{'diabete':'Rembourse sous conditions','obesite':'Non rembourse (Wegovy a des criteres differents)'}},
-      'wegovy': {name:'Wegovy (semaglutide)', cat:'C', indications:{'obesite':'Rembourse sous conditions tres strictes (IMC>=35+comorbidites ou >=40, programme multidisciplinaire)'}},
       'insuline': {name:'Insuline', cat:'A', indications:{'diabete':'Rembourse a 100% pour diabete insulinodependant'}}
     },
-    
+    KINE_LISTS: {
+      FA: [
+        {id:1, name:'Fractures et luxations', codes:['100101','100102'], validityMonths:12},
+        {id:2, name:'Lesions ligamentaires', codes:['100301'], validityMonths:12}
+      ],
+      FB: [{id:51, name:'Reeducation marche (>=65 ans)', minAge:65, validityMonths:24}],
+      E: [{id:'E-b', name:'SEP / Parkinson', validityMonths:12}]
+    },
     NOMO_CODES: {
-      'kine-fa': [
-        {code:'501001', desc:'Kinesitherapie - seance individuelle (forfait Fa)', cat:'Kinesitherapie Fa', price:18.75},
-        {code:'501002', desc:'Kinesitherapie - seance en groupe (forfait Fa)', cat:'Kinesitherapie Fa', price:14.50},
-        {code:'501003', desc:'Kinesitherapie - seance a domicile (forfait Fa)', cat:'Kinesitherapie Fa', price:22.30},
-        {code:'501010', desc:'Bilan kinesitherapique initial (Fa)', cat:'Kinesitherapie Fa', price:35.00},
-        {code:'501011', desc:'Reevaluation kinesitherapique (Fa)', cat:'Kinesitherapie Fa', price:25.00}
-      ],
-      'kine-fb': [
-        {code:'502001', desc:'Kinesitherapie - seance individuelle (forfait Fb)', cat:'Kinesitherapie Fb', price:18.75},
-        {code:'502020', desc:'Reeducation a la marche - protocole (Fb-51)', cat:'Kinesitherapie Fb', price:28.00}
-      ],
-      'kine-e': [
-        {code:'503001', desc:'Kinesitherapie pathologie lourde - seance (Liste E)', cat:'Kinesitherapie Liste E', price:25.00}
-      ]
+      'med-b': [{code:'601050', desc:'Mounjaro', cat:'Medicaments B', price:85.00}, {code:'601020', desc:'Metformine', cat:'Medicaments B', price:4.80}],
+      'kine-fa': [{code:'501001', desc:'Seance individuelle Fa', cat:'Kine Fa', price:18.75}],
+      'kine-fb': [{code:'502020', desc:'Protocole Fb-51', cat:'Kine Fb', price:28.00}]
     },
-    
-    CUMUL_RULES: {
-      'kine-fa,kine-fb': {allowed:false, reason:'Kine Fa et Fb non cumulables le meme jour'},
-      'kine-fa,kine-e': {allowed:false, reason:'Kine Fa et Liste E non cumulables (protocoles distincts)'},
-      'kine-fb,kine-e': {allowed:false, reason:'Kine Fb et Liste E non cumulables (protocoles distincts)'}
-    },
-    
-    MUTUALITES: [
-      {name:'Mutualite Chretienne', website:'https://www.mc.be', phone:'02 778 91 11', email:'info@mc.be', regions:['Bruxelles','Wallonie','Flandre'], contact:'https://www.mc.be/contact'},
-      {name:'Solidaris', website:'https://www.solidaris.be', phone:'02 515 01 11', email:'info@solidaris.be', regions:['Bruxelles','Wallonie','Flandre'], contact:'https://www.solidaris.be/contact'}
-    ],
-    
-    AGENT_TOPICS: {
-      kine: {
-        greeting: "Bonjour. Je suis l'expert en kinesitherapie. Pour analyser votre eligibilite, je vais vous poser quelques questions simples sur votre situation.",
-        steps: [
-          { key: 'category', prompt: "Quelle categorie INAMI concerne votre demande : Fa (aigue), Fb (chronique) ou Pathologie Lourde (Liste E) ?" },
-          { key: 'pathology', prompt: "Quel est le numero ou code de la pathologie ? (Ex: Fb-51, E-c, Fa-2)" },
-          { key: 'sessions', prompt: "Combien de seances sont prescrites ou demandees ?" },
-          { key: 'age', prompt: "Quel est l'age du patient ?" }
-        ],
-        evaluate: (slots) => {
-          let msg = `Analyse pour ${slots.category} / pathologie ${slots.pathology} : `;
-          const sess = parseInt(slots.sessions) || 0;
-          const age = parseInt(slots.age) || 0;
-          let status = 'ok', ref = [], validityMonths = 12;
-          
-          if (slots.pathology.includes('51') && (slots.category.toUpperCase().includes('FB') || slots.category.toLowerCase().includes('fb'))) {
-            if (age < 65) return { status: 'refus', msg: `La pathologie Fb-51 (Reeducation a la marche) exige un age minimum de 65 ans. Age saisi : ${age} ans.`, ref: ['Nomenclature Kinesitherapie, Art. 7'] };
-          }
-          
-          if (sess > 18 || slots.category.toLowerCase().includes('e') || slots.category.toLowerCase().includes('pathologie')) {
-            status = 'conditionnel'; 
-            msg += 'Un accord du medecin-conseil est obligatoire pour depasser les forfaits standards ou pour les pathologies lourdes.'; 
-            ref.push('Protocole de soins prealable (formulaire 05a/05b)');
-            validityMonths = slots.category === 'E' ? 12 : 24;
-          }
-          
-          if (status === 'ok') {
-            msg += 'Les conditions d\'admissibilite standard semblent remplies.';
-            ref.push('Forfaits Kinesitherapie INAMI');
-          }
-          if (status === 'conditionnel') msg += ' Un dossier clinique complet et le formulaire officiel sont requis.';
-          
-          return { status, msg, ref, validityMonths, sessions: sess > 18 ? 18 : sess };
-        }
-      },
-      
-      med: {
-        greeting: "Bonjour. Expert en medicaments. Pour verifier les conditions INAMI, indiquez le nom du medicament et la pathologie concernee.",
-        steps: [
-          { key: 'drug', prompt: "Nom du medicament ou principe actif ?" },
-          { key: 'indication', prompt: "Pour quelle pathologie a-t-il ete prescrit ?" },
-          { key: 'prescriber', prompt: "Quel type de medecin a prescrit ? (Generaliste ou Specialiste)" }
-        ],
-        evaluate: (slots) => {
-          let msg = `Verification pour ${slots.drug || 'medicament'} (${slots.indication || 'indication non precisee'}) : `;
-          const lower = (slots.drug + ' ' + slots.indication).toLowerCase();
-          let status = 'ok', ref = [];
-          
-          let drugInfo = null;
-          for (const [key, info] of Object.entries(CFG.DRUGS_DB)) {
-            if (lower.includes(key)) { drugInfo = info; break; }
-          }
-          
-          if (drugInfo) {
-            msg = `<strong>${drugInfo.name}</strong> (Categorie ${drugInfo.cat}) : `;
-            const indicationKey = Object.keys(drugInfo.indications).find(k => lower.includes(k));
-            if (indicationKey && drugInfo.indications[indicationKey]) {
-              msg += drugInfo.indications[indicationKey];
-              if (drugInfo.indications[indicationKey].includes('sous conditions') || drugInfo.indications[indicationKey].includes('strictes')) {
-                status = 'conditionnel'; ref.push('Protocole Medicaments INAMI');
-              }
-              if (drugInfo.indications[indicationKey].includes('Non rembourse')) {
-                status = 'refus'; ref.push('Decisions INAMI 2024-2025');
-              }
-            } else {
-              msg += 'Indication non couverte par le remboursement INAMI pour ce medicament.';
-              status = 'refus'; ref.push('Classification A/B/C/D');
-            }
-          } else {
-            msg += 'Verification standard. Le remboursement depend de la categorie A/B/C/D et du Service Medical Rendu (SMR).';
-            ref.push('Nomenclature Pharmaceutique');
-          }
-          
-          return { status, msg, ref, validityMonths: 6 };
-        }
-      },
-      
-      log: {
-        greeting: "Bonjour. Expert en logopedie. Pour verifier vos droits au remboursement, repondez aux questions suivantes.",
-        steps: [
-          { key: 'category', prompt: "Quelle categorie de trouble logopedique concerne votre demande ? (Langage/Dysphasie, Dyslexie, Dysorthographie, Dyscalculie, Voix, Begaiement)" },
-          { key: 'age', prompt: "Quel est l'age du patient ?" },
-          { key: 'tests', prompt: "Avez-vous deja passe les tests officiels pour cette categorie ?" }
-        ],
-        evaluate: (slots) => {
-          let msg = `Analyse logopedie - ${slots.category} : `;
-          const age = parseInt(slots.age) || 0;
-          let status = 'ok', ref = [], validityMonths = 24;
-          
-          const catKey = Object.keys(CFG.LOG_CATEGORIES).find(k => slots.category.toLowerCase().includes(k.split('-')[1]));
-          if (catKey) {
-            const catInfo = CFG.LOG_CATEGORIES[catKey];
-            validityMonths = catInfo.validityMonths;
-            msg = `Categorie : ${catInfo.name} (${catInfo.article}). Validite : ${validityMonths} mois. `;
-            
-            if (slots.category.toLowerCase().includes('begaiement')) {
-              if (age >= 10 && slots.tests?.toLowerCase().includes('non')) {
-                status = 'conditionnel';
-                msg += 'Pour le begaiement a partir de 10 ans, le test Categorie E est obligatoire en plus du test D.';
-                ref.push('Listes limitatives tests begaiement INAMI');
-              } else {
-                msg += 'Tests Categorie D requis (obligatoires). Test E requis si patient >=10 ans.';
-                ref.push('Art. 36, 2, b), 6deg, 6.4');
-              }
-            } else {
-              if (slots.tests?.toLowerCase().includes('non')) {
-                status = 'conditionnel';
-                msg += 'Les tests officiels de la liste limitative INAMI sont requis pour le remboursement.';
-                ref.push(catInfo.article);
-              } else {
-                msg += 'Conditions standard remplies si tests officiels valides.';
-                ref.push(catInfo.article);
-              }
-            }
-          } else {
-            msg += 'Veuillez preciser la categorie parmi : Langage/Dysphasie, Dyslexie, Dysorthographie, Dyscalculie, Voix, Begaiement.';
-            status = 'conditionnel';
-          }
-          
-          return { status, msg, ref, validityMonths, sessions: 0 };
-        }
-      },
-      
-      nurs: {
-        greeting: "Bonjour. Expert en soins infirmiers. Pour analyser votre eligibilite, precisez le type de soins et le contexte.",
-        steps: [
-          { key: 'care_type', prompt: "Type de soins : Pansements, Injections, Surveillance diabete, Soins post-operatoires ?" },
-          { key: 'setting', prompt: "Lieu : Domicile ou Institution ?" },
-          { key: 'prescription', prompt: "Prescription medicale disponible ?" }
-        ],
-        evaluate: (slots) => {
-          let msg = `Soins infirmiers - ${slots.care_type} (${slots.setting}) : `;
-          if (slots.prescription?.toLowerCase().includes('non')) {
-            return { status: 'refus', msg: 'Une prescription medicale est obligatoire pour le remboursement des soins infirmiers.', ref: ['Nomenclature Soins Infirmiers'] };
-          }
-          msg += 'Remboursement INAMI prevu selon la nomenclature. Ticket modulateur standard, reduit si statut BIM.';
-          return { status: 'ok', msg, ref: ['Prestations Infirmieres INAMI'], validityMonths: 12 };
-        }
-      },
-      
-      diet: {
-        greeting: "Bonjour. Expert en dietetique. Les consultations sont remboursees sous conditions specifiques.",
-        steps: [
-          { key: 'pathology', prompt: "Pathologie concernee : Diabete, Obesite, Maladie metabolique, Autre ?" },
-          { key: 'prescriber', prompt: "Prescription par un medecin ?" },
-          { key: 'previous', prompt: "Avez-vous deja beneficie de consultations dietetiques remboursees cette annee ?" }
-        ],
-        evaluate: (slots) => {
-          let msg = `Dietetique - ${slots.pathology} : `;
-          if (slots.prescriber?.toLowerCase().includes('non')) {
-            return { status: 'refus', msg: 'Une prescription medicale est requise pour le remboursement.', ref: ['Nomenclature Dietetique'] };
-          }
-          if (['diabete','obesite','maladie metabolique'].some(p => slots.pathology.toLowerCase().includes(p))) {
-            msg += 'Consultations remboursees (forfait annuel). Un accord prealable peut etre requis selon la mutualite.';
-            return { status: 'conditionnel', msg, ref: ['Protocole Dietetique INAMI'], validityMonths: 12 };
-          }
-          msg += 'Remboursement possible selon pathologie et prescription. Verifiez aupres de votre mutualite.';
-          return { status: 'ok', msg, ref: ['Prestations Dietetiques'] };
-        }
-      },
-      
-      parc: {
-        greeting: "Bonjour. Expert en parcours de soins. Pour analyser votre situation, repondez simplement.",
-        steps: [
-          { key: 'specialist', prompt: "Consultez-vous un specialiste ? Si oui, lequel ?" },
-          { key: 'mdt', prompt: "Avez-vous declare un medecin traitant (MDT) ?" }
-        ],
-        evaluate: (slots) => {
-          let msg = `Analyse parcours : `;
-          if (slots.mdt?.toLowerCase().includes('non')) {
-            msg += 'Ticket modulateur majore applicable. Exceptions : gynecologue, ophtalmologue, psychiatre, pediatre, dermatologue (<16 ans).';
-            return { status: 'conditionnel', msg, ref: ['Parcours Coordones INAMI'] };
-          }
-          msg += 'Remboursement au taux de base prevu. Tiers payant applicable si professionnel conventionne.';
-          return { status: 'ok', msg, ref: ['Coordination des Soins'] };
-        }
-      }
+    KNOWLEDGE_BASE: {
+      'mounjaro': 'Mounjaro (tirzepatide) est un medicament de categorie B. Il est rembourse pour le diabete de type 2 uniquement si echec de la tritherapie precedente et HbA1c >= 8%. Prescription reservee aux specialistes. Non rembourse pour l obesite simple.',
+      'fa': 'La kinesitherapie Fa (aigue) couvre les pathologies traumatiques recentes. Forfait de 18 seances/an renouvelable apres evaluation. Code operatoire souvent requis pour Fa-1.',
+      'fb': 'La kinesitherapie Fb (chronique) s adresse aux pathologies de longue duree. Fb-51 exige >= 65 ans. Renouvellement sur base de bilans fonctionnels.',
+      'bim': 'Le statut BIM (Intervention Majorée) réduit le ticket modérateur à ~20-30% selon les prestations. Vérifiez votre attestation auprès de votre mutualité.'
     }
   };
 
-  const chatSessions = { agent: { step: 0, slots: {}, initialParsed: false, topic: 'auto', initialized: false } };
   let showPrices = false;
-  let favorites = JSON.parse(localStorage.getItem('inami_favorites') || '[]');
   let currentTopic = 'auto';
+  let selectedCompareCodes = [];
 
   // LOGIN
   function attemptLogin() {
-    const password = document.getElementById('login-password').value;
-    if (btoa(password) === CFG.PASSWORD_HASH) {
+    if (btoa(document.getElementById('login-password').value) === CFG.PASSWORD_HASH) {
       localStorage.setItem('inami_session', 'active');
       document.getElementById('login-screen').style.display = 'none';
       document.getElementById('main-app').style.display = 'block';
-      loadFavorites();
+      loadExternalData();
     } else {
       document.getElementById('login-error').style.display = 'block';
-      setTimeout(() => { document.getElementById('login-error').style.display = 'none'; }, 3000);
     }
   }
-  
-  function showPasswordNote() {
-    const note = document.getElementById('password-note');
-    note.style.display = note.style.display === 'block' ? 'none' : 'block';
-  }
-  
-  function logout() {
-    localStorage.removeItem('inami_session');
-    location.reload();
-  }
-  
-  // Check session
+  function logout() { localStorage.removeItem('inami_session'); location.reload(); }
   if (localStorage.getItem('inami_session') === 'active') {
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('main-app').style.display = 'block';
-    loadFavorites();
+    loadExternalData();
   }
 
-  // LOAD EXTERNAL DBS
-  async function loadAllExternalDBs() {
-    try {
-      const response = await fetch(CFG.DB_URLS.medicaments, { cache: 'no-store' });
-      if (!response.ok) throw new Error('HTTP ' + response.status);
-      const data = await response.json();
-      
-      const drugsDB = {};
-      data.medicaments.forEach(med => {
-        const key = med.principeActif.toLowerCase().split(' ')[0];
-        drugsDB[key] = {
-          name: med.nom || med.principeActif,
-          cat: med.categorie,
-          indications: {}
-        };
-        med.indications.forEach(ind => {
-          const reimbursed = med.remboursement > 0;
-          const conditions = med.accordPrealable ? 'sous conditions strictes' : 'standard';
-          const ticket = reimbursed ? (med.remboursement === 100 ? '100%' : med.remboursement + '%') : '0%';
-          drugsDB[key].indications[ind] = `${reimbursed ? 'Rembourse a ' + ticket : 'Non rembourse'} (${conditions})`;
-        });
-      });
-      Object.assign(CFG.DRUGS_DB, drugsDB);
-      console.log('Base medicaments chargee : ' + data.totalMedicaments + ' specialites');
-    } catch (error) {
-      console.error('Erreur chargement medicaments:', error);
+  // SYNC INDICATOR (Point 5a)
+  function updateSyncStatus() {
+    const dot = document.querySelector('.sync-dot');
+    const text = document.querySelector('.sync-status');
+    if (navigator.onLine) {
+      dot.className = 'sync-dot sync-online';
+      text.lastChild.textContent = ' Synchronise (Donnees a jour)';
+    } else {
+      dot.className = 'sync-dot sync-offline';
+      text.lastChild.textContent = ' Mode hors-ligne actif';
     }
+  }
+  window.addEventListener('online', updateSyncStatus);
+  window.addEventListener('offline', updateSyncStatus);
+
+  async function loadExternalData() {
+    updateSyncStatus();
+    try {
+      const res = await fetch(CFG.DB_URLS.medicaments);
+      if (res.ok) {
+        const data = await res.json();
+        // Merge external DB
+        data.medicaments.forEach(m => {
+          const key = m.principeActif.toLowerCase().split(' ')[0];
+          CFG.DRUGS_DB[key] = {name: m.nom, cat: m.categorie, indications: {}};
+          m.indications.forEach(ind => CFG.DRUGS_DB[key].indications[ind] = `Rembourse ${m.remboursement}%`);
+        });
+        updateNomoList();
+      }
+    } catch(e) { console.log('Utilisation base locale'); }
   }
 
   // NAVIGATION
@@ -1180,800 +444,223 @@
     document.getElementById('nav').style.display = id === 'home' ? 'flex' : 'none';
     document.querySelector('h1').style.display = id === 'home' ? 'block' : 'none';
     document.querySelector('.sub').style.display = id === 'home' ? 'block' : 'none';
-    document.querySelector('header .header-actions').style.display = id === 'home' ? 'flex' : 'none';
-    document.querySelector('footer').style.display = id === 'home' ? 'block' : 'none';
-    
+    document.querySelector('.header-actions').style.display = id === 'home' ? 'flex' : 'none';
     const el = document.getElementById('v-' + id);
     if (el) el.style.display = 'block';
-    
-    if (id === 'mutualites') renderMutualites();
     if (id === 'nom') updateNomoList();
   }
-  
-  function home() {
-    show('home');
-  }
-
-  function toggleLang() {
-    const btn = document.querySelector('.lang-toggle');
-    btn.textContent = btn.textContent === 'FR' ? 'NL' : 'FR';
-    alert('La version multilingue complete est en developpement.');
-  }
-  
-  function globalSearch(e) {
-    if (e.key === 'Enter') {
-      const q = e.target.value.toLowerCase();
-      if (q.includes('kine') || q.includes('seance')) show('sim');
-      else if (q.includes('log') || q.includes('langage')) show('agent');
-      else if (q.includes('medicament') || q.includes('med')) show('agent');
-      else if (q.includes('infirmier') || q.includes('pansement')) show('agent');
-      else if (q.includes('dietetique') || q.includes('nutrition')) show('agent');
-      else if (q.includes('mutualite') || q.includes('contact')) show('mutualites');
-      else if (q.includes('nomenclature') || q.includes('code')) show('nom');
-      else show('sim');
-      e.target.value = '';
-    }
-  }
-
-  function toggleShortcutsHelp() {
-    const help = document.getElementById('shortcuts-help');
-    help.classList.toggle('visible');
-  }
-
-  document.addEventListener('keydown', (e) => {
-    if (e.ctrlKey && e.key === 'k') { e.preventDefault(); show('nom'); }
-    if (e.ctrlKey && e.key === 's') { e.preventDefault(); show('sim'); }
-    if (e.key === 'Escape') { home(); }
-    if (e.key === 'F1') { e.preventDefault(); toggleShortcutsHelp(); }
-  });
-
-  function toggleSelect(el, name, value) {
-    document.querySelectorAll('.toggle-option[onclick*="' + name + '"]').forEach(opt => opt.classList.remove('selected'));
-    el.classList.add('selected');
-    const input = el.querySelector('input');
-    if (input) input.checked = true;
-  }
+  function home() { show('home'); }
+  function globalSearch(e) { if(e.key==='Enter') { show('agent'); document.getElementById('input-agent').value = e.target.value; sendMsg('agent'); } }
 
   // SIMULATOR
   function toggleCond() {
     const t = document.getElementById('type').value;
-    const c = document.getElementById('cond'); c.innerHTML = '';
+    const c = document.getElementById('cond');
+    c.innerHTML = '';
     if (!t) { c.style.display = 'none'; return; }
     c.style.display = 'grid';
-
-    if (t === 'kine') {
-      c.innerHTML = `
-        <div class="field"><label>Categorie INAMI</label>
-          <select id="s-cat" onchange="updatePathologies('kine')">
-            <option value="FA">Fa (Aigue)</option>
-            <option value="FB">Fb (Chronique)</option>
-            <option value="E">Pathologie Lourde (Liste E)</option>
-          </select>
-        </div>
-        <div class="field"><label>Pathologie</label><select id="s-path"><option value="">-- Charger --</option></select></div>
-        <div class="field"><label>Seances demandees</label><input type="number" id="s-sess" min="1" max="100"></div>
-        <div class="field"><label>Prescription medicale</label>
-          <div class="toggle-group">
-            <label class="toggle-option selected" onclick="toggleSelect(this, 's-presc', 'oui')"><input type="radio" name="s-presc" value="oui" checked>Oui</label>
-            <label class="toggle-option" onclick="toggleSelect(this, 's-presc', 'non')"><input type="radio" name="s-presc" value="non">Non</label>
-          </div>
-        </div>
-        <div class="field" id="opcode-field" style="display:none">
-          <label>Code operatoire</label>
-          <input type="text" id="s-opcode" placeholder="Ex: 100101">
-        </div>
-      `;
-      updatePathologies('kine');
-    } 
-    else if (t === 'log') {
-      c.innerHTML = `
-        <div class="field"><label>Categorie logopedie</label>
-          <select id="s-cat">
-            ${Object.entries(CFG.LOG_CATEGORIES).map(([k,v]) => `<option value="${k}">${v.name}</option>`).join('')}
-          </select>
-        </div>
-        <div class="field"><label>Seances demandees</label><input type="number" id="s-sess" min="1" max="100"></div>
-        <div class="field"><label>Prescription medicale</label>
-          <div class="toggle-group">
-            <label class="toggle-option selected" onclick="toggleSelect(this, 's-presc', 'oui')"><input type="radio" name="s-presc" value="oui" checked>Oui</label>
-            <label class="toggle-option" onclick="toggleSelect(this, 's-presc', 'non')"><input type="radio" name="s-presc" value="non">Non</label>
-          </div>
-        </div>
-      `;
-    }
-    else if (t === 'med') {
-      c.innerHTML = `
-        <div class="field nomo-search">
-          <label>Nom du medicament ou chapitre</label>
-          <input type="text" id="s-med-name" placeholder="Ex: Mounjaro, insuline, paracetamol..." list="medicaments-list">
-          <datalist id="medicaments-list"></datalist>
-        </div>
-        <div class="field">
-          <label>Pathologie</label>
-          <input type="text" id="s-med-patho" placeholder="Ex: diabete type 2, obesite, douleur...">
-        </div>
-        <div class="field">
-          <label>Type de prescripteur</label>
-          <select id="s-med-presc">
-            <option value="generaliste">Medecin generaliste</option>
-            <option value="specialiste">Specialiste (diabetologue, endocrinologue...)</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>Statut BIM/OMNIO</label>
-          <select id="s-med-bim">
-            <option value="non">Non</option>
-            <option value="oui">Oui</option>
-          </select>
-        </div>
-      `;
-      
+    if (t === 'med') {
+      c.innerHTML = `<div class="field"><label>Nom medicament</label><input id="s-med-name" list="med-list"><datalist id="med-list"></datalist></div><div class="field"><label>Pathologie</label><input id="s-med-patho"></div>`;
       setTimeout(() => {
-        const datalist = document.getElementById('medicaments-list');
-        if (datalist) {
-          datalist.innerHTML = '';
-          Object.values(CFG.DRUGS_DB).forEach(med => {
-            const opt = document.createElement('option');
-            opt.value = med.name;
-            datalist.appendChild(opt);
-          });
-        }
+        const dl = document.getElementById('med-list');
+        dl.innerHTML = '';
+        Object.values(CFG.DRUGS_DB).forEach(m => { const o = document.createElement('option'); o.value = m.name; dl.appendChild(o); });
       }, 100);
-    } 
-    else if (t === 'nurs' || t === 'diet') {
-      c.innerHTML = `<div class="field"><label>Type de prestation</label><input type="text" id="s-care" placeholder="Ex: Pansements, Consultation..."></div>
-        <div class="field"><label>Prescription medicale</label>
-          <div class="toggle-group">
-            <label class="toggle-option selected" onclick="toggleSelect(this, 's-presc', 'oui')"><input type="radio" name="s-presc" value="oui" checked>Oui</label>
-            <label class="toggle-option" onclick="toggleSelect(this, 's-presc', 'non')"><input type="radio" name="s-presc" value="non">Non</label>
-          </div>
-        </div>`;
-    }
-    else if (t === 'img') {
-      c.innerHTML = `<div class="field"><label>Type d'imagerie</label><select id="s-img"><option value="radio">Radio</option><option value="echo">Echo</option><option value="irm">IRM</option><option value="scan">Scanner</option></select></div>`;
-    } 
-    else if (t === 'hosp') {
-      c.innerHTML = `<div class="field"><label>Type</label><select id="s-hosp"><option value="urg">Urgence</option><option value="prog">Programmee</option></select></div>`;
-    } 
-    else if (t === 'chron') {
-      c.innerHTML = `<div class="field"><label>Pathologie declaree</label><input type="text" id="s-chron" placeholder="Ex: Diabete, Insuffisance cardiaque..."></div>`;
-    } 
-    else { c.innerHTML = ''; }
-  }
-
-  function updatePathologies(type) {
-    const cat = document.getElementById('s-cat')?.value;
-    const pathSel = document.getElementById('s-path');
-    const opcodeField = document.getElementById('opcode-field');
-    if (!cat || !pathSel) return;
-    
-    pathSel.innerHTML = '';
-    const lists = CFG.KINE_LISTS;
-    (lists[cat] || []).forEach(p => {
-      const opt = document.createElement('option');
-      opt.value = p.id;
-      opt.textContent = p.id + ' : ' + p.name;
-      pathSel.appendChild(opt);
-    });
-    
-    if (opcodeField) {
-      opcodeField.style.display = (type === 'kine' && cat === 'FA' && pathSel.value === '1') ? 'flex' : 'none';
+    } else if (t === 'kine') {
+      c.innerHTML = `<div class="field"><label>Categorie</label><select id="s-cat"><option value="FA">Fa</option><option value="FB">Fb</option></select></div><div class="field"><label>Seances</label><input type="number" id="s-sess"></div>`;
     }
   }
 
   function runSim() {
-    const age = +document.getElementById('age').value;
-    const st = document.getElementById('status').value;
     const tp = document.getElementById('type').value;
-    const mdt = document.getElementById('mdt').value;
-    if (isNaN(age) || age < 0 || !tp) return alert('Veuillez renseigner l\'age et le type de soins.');
+    const res = document.getElementById('res');
+    res.style.display = 'block';
     
-    let r = { s: '', m: '', ref: [], validityMonths: 12, sessions: 0 };
-    const v = id => document.getElementById(id)?.value;
-    let formUrl = '#';
-
-    if (tp === 'kine') {
-      const n = +v('s-sess') || 0, cat = v('s-cat') || 'FA', path = v('s-path');
-      const presc = v('s-presc') || 'oui';
-      if (n <= 0) return alert('Nombre de seances requis.');
-      if (presc === 'non') return alert('Prescription medicale obligatoire pour le remboursement INAMI.');
+    if (tp === 'med') {
+      const name = document.getElementById('s-med-name').value.toLowerCase();
+      const patho = document.getElementById('s-med-patho').value.toLowerCase();
+      let found = null;
+      for (const k in CFG.DRUGS_DB) { if (name.includes(k) || CFG.DRUGS_DB[k].name.toLowerCase().includes(name)) found = CFG.DRUGS_DB[k]; }
       
-      r.s = mdt === 'non' ? 'cond' : 'ok';
-      r.m = `Categorie : ${cat} (Path. ${path}). Seances : ${n}.`;
-      r.sessions = n;
-      
-      if (cat === 'FA' && path === '1') {
-        const opCode = v('s-opcode')?.trim();
-        if (!opCode) return alert('Le code operatoire est requis pour la pathologie Fa-1.');
-        
-        const validCodes = CFG.KINE_LISTS.FA[0].codes;
-        
-        if (!validCodes.includes(opCode)) {
-          let foundInOtherPathology = false;
-          let matchingPathologies = [];
-          
-          CFG.KINE_LISTS.FA.forEach(p => {
-            if (p.id !== 1 && p.codes && p.codes.includes(opCode)) {
-              foundInOtherPathology = true;
-              matchingPathologies.push({id: p.id, name: p.name});
-            }
-          });
-          
-          if (foundInOtherPathology) {
-            r.s = 'no';
-            r.m += ` Le code operatoire "${opCode}" n'est pas valable pour Fa-1 (Fractures et luxations).`;
-            r.m += `<br><br><strong>Code trouve dans :</strong><br>`;
-            matchingPathologies.forEach(p => {
-              r.m += `• Fa-${p.id} : ${p.name}<br>`;
-            });
-            r.m += `<br>Veuillez verifier la pathologie ou modifier le code operatoire.`;
-            r.ref.push('Liste des actes autorises par pathologie Fa');
-          } else {
-            r.s = 'no';
-            r.m += ` Le code operatoire "${opCode}" ne figure pas parmi les actes remboursables pour Fa-1.`;
-            r.m += `<br><br><strong>Codes autorises pour Fa-1 :</strong> ${validCodes.join(', ')}`;
-            r.m += `<br>Si le code est correct, verifiez qu'il correspond bien a une fracture ou luxation traumatique.`;
-            r.ref.push('Liste des actes autorises Fa-1');
-          }
-        }
-      }
-      
-      if (path === '51' && cat === 'FB' && age < 65) { 
-        r.s = 'no'; r.m += ` La pathologie Fb-51 (Reeducation a la marche) exige un age minimum de 65 ans. Age saisi : ${age} ans.`; 
-      }
-      else if (n > 18 || cat === 'E') {
-        r.s = 'cond'; r.m += ' Accord medecin-conseil obligatoire.'; r.ref.push('Protocole de soins prealable'); formUrl = CFG.FORMS.kine;
-        r.validityMonths = cat === 'E' ? 12 : 24;
-      } else { r.ref.push('Forfaits Kinesitherapie INAMI'); r.validityMonths = cat === 'FB' ? 24 : 12; }
-    } 
-    else if (tp === 'log') {
-      const n = +v('s-sess') || 0, cat = v('s-cat');
-      const presc = v('s-presc') || 'oui';
-      if (n <= 0) return alert('Nombre de seances requis.');
-      if (presc === 'non') return alert('Prescription medicale obligatoire.');
-      
-      const catInfo = CFG.LOG_CATEGORIES[cat];
-      r.s = 'ok'; r.m = `Categorie : ${catInfo.name}. ${catInfo.article}. Validite : ${catInfo.validityMonths} mois. `;
-      r.sessions = n;
-      r.validityMonths = catInfo.validityMonths;
-      
-      if (cat === 'log-begaiement') {
-        r.m += 'Tests Categorie D obligatoires. Test E requis si patient >=10 ans.';
-      }
-      r.ref.push(catInfo.article);
-    }
-    else if (tp === 'med') {
-      if (mdt === 'non') return alert('Une ordonnance est requise pour les medicaments.');
-      
-      const medName = v('s-med-name')?.trim().toLowerCase();
-      const patho = v('s-med-patho')?.trim().toLowerCase();
-      const presc = v('s-med-presc');
-      const bim = v('s-med-bim');
-      
-      if (!medName) return alert('Veuillez entrer le nom du medicament.');
-      if (!patho) return alert('Veuillez preciser la pathologie.');
-      
-      let drugInfo = null;
-      let matchedKey = '';
-      
-      for (const [key, info] of Object.entries(CFG.DRUGS_DB)) {
-        if (medName.includes(key) || info.name.toLowerCase().includes(medName)) {
-          drugInfo = info;
-          matchedKey = key;
-          break;
-        }
-      }
-      
-      if (!drugInfo) {
-        r.s = 'cond';
-        r.m = `Medicament "${medName}" non trouve dans la base INAMI.`;
-        r.ref.push('Verifier l\'orthographe ou consulter la nomenclature complete');
-        r.validityMonths = 0;
+      if (found) {
+        const indKey = Object.keys(found.indications).find(k => patho.includes(k));
+        const info = indKey ? found.indications[indKey] : 'Indication non precisee';
+        document.getElementById('r-status').className = 'res-status ok';
+        document.getElementById('r-status').textContent = 'INFO MEDICAMENT';
+        document.getElementById('r-msg').innerHTML = `<strong>${found.name}</strong> (Cat. ${found.cat})<br>${info}`;
       } else {
-        r.m = `<strong>${drugInfo.name}</strong> (Categorie ${drugInfo.cat}) pour ${patho} : `;
-        
-        const indicationKey = Object.keys(drugInfo.indications).find(k => patho.includes(k));
-        
-        if (indicationKey && drugInfo.indications[indicationKey]) {
-          const indication = drugInfo.indications[indicationKey];
-          r.m += indication;
-          
-          if (indication.includes('diabetologue') || indication.includes('endocrinologue')) {
-            if (presc !== 'specialiste') {
-              r.s = 'refus';
-              r.m += ' <strong>Attention :</strong> Prescription par specialiste obligatoire.';
-              r.ref.push('Conditions de prescription INAMI');
-            } else {
-              r.s = 'ok';
-            }
-          } else if (indication.includes('sous conditions')) {
-            r.s = 'cond';
-            r.ref.push('Protocole Medicaments INAMI');
-          } else if (indication.includes('Non rembourse')) {
-            r.s = 'refus';
-            r.ref.push('Decisions INAMI 2024-2025');
-          } else {
-            r.s = 'ok';
-          }
-        } else {
-          r.s = 'refus';
-          r.m += 'Indication non couverte par le remboursement INAMI pour ce medicament.';
-          r.ref.push('Classification A/B/C/D - Nomenclature Pharmaceutique');
-        }
-        
-        if (bim === 'oui' && r.s !== 'refus') {
-          r.m += ' <br><br><strong>Statut BIM/OMNIO :</strong> Intervention majoree active -> ticket modulateur reduit.';
-        }
-        
-        r.validityMonths = 6;
-        r.sessions = 0;
+        document.getElementById('r-status').className = 'res-status cond';
+        document.getElementById('r-status').textContent = 'NON TROUVE';
+        document.getElementById('r-msg').textContent = 'Verifiez l orthographe ou consultez la nomenclature complete.';
       }
-    } 
-    else if (tp === 'nurs' || tp === 'diet') {
-      const presc = v('s-presc');
-      if (presc === 'non') return alert('Prescription medicale obligatoire.');
-      r.s = 'ok'; r.m = `${tp==='nurs'?'Soins infirmiers':'Consultations dietetiques'} rembourses selon nomenclature.`; r.ref.push(`Prestations ${tp==='nurs'?'Infirmieres':'Dietetiques'} INAMI`);
-      r.validityMonths = 12;
-    }
-    else if (tp === 'img') {
-      const im = v('s-img');
-      if (mdt === 'non' && ['irm', 'scan'].includes(im)) { r.s = 'no'; r.m = 'IRM/Scanner hors parcours -> non rembourse.'; r.ref.push('Conditions Imagerie'); }
-      else { r.s = 'ok'; r.m = `Remboursement ${im.toUpperCase()} prevu.`; r.ref.push('Tarifs Imagerie'); }
-      r.validityMonths = 12;
-    } 
-    else if (tp === 'spec') {
-      r.s = mdt === 'non' ? 'cond' : 'ok'; r.m = mdt === 'non' ? 'Ticket modulateur majore.' : 'Taux plein coordonne.'; r.ref.push('Parcours de Soins Coordones');
-      r.validityMonths = 12;
-    } 
-    else if (tp === 'hosp') {
-      const h = v('s-hosp');
-      if (h === 'urg') { r.s = 'ok'; r.m = 'Prise en charge d\'office.'; r.ref.push('Art.167bis'); }
-      else { r.s = 'cond'; r.m = 'Programmee -> accord L113 requis.'; r.ref.push('Procedure Hospitaliere'); formUrl = CFG.FORMS.hosp; }
-      r.validityMonths = 1;
-    } 
-    else if (tp === 'chron') {
-      r.s = 'cond'; r.m = 'Protocole medical + validation medecin-conseil. 100% soins lies.'; r.ref.push('Statut Affection Longue Duree'); formUrl = CFG.FORMS.chron;
-      r.validityMonths = 12;
-    }
-
-    if (st === 'bim') r.m += ' Intervention Majoree (BIM/OMNIO) active -> ticket modulateur reduit.';
-    if (r.s === 'ok' || r.s === 'cond') formUrl = CFG.FORMS[tp] || CFG.FORMS.kine;
-
-    const el = document.getElementById('res'); el.style.display = 'block';
-    document.getElementById('r-status').className = `res-status ${r.s}`;
-    document.getElementById('r-status').textContent = r.s === 'ok' ? 'ACCORD POTENTIEL' : r.s === 'no' ? 'REFUS' : 'ACCORD CONDITIONNEL';
-    document.getElementById('r-msg').innerHTML = r.m;
-    document.getElementById('r-ref').innerHTML = `<strong>References :</strong><br>` + r.ref.join('<br>');
-    
-    const sum = document.getElementById('summary-card');
-    if (r.s !== 'no') {
-      sum.style.display = 'block';
-      document.getElementById('sum-status').textContent = r.s === 'ok' ? 'Eligible' : 'Sous conditions';
-      document.getElementById('sum-sessions').textContent = r.sessions ? `${r.sessions} seances` : 'Selon prescription';
-      document.getElementById('sum-ticket').textContent = st === 'bim' ? 'Reduit (BIM)' : 'Standard';
-      const validityDate = new Date();
-      validityDate.setMonth(validityDate.getMonth() + r.validityMonths);
-      document.getElementById('sum-validity').textContent = validityDate.toLocaleDateString('fr-BE', {year:'numeric', month:'long', day:'numeric'});
-      
-      const now = new Date();
-      const daysLeft = Math.ceil((validityDate - now) / (1000 * 60 * 60 * 24));
-      document.getElementById('sum-countdown').textContent = daysLeft > 0 ? `${daysLeft} jours` : 'Expire';
-    } else {
-      sum.style.display = 'none';
-    }
-    
-    const checklist = document.getElementById('checklist');
-    checklist.style.display = (r.s === 'ok' || r.s === 'cond') ? 'block' : 'none';
-    
-    const link = document.getElementById('r-form');
-    link.href = formUrl; link.style.display = formUrl !== '#' ? 'inline-block' : 'none';
-    
-    setTimeout(() => {
-      document.getElementById('age').value = '';
-      document.getElementById('type').value = '';
-      document.getElementById('cond').innerHTML = '';
-      document.getElementById('cond').style.display = 'none';
-    }, 100);
-    
-    el.scrollIntoView({ behavior: 'smooth' });
-  }
-
-  function exportReport() {
-    const content = document.getElementById('res').innerHTML;
-    const printWindow = window.open('', '_blank');
-    printWindow.document.write(`
-      <html><head><title>Rapport Patient - Assistant INAMI</title>
-      <style>
-        body { font-family: system-ui, sans-serif; padding: 2rem; color: #000; }
-        h2 { color: #1e40af; border-bottom: 2px solid #1e40af; padding-bottom: 0.5rem; }
-        .res-status { font-size: 1.2rem; font-weight: bold; margin-bottom: 1rem; }
-        .ok { color: #059669; } .no { color: #dc2626; } .cond { color: #d97706; }
-        .summary-card { background: #f8fafc; border: 1px solid #e2e8f0; padding: 1rem; margin: 1rem 0; border-radius: 8px; }
-        .checklist { margin-top: 1rem; }
-        .form-link { display: none; }
-        .btn-secondary, .btn-small { display: none; }
-        footer { margin-top: 2rem; font-size: 0.8rem; color: #666; border-top: 1px solid #ddd; padding-top: 1rem; }
-      </style></head><body>
-      <h1>Assistant INAMI - Rapport Patient</h1>
-      <p>Date: ${new Date().toLocaleDateString('fr-BE')} | Heure: ${new Date().toLocaleTimeString('fr-BE')}</p>
-      <hr>
-      ${content}
-      <footer>Ce rapport est genere a titre informatif. La decision finale revient au medecin-conseil INAMI.</footer>
-      </body></html>
-    `);
-    printWindow.document.close();
-    printWindow.print();
-  }
-
-  function loadFavorites() {
-    const list = document.getElementById('favorites-list');
-    const section = document.getElementById('favorites-section');
-    if (favorites.length > 0) {
-      section.style.display = 'block';
-      list.innerHTML = favorites.map((f, i) => `
-        <span class="fav-item" onclick="applyFavorite(${i})" style="display:inline-flex;align-items:center;gap:0.5rem;background:var(--surface);border:1px solid var(--border);padding:0.4rem 0.8rem;border-radius:20px;margin:0.2rem;font-size:0.85rem;cursor:pointer;">
-          ${f.label}
-          <span style="color:var(--danger);cursor:pointer;" onclick="event.stopPropagation();removeFavorite(${i})">x</span>
-        </span>
-      `).join('');
-    } else {
-      section.style.display = 'none';
+    } else if (tp === 'kine') {
+      const cat = document.getElementById('s-cat').value;
+      const sess = +document.getElementById('s-sess').value;
+      if (cat === 'FB' && sess > 18) {
+        document.getElementById('r-status').className = 'res-status cond';
+        document.getElementById('r-status').textContent = 'ACCORD CONDITIONNEL';
+        document.getElementById('r-msg').textContent = 'Depassement du forfait annuel. Accord prealable du medecin-conseil requis (formulaire 05a).';
+      } else {
+        document.getElementById('r-status').className = 'res-status ok';
+        document.getElementById('r-status').textContent = 'ELIGIBLE';
+        document.getElementById('r-msg').textContent = `Forfait ${cat} standard valide pour ${sess} seances.`;
+      }
     }
   }
-  
-  function toggleFavorite() {
-    const label = document.getElementById('r-msg').textContent.substring(0, 50);
-    if (label && !favorites.find(f => f.label === label)) {
-      favorites.push({label, date: new Date().toISOString()});
-      localStorage.setItem('inami_favorites', JSON.stringify(favorites));
-      loadFavorites();
-      alert('Ajoute aux favoris !');
-    }
-  }
-  
-  function removeFavorite(index) {
-    favorites.splice(index, 1);
-    localStorage.setItem('inami_favorites', JSON.stringify(favorites));
-    loadFavorites();
-  }
-  
-  function applyFavorite(index) {
-    alert('Favoris selectionne : ' + favorites[index].label);
-  }
 
-  // NOMENCLATURE
+  // NOMENCLATURE (Points 4a & 4b)
   function switchNomoTab(tab) {
     document.querySelectorAll('.nomo-tab').forEach(t => t.classList.remove('active'));
     event.target.classList.add('active');
-    
     document.getElementById('nomo-search-tab').style.display = tab === 'search' ? 'block' : 'none';
-    document.getElementById('nomo-cumul-tab').classList.toggle('active', tab === 'cumul');
-    document.getElementById('nomo-changelog-tab').classList.toggle('active', tab === 'changelog');
-    
+    document.getElementById('nomo-compare-tab').style.display = tab === 'compare' ? 'block' : 'none';
     if (tab === 'search') updateNomoList();
   }
-  
+
   function togglePrices() {
     showPrices = !showPrices;
     document.getElementById('price-toggle').classList.toggle('active', showPrices);
     updateNomoList();
   }
-  
+
   function updateNomoList() {
-    const category = document.getElementById('nomo-category')?.value || 'all';
-    const searchVal = (document.getElementById('nomo-code-search')?.value || '').trim().toLowerCase();
-    let results = [];
-
-    if (searchVal) {
-      for (const catKey in CFG.NOMO_CODES) {
-        results = results.concat(CFG.NOMO_CODES[catKey].filter(item => 
-          item.code.includes(searchVal) || item.desc.toLowerCase().includes(searchVal)
-        ));
-      }
-    } else {
-      if (category === 'all') {
-        for (const catKey in CFG.NOMO_CODES) {
-          results = results.concat(CFG.NOMO_CODES[catKey]);
-        }
-      } else {
-        results = CFG.NOMO_CODES[category] || [];
-      }
-    }
-
-    renderNomoResults(results);
-  }
-
-  function renderNomoResults(list) {
+    const query = document.getElementById('nomo-search-input').value.toLowerCase();
     const container = document.getElementById('nomo-results');
-    const countEl = document.getElementById('nomo-count');
-    const emptyEl = document.getElementById('nomo-empty');
-    
     container.innerHTML = '';
-    countEl.textContent = `${list.length} codes trouves`;
+    let count = 0;
     
-    if (list.length === 0) {
-      emptyEl.style.display = 'block';
-    } else {
-      emptyEl.style.display = 'none';
-      list.forEach(item => {
-        const div = document.createElement('div');
-        div.className = 'nomo-item';
-        div.innerHTML = `
-          <span class="nomo-code">
-            ${item.code}
-            <button class="copy-code-btn" onclick="copyCode('${item.code}')" title="Copier le code"></button>
-          </span>
-          <span class="nomo-desc">${item.desc}</span>
-          <span class="nomo-cat">${item.cat}</span>
-          ${showPrices ? `<span class="nomo-price">${item.price.toFixed(2)} EUR</span>` : ''}
-        `;
-        container.appendChild(div);
+    for (const cat in CFG.NOMO_CODES) {
+      CFG.NOMO_CODES[cat].forEach(item => {
+        if (item.code.includes(query) || item.desc.toLowerCase().includes(query)) {
+          count++;
+          const div = document.createElement('div');
+          div.className = 'nomo-item' + (selectedCompareCodes.includes(item.code) ? ' selected' : '');
+          div.innerHTML = `
+            <input type="checkbox" class="nomo-checkbox" ${selectedCompareCodes.includes(item.code)?'checked':''} onchange="toggleCompare('${item.code}')">
+            <span class="nomo-code">${item.code}</span>
+            <span class="nomo-desc">${item.desc}</span>
+            <span class="nomo-cat">${item.cat}</span>
+            ${showPrices ? `<span class="nomo-price">${item.price} EUR</span>` : ''}
+          `;
+          container.appendChild(div);
+        }
       });
     }
+    document.getElementById('nomo-count').textContent = `${count} codes`;
   }
-  
-  function copyCode(code) {
-    navigator.clipboard.writeText(code).then(() => {
-      alert('Code ' + code + ' copie !');
+
+  function toggleCompare(code) {
+    if (selectedCompareCodes.includes(code)) selectedCompareCodes = selectedCompareCodes.filter(c => c !== code);
+    else if (selectedCompareCodes.length < 3) selectedCompareCodes.push(code);
+    else alert('Maximum 3 codes pour la comparaison');
+    updateNomoList();
+    renderComparison();
+  }
+
+  function renderComparison() {
+    const grid = document.getElementById('comparison-grid');
+    grid.innerHTML = '';
+    selectedCompareCodes.forEach(code => {
+      let item = null;
+      for (const cat in CFG.NOMO_CODES) { const f = CFG.NOMO_CODES[cat].find(i => i.code === code); if(f) item = f; }
+      if (item) {
+        grid.innerHTML += `
+          <div class="comp-card">
+            <div class="comp-code">${item.code}</div>
+            <div class="comp-row"><span>Categorie</span><span>${item.cat}</span></div>
+            <div class="comp-row"><span>Description</span><span>${item.desc}</span></div>
+            <div class="comp-row"><span>Tarif</span><span>${item.price} EUR</span></div>
+          </div>
+        `;
+      }
     });
   }
 
-  // CUMUL
-  function addCumulInput() {
-    const container = document.getElementById('cumul-inputs');
-    const count = container.querySelectorAll('.cumul-input').length + 1;
-    const input = document.createElement('input');
-    input.type = 'text';
-    input.className = 'cumul-input';
-    input.placeholder = `Code ${count}`;
-    input.maxLength = 6;
-    container.insertBefore(input, container.querySelector('.cumul-add-btn'));
-  }
-  
-  function checkCumul() {
-    const inputs = document.querySelectorAll('.cumul-input');
-    const codes = Array.from(inputs).map(i => i.value.trim()).filter(v => v);
-    
-    if (codes.length < 2) {
-      alert('Veuillez entrer au moins 2 codes a verifier.');
-      return;
-    }
-    
-    const resultsDiv = document.getElementById('cumul-results');
-    resultsDiv.innerHTML = '';
-    
-    for (let i = 0; i < codes.length; i++) {
-      for (let j = i + 1; j < codes.length; j++) {
-        const code1 = codes[i];
-        const code2 = codes[j];
-        
-        let cat1 = '', cat2 = '';
-        for (const [catKey, items] of Object.entries(CFG.NOMO_CODES)) {
-          if (items.find(item => item.code === code1)) cat1 = catKey;
-          if (items.find(item => item.code === code2)) cat2 = catKey;
-        }
-        
-        const ruleKey1 = `${cat1},${cat2}`;
-        const ruleKey2 = `${cat2},${cat1}`;
-        const rule = CFG.CUMUL_RULES[ruleKey1] || CFG.CUMUL_RULES[ruleKey2];
-        
-        const resultDiv = document.createElement('div');
-        resultDiv.className = `cumul-item ${rule ? (rule.allowed ? 'cumul-ok' : 'cumul-no') : 'cumul-cond'}`;
-        
-        if (rule) {
-          resultDiv.innerHTML = `
-            <span><strong>${code1}</strong> + <strong>${code2}</strong></span>
-            <span>${rule.allowed ? 'Cumul autorise' : 'Non cumulable'}</span>
-          `;
-          resultDiv.title = rule.reason;
-        } else {
-          resultDiv.innerHTML = `
-            <span><strong>${code1}</strong> + <strong>${code2}</strong></span>
-            <span>Pas de regle specific - Consultez votre mutualite</span>
-          `;
-        }
-        
-        resultsDiv.appendChild(resultDiv);
-      }
-    }
-    
-    setTimeout(() => {
-      document.querySelectorAll('.cumul-input').forEach((input, index) => {
-        if (index < 2) input.value = '';
-        else input.remove();
-      });
-    }, 2000);
-  }
-
-  // SUPER AGENT
+  // SUPER AGENT (Knowledge-Based + Point 3b)
   function setTopic(topic) {
     currentTopic = topic;
     document.querySelectorAll('.topic-btn').forEach(b => b.classList.remove('active'));
     event.target.classList.add('active');
-    
-    if (topic !== 'auto') {
-      chatSessions.agent.topic = topic;
-    }
   }
 
   function addMsg(sender, html) {
     const log = document.getElementById('chat-log-agent');
-    const div = document.createElement('div'); div.className = `msg ${sender}`; div.innerHTML = html;
+    const div = document.createElement('div');
+    div.className = `msg ${sender}`;
+    div.innerHTML = html;
     log.appendChild(div);
-    setTimeout(() => { log.scrollTop = log.scrollHeight; }, 50);
+    log.scrollTop = log.scrollHeight;
   }
 
   function sendMsg(type) {
-    const inp = document.getElementById('input-agent');
-    const txt = inp.value.trim(); if (!txt) return;
-    addMsg('user', txt); 
-    inp.value = '';
+    const input = document.getElementById('input-agent');
+    const txt = input.value.trim();
+    if (!txt) return;
+    addMsg('user', txt);
+    input.value = '';
+
+    const lower = txt.toLowerCase();
+    let response = '';
+    let summaryData = null;
+
+    // Intent Detection & Knowledge Retrieval
+    const isEligibility = /eligible|remboursé|accord|droit|puis-je|valide|condition/i.test(lower);
     
-    const session = chatSessions.agent;
-    
-    let topic = currentTopic;
-    if (topic === 'auto') {
-      const lower = txt.toLowerCase();
-      if (lower.includes('kine') || lower.includes('seance') || lower.includes('fa') || lower.includes('fb')) topic = 'kine';
-      else if (lower.includes('log') || lower.includes('langage') || lower.includes('begaiement') || lower.includes('dyslexie')) topic = 'log';
-      else if (lower.includes('med') || lower.includes('medicament') || lower.includes('comprim') || lower.includes('mounjaro') || lower.includes('ozempic')) topic = 'med';
-      else if (lower.includes('infirmier') || lower.includes('pansement') || lower.includes('injection')) topic = 'nurs';
-      else if (lower.includes('diet') || lower.includes('nutrition') || lower.includes('regime')) topic = 'diet';
-      else if (lower.includes('parcours') || lower.includes('mdt') || lower.includes('medecin traitant')) topic = 'parc';
-      else topic = 'kine';
+    // Search Knowledge Base
+    let matchedKnowledge = null;
+    for (const key in CFG.KNOWLEDGE_BASE) {
+      if (lower.includes(key)) { matchedKnowledge = CFG.KNOWLEDGE_BASE[key]; break; }
     }
     
-    if (session.step === 0 && !session.initialParsed) {
-      const lower = txt.toLowerCase();
-      if (topic === 'med') {
-        for (const [key, info] of Object.entries(CFG.DRUGS_DB)) {
-          if (lower.includes(key)) { session.slots.drug = info.name; break; }
-        }
-        if (lower.includes('diabete') || lower.includes('obesite') || lower.includes('douleur')) {
-          session.slots.indication = lower.includes('diabete') ? 'Diabete type 2' : lower.includes('obesite') ? 'Obesite' : 'Douleur';
-        }
+    // Search Drugs DB
+    let drugInfo = null;
+    for (const key in CFG.DRUGS_DB) {
+      if (lower.includes(key) || lower.includes(CFG.DRUGS_DB[key].name.toLowerCase())) { drugInfo = CFG.DRUGS_DB[key]; break; }
+    }
+
+    // Generate Conversational Response
+    if (drugInfo) {
+      const indKey = Object.keys(drugInfo.indications).find(k => lower.includes(k));
+      const indication = indKey ? drugInfo.indications[indKey] : 'Veuillez preciser la pathologie pour une evaluation exacte.';
+      response = `Concernant <strong>${drugInfo.name}</strong> (Categorie ${drugInfo.cat}) :<br>${indication}<br><br>Selon la nomenclature INAMI, le remboursement depend du Service Medical Rendu (SMR) et des conditions specifiques. Souhaitez-vous verifier une eligibilite precise ?`;
+      if (isEligibility && indKey) {
+        const status = indication.includes('Non') ? 'no' : (indication.includes('strictes') ? 'cond' : 'ok');
+        summaryData = { status, text: indication, ref: 'Nomenclature Pharmaceutique INAMI', validity: '6 mois' };
       }
-      if (['kine','log'].includes(topic)) {
-        if (lower.includes('fa') || lower.includes('fb') || lower.includes('liste e')) {
-          session.slots.category = lower.match(/(fa|fb|la|lb|e)/i)?.[0].toUpperCase();
-        }
-        const pathMatch = lower.match(/(\d+[a-z]?|e-[a-z])/i);
-        if (pathMatch) session.slots.pathology = pathMatch[0];
-        const sessMatch = lower.match(/(\d+)\s*s[eé]ance/i);
-        if (sessMatch) session.slots.sessions = sessMatch[1];
-        const ageMatch = lower.match(/(\d+)\s*an/i);
-        if (ageMatch) session.slots.age = ageMatch[1];
+    } else if (matchedKnowledge) {
+      response = matchedKnowledge;
+      if (isEligibility) {
+        summaryData = { status: 'info', text: 'Voir details ci-dessus', ref: 'Reglement INAMI', validity: '-' };
       }
-      session.initialParsed = true;
-    }
-    
-    const cfg = CFG.AGENT_TOPICS[topic] || CFG.AGENT_TOPICS.kine;
-    const currentStep = cfg.steps[session.step];
-    
-    if (currentStep && !session.slots[currentStep.key]) {
-      session.slots[currentStep.key] = txt;
-      session.step++;
-    }
-    else if (currentStep && session.slots[currentStep.key]) {
-      session.step++;
+    } else if (lower.includes('bonjour') || lower.includes('salut')) {
+      response = "Bonjour. Je suis le Super Agent INAMI. Je peux vous expliquer les regles de remboursement, les conditions d'accord prealable, ou verifier une eligibilite. Que souhaitez-vous savoir ?";
+    } else {
+      response = "Je n'ai pas trouve d'information precise dans ma base pour cette requete. Essayez de mentionner un medicament, une pathologie (ex: 'Fa-1', 'Mounjaro'), ou une notion ('BIM', 'accord prealable').";
     }
 
-    const typ = document.getElementById('typing-agent'); typ.style.display = 'block';
-    updateProgress('agent', session.step);
-
-    setTimeout(() => {
-      typ.style.display = 'none';
-      
-      if (session.step < cfg.steps.length) {
-        const nextStep = cfg.steps[session.step];
-        if (nextStep && session.slots[nextStep.key]) {
-          session.step++;
-          updateProgress('agent', session.step);
-          if (session.step < cfg.steps.length) askQuestion('agent', topic);
-          else evaluateAndRespond('agent', topic);
-        } else {
-          askQuestion('agent', topic);
-        }
-      } else {
-        evaluateAndRespond('agent', topic);
-      }
-    }, 400 + Math.random() * 300);
-  }
-
-  function askQuestion(type, topic) {
-    const t = topic || currentTopic;
-    const cfg = CFG.AGENT_TOPICS[t] || CFG.AGENT_TOPICS.kine;
-    const session = chatSessions.agent;
-    if (session.step < cfg.steps.length) {
-      addMsg('agent', cfg.steps[session.step].prompt);
-    }
-  }
-
-  function evaluateAndRespond(type, topic) {
-    const t = topic || currentTopic;
-    const cfg = CFG.AGENT_TOPICS[t] || CFG.AGENT_TOPICS.kine;
-    const session = chatSessions.agent;
-    const result = cfg.evaluate(session.slots);
-    
-    let msg = result.msg;
-    
-    const sourceKeywords = ['source', 'reference', 'lien', 'url', 'site', 'officiel', 'inami', 'preuve', 'document'];
-    const lastUserMsg = document.querySelector('#chat-log-agent .msg.user:last-child')?.textContent.toLowerCase() || '';
-    
-    if (sourceKeywords.some(kw => lastUserMsg.includes(kw))) {
-      const searchQuery = encodeURIComponent(session.slots.drug || session.slots.pathology || session.slots.care_type || t);
-      msg += `<br><a href="https://www.google.com/search?q=${searchQuery}+INAMI+remboursement&safe=active&as_sitesearch=inami.fed.be|health.belgium.be|sciensano.be|afmps.be" target="_blank" rel="noopener" class="source-link">Rechercher sur les sources officielles -></a>`;
-    }
-    
-    addMsg('agent', `<strong>Resultat : ${result.status.toUpperCase()}</strong><br>${msg}<br><small style="color:var(--text-muted)">References : ${result.ref.join(', ')}</small>`);
-    
-    chatSessions.agent = { step: 0, slots: {}, initialParsed: false, topic: currentTopic, initialized: true };
-    setTimeout(() => { 
-      updateProgress('agent', 0);
-    }, 1000);
-    
-    const log = document.getElementById('chat-log-agent');
-    setTimeout(() => { log.scrollTop = log.scrollHeight; }, 100);
-  }
-
-  function updateProgress(type, step) {
-    const cfg = CFG.AGENT_TOPICS[currentTopic] || CFG.AGENT_TOPICS.kine;
-    const total = cfg.steps.length;
-    document.getElementById('prog-agent').textContent = step + 1;
-    document.getElementById('total-agent').textContent = total;
-    document.getElementById('prog-fill-agent').style.width = `${((step + 1) / total) * 100}%`;
-  }
-
-  ['agent'].forEach(t => {
-    const inp = document.getElementById('input-' + t);
-    if(inp) inp.addEventListener('keypress', e => { if(e.key==='Enter') sendMsg(t); });
-  });
-
-  // MUTUALITES
-  function renderMutualites() {
-    const list = document.getElementById('mut-list');
-    list.innerHTML = '';
-    CFG.MUTUALITES.forEach(m => {
-      const card = document.createElement('div');
-      card.className = 'mutualite-card';
-      card.dataset.name = m.name.toLowerCase();
-      card.dataset.regions = m.regions.join(',').toLowerCase();
-      card.innerHTML = `
-        <div class="mutualite-name">${m.name}</div>
-        <div class="mutualite-info"><strong>Regions :</strong> ${m.regions.join(', ')}</div>
-        <div class="mutualite-info"><strong>Telephone :</strong> ${m.phone}</div>
-        <div class="mutualite-info"><strong>Email :</strong> ${m.email}</div>
-        <a href="${m.website}" target="_blank" rel="noopener" class="mutualite-link">Site officiel</a>
-        <a href="${m.contact}" target="_blank" rel="noopener" class="mutualite-link" style="margin-left:var(--spacing-md)">Contact</a>
+    // Build Message with Summary Card (Point 3b)
+    let finalHtml = response;
+    if (summaryData) {
+      const pillClass = summaryData.status === 'ok' ? 'pill-ok' : (summaryData.status === 'cond' ? 'pill-cond' : 'pill-no');
+      const statusText = summaryData.status === 'ok' ? 'ELIGIBLE' : (summaryData.status === 'cond' ? 'CONDITIONNEL' : 'NON ELIGIBLE');
+      finalHtml += `
+        <div class="summary-card-chat">
+          <span class="summary-label">Statut</span><span class="summary-value"><span class="status-pill ${pillClass}">${statusText}</span></span>
+          <span class="summary-label">Details</span><span class="summary-value">${summaryData.text}</span>
+          <span class="summary-label">Reference</span><span class="summary-value">${summaryData.ref}</span>
+          <span class="summary-label">Validite</span><span class="summary-value">${summaryData.validity}</span>
+        </div>
       `;
-      list.appendChild(card);
-    });
+    }
+
+    setTimeout(() => addMsg('agent', finalHtml), 400);
   }
 
-  function filterMutualites() {
-    const search = document.getElementById('mut-search').value.toLowerCase();
-    const region = document.getElementById('mut-region').value.toLowerCase();
-    const cards = document.querySelectorAll('.mutualite-card');
-    cards.forEach(card => {
-      const nameMatch = card.dataset.name.includes(search);
-      const regionMatch = !region || card.dataset.regions.includes(region) || region === 'national';
-      card.style.display = nameMatch && regionMatch ? 'block' : 'none';
-    });
-  }
-
-  function copyResultLink() {
-    const url = window.location.href.split('#')[0] + '#sim';
-    navigator.clipboard.writeText(url).then(() => alert('Lien copie !')).catch(() => alert('Copie echouee'));
-  }
+  document.getElementById('input-agent').addEventListener('keypress', e => { if(e.key==='Enter') sendMsg('agent'); });
 
   // INIT
   window.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('.toggle-option').forEach(opt => {
-      const input = opt.querySelector('input');
-      if (input && input.checked) opt.classList.add('selected');
-    });
-    loadFavorites();
-    loadAllExternalDBs();
+    updateSyncStatus();
   });
 </script>
 </body>
