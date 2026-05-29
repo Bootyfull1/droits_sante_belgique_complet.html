@@ -7,25 +7,24 @@
   <title>Assistant INAMI</title>
   <style>
     :root {
-      --bg: #1e293b;
-      --bg-gradient: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-      --surface: #334155;
-      --surface-hover: #475569;
+      --bg: #0f172a;
+      --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      --surface: rgba(30, 41, 59, 0.8);
+      --surface-hover: rgba(51, 65, 85, 0.9);
       --text: #f1f5f9;
-      --text-muted: #cbd5e1;
-      --primary: #60a5fa;
-      --primary-hover: #3b82f6;
-      --accent: #34d399;
-      --warning: #fbbf24;
-      --danger: #f87171;
-      --border: #475569;
-      --border-soft: #64748b;
-      --shadow: 0 12px 24px -6px rgba(0, 0, 0, 0.3);
-      --shadow-soft: 0 4px 12px -2px rgba(0, 0, 0, 0.15);
+      --text-muted: #94a3b8;
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --accent: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --border: rgba(71, 85, 105, 0.5);
+      --shadow: 0 8px 32px -4px rgba(0, 0, 0, 0.4);
+      --shadow-soft: 0 4px 16px -2px rgba(0, 0, 0, 0.2);
       --radius: 12px;
       --radius-lg: 16px;
       --radius-xl: 20px;
-      --font: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      --font: system-ui, -apple-system, "Inter", "Segoe UI", Roboto, sans-serif;
       --spacing-xs: 0.25rem;
       --spacing-sm: 0.5rem;
       --spacing-md: 1rem;
@@ -44,11 +43,64 @@
       -webkit-font-smoothing: antialiased;
     }
     
+    /* Login Screen */
+    #login-screen {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: var(--bg-gradient);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 1000;
+    }
+    .login-card {
+      background: var(--surface);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: var(--spacing-xxl);
+      width: 90%; max-width: 400px;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+    .login-card h1 {
+      font-size: 1.8rem; font-weight: 600; margin-bottom: var(--spacing-sm);
+      color: var(--primary);
+    }
+    .login-card p { color: var(--text-muted); margin-bottom: var(--spacing-lg); font-size: 0.95rem; }
+    .login-input-group { position: relative; margin-bottom: var(--spacing-md); }
+    .login-input {
+      width: 100%; padding: 0.8rem 3rem 0.8rem 1rem;
+      background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border);
+      border-radius: var(--radius); color: var(--text); font-size: 1rem;
+      transition: 0.2s;
+    }
+    .login-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); }
+    .toggle-password {
+      position: absolute; right: 0.8rem; top: 50%; transform: translateY(-50%);
+      background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.1rem;
+    }
+    .login-btn {
+      width: 100%; padding: 0.8rem; background: var(--primary); color: #fff;
+      border: none; border-radius: var(--radius); font-weight: 600; cursor: pointer;
+      font-size: 1rem; transition: 0.2s;
+    }
+    .login-btn:hover { background: var(--primary-hover); transform: translateY(-1px); }
+    .login-error { color: var(--danger); font-size: 0.85rem; margin-top: var(--spacing-sm); display: none; }
+    .login-help { margin-top: var(--spacing-lg); font-size: 0.85rem; }
+    .login-help a { color: var(--primary); text-decoration: none; cursor: pointer; }
+    .login-help a:hover { text-decoration: underline; }
+    .password-note {
+      display: none; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: var(--radius); padding: var(--spacing-md); margin-top: var(--spacing-md);
+      font-size: 0.85rem; color: var(--text-muted); text-align: left;
+    }
+
+    /* Main App */
+    #main-app { display: none; }
+    
     header { 
       text-align: center; margin-bottom: var(--spacing-xl); 
       padding: var(--spacing-md) 0; 
       position: sticky; top: 0; z-index: 100;
-      background: rgba(30, 41, 59, 0.95);
+      background: rgba(15, 23, 42, 0.95);
       backdrop-filter: blur(8px);
       border-bottom: 1px solid var(--border);
     }
@@ -62,6 +114,18 @@
     }
     .lang-toggle:hover, .global-search:hover { background: var(--surface-hover); }
     .global-search { flex: 1; max-width: 300px; text-align: left; }
+    .badge {
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      background: var(--surface); border: 1px solid var(--border);
+      padding: 0.3rem 0.6rem; border-radius: 20px;
+      font-size: 0.75rem; color: var(--text-muted);
+    }
+    .logout-btn {
+      background: none; border: 1px solid var(--border); color: var(--text-muted);
+      padding: 0.4rem 0.8rem; border-radius: var(--radius); cursor: pointer;
+      font-size: 0.85rem; transition: 0.2s;
+    }
+    .logout-btn:hover { background: var(--surface-hover); color: var(--text); }
 
     #nav { 
       display: flex; flex-wrap: wrap; gap: var(--spacing-sm); justify-content: center; 
@@ -69,9 +133,10 @@
       background: var(--surface); border: 1px solid var(--border); 
       border-radius: var(--radius-lg); 
       box-shadow: var(--shadow-soft);
+      backdrop-filter: blur(12px);
     }
     .nav-btn { 
-      background: transparent; border: 1px solid var(--border-soft); 
+      background: transparent; border: 1px solid var(--border); 
       color: var(--text-muted); padding: 0.7rem 1.2rem; 
       border-radius: var(--radius); cursor: pointer; 
       font-weight: 500; font-size: 0.9rem; 
@@ -94,13 +159,14 @@
       margin-bottom: var(--spacing-lg); font-size: 0.9rem; 
       transition: 0.2s; display: inline-flex; align-items: center; gap: 0.4rem;
     }
-    .back-btn:hover { background: var(--border); color: var(--text); }
+    .back-btn:hover { background: var(--surface-hover); color: var(--text); }
 
     .card { 
       background: var(--surface); border: 1px solid var(--border); 
       border-radius: var(--radius-lg); padding: var(--spacing-xl); 
       margin-bottom: var(--spacing-lg); 
       box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
     }
     h2 { 
       color: var(--primary); font-size: 1.25rem; 
@@ -122,17 +188,17 @@
       color: var(--primary); cursor: help; font-size: 0.75rem; 
       border: 1px dashed var(--primary); padding: 0 0.3rem; border-radius: 4px;
     }
-    .tooltip:hover { background: rgba(96, 165, 250, 0.1); }
+    .tooltip:hover { background: rgba(59, 130, 246, 0.1); }
     
     input, select { 
-      background: var(--bg); border: 1px solid var(--border); 
+      background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border); 
       color: var(--text); padding: 0.8rem 1rem; 
       border-radius: var(--radius); font-size: 0.95rem; 
       transition: 0.2s; width: 100%;
     }
     input:focus, select:focus { 
       outline: none; border-color: var(--primary); 
-      box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
     }
     
     .toggle-group { display: flex; gap: var(--spacing-sm); align-items: center; flex-wrap: wrap; }
@@ -140,7 +206,7 @@
       display: flex; align-items: center; gap: 0.4rem;
       cursor: pointer; padding: 0.5rem 0.9rem;
       border-radius: var(--radius); transition: 0.2s;
-      background: var(--bg); border: 1px solid var(--border);
+      background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border);
       font-size: 0.9rem;
     }
     .toggle-option:hover { background: var(--surface-hover); }
@@ -168,6 +234,12 @@
       transition: 0.2s; font-size: 0.9rem;
     }
     .btn-secondary:hover { background: var(--border); }
+    .btn-small {
+      background: var(--surface); color: var(--text-muted); border: 1px solid var(--border);
+      padding: 0.4rem 0.8rem; border-radius: var(--radius); font-weight: 500;
+      cursor: pointer; transition: 0.2s; font-size: 0.85rem;
+    }
+    .btn-small:hover { background: var(--surface-hover); color: var(--text); }
 
     .result-panel { 
       margin-top: var(--spacing-lg); padding: var(--spacing-lg); 
@@ -183,7 +255,7 @@
       margin-top: var(--spacing-md); font-size: 0.85rem; 
       color: var(--text-muted); background: var(--surface); 
       padding: var(--spacing-md); border-radius: var(--radius);
-      border-left: 3px solid var(--border-soft);
+      border-left: 3px solid var(--border);
     }
     .form-link { 
       display: inline-block; margin-top: var(--spacing-md); 
@@ -195,13 +267,14 @@
     .form-link:hover { border-bottom-style: solid; color: var(--primary-hover); }
     
     .summary-card {
-      background: var(--surface-hover); border: 1px solid var(--border);
+      background: var(--surface); border: 1px solid var(--border);
       border-radius: var(--radius-lg); padding: var(--spacing-lg);
       margin-top: var(--spacing-md);
     }
     .summary-item { display: flex; justify-content: space-between; margin: 0.4rem 0; font-size: 0.9rem; }
     .summary-label { color: var(--text-muted); }
     .summary-value { font-weight: 500; }
+    .countdown { color: var(--primary); font-weight: 600; }
     
     .checklist { margin-top: var(--spacing-md); }
     .checklist-item { 
@@ -215,6 +288,7 @@
       border: 1px solid var(--border); border-radius: var(--radius-lg); 
       overflow: hidden; background: var(--surface);
       box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
     }
     .chat-header { 
       padding: var(--spacing-md); background: var(--bg); 
@@ -285,37 +359,86 @@
       transition: 0.2s;
     }
     .send-btn:hover { filter: brightness(1.05); transform: translateY(-1px); }
-    .voice-btn {
-      background: var(--surface); color: var(--text-muted); border: 1px solid var(--border);
-      padding: 0 1rem; border-radius: var(--radius-lg); cursor: pointer;
-      font-size: 1.1rem; transition: 0.2s;
-    }
-    .voice-btn:hover { background: var(--border); color: var(--text); }
 
-    /* Codes Nomenclature Styles */
-    .nomo-controls { display: flex; gap: var(--spacing-md); margin-bottom: var(--spacing-lg); flex-wrap: wrap; }
-    .nomo-select { flex: 1; min-width: 250px; }
-    .nomo-search { flex: 1; min-width: 200px; }
+    /* Nomenclature & Codes */
+    .nomo-controls { display: flex; gap: var(--spacing-md); margin-bottom: var(--spacing-lg); flex-wrap: wrap; align-items: end; }
+    .nomo-select { flex: 1; min-width: 200px; }
+    .nomo-search { flex: 2; min-width: 250px; }
+    .toggle-container { display: flex; align-items: center; gap: var(--spacing-sm); }
+    .toggle-switch {
+      position: relative; width: 48px; height: 24px;
+      background: var(--border); border-radius: 12px; cursor: pointer;
+      transition: 0.3s;
+    }
+    .toggle-switch.active { background: var(--primary); }
+    .toggle-switch::after {
+      content: ''; position: absolute; top: 2px; left: 2px;
+      width: 20px; height: 20px; background: #fff; border-radius: 50%;
+      transition: 0.3s;
+    }
+    .toggle-switch.active::after { transform: translateX(24px); }
+    
+    .nomo-tabs { display: flex; gap: var(--spacing-sm); margin-bottom: var(--spacing-lg); }
+    .nomo-tab {
+      padding: 0.6rem 1rem; background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); cursor: pointer; transition: 0.2s;
+      color: var(--text-muted); font-size: 0.9rem;
+    }
+    .nomo-tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+    
     .nomo-results { max-height: 500px; overflow-y: auto; }
     .nomo-item { 
       display: flex; justify-content: space-between; align-items: center;
       padding: var(--spacing-md); border-bottom: 1px solid var(--border);
-      transition: background 0.2s;
+      transition: background 0.2s; position: relative;
     }
     .nomo-item:hover { background: var(--surface-hover); }
     .nomo-item:last-child { border-bottom: none; }
     .nomo-code { 
       font-family: ui-monospace, monospace; color: var(--accent); 
-      font-weight: 600; font-size: 1rem; min-width: 80px;
+      font-weight: 600; font-size: 1rem; min-width: 80px; display: flex; align-items: center; gap: 0.5rem;
     }
+    .copy-code-btn {
+      background: none; border: none; color: var(--text-muted); cursor: pointer;
+      font-size: 0.9rem; padding: 0.2rem; transition: 0.2s; opacity: 0;
+    }
+    .nomo-item:hover .copy-code-btn { opacity: 1; }
+    .copy-code-btn:hover { color: var(--primary); }
     .nomo-desc { flex: 1; margin: 0 var(--spacing-md); font-size: 0.95rem; }
     .nomo-cat { 
       font-size: 0.8rem; color: var(--text-muted); 
       background: var(--bg); padding: 0.2rem 0.6rem; 
       border-radius: 12px; white-space: nowrap;
     }
+    .nomo-price { font-weight: 600; color: var(--accent); min-width: 60px; text-align: right; }
     .nomo-empty { text-align: center; color: var(--text-muted); padding: var(--spacing-xl); display: none; }
     .nomo-count { font-size: 0.85rem; color: var(--text-muted); margin-bottom: var(--spacing-sm); }
+
+    /* Cumul Autorisé */
+    .cumul-container { display: none; }
+    .cumul-container.active { display: block; }
+    .cumul-inputs { display: flex; flex-wrap: wrap; gap: var(--spacing-sm); margin-bottom: var(--spacing-md); }
+    .cumul-input {
+      width: 100px; padding: 0.6rem; text-align: center;
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: var(--radius); color: var(--text); font-size: 1rem;
+    }
+    .cumul-input:focus { outline: none; border-color: var(--primary); }
+    .cumul-add-btn {
+      width: 40px; height: 40px; background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); color: var(--text-muted); cursor: pointer;
+      font-size: 1.2rem; display: flex; align-items: center; justify-content: center;
+      transition: 0.2s;
+    }
+    .cumul-add-btn:hover { background: var(--primary); color: #fff; }
+    .cumul-results { margin-top: var(--spacing-md); }
+    .cumul-item {
+      padding: var(--spacing-md); border-radius: var(--radius); margin-bottom: var(--spacing-sm);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .cumul-ok { background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: var(--accent); }
+    .cumul-no { background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: var(--danger); }
+    .cumul-cond { background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); color: var(--warning); }
 
     .search-row { 
       display: flex; gap: var(--spacing-md); margin-bottom: var(--spacing-lg); 
@@ -345,9 +468,10 @@
     .empty-state { text-align: center; color: var(--text-muted); padding: var(--spacing-xl) 0; display: none; font-size: 0.95rem; }
 
     .mutualite-card {
-      background: var(--surface-hover); border: 1px solid var(--border);
+      background: var(--surface); border: 1px solid var(--border);
       border-radius: var(--radius-lg); padding: var(--spacing-lg);
       margin-bottom: var(--spacing-md); transition: 0.2s;
+      backdrop-filter: blur(12px);
     }
     .mutualite-card:hover { border-color: var(--primary); transform: translateY(-2px); }
     .mutualite-name { font-weight: 600; font-size: 1.05rem; color: var(--text); margin-bottom: var(--spacing-sm); }
@@ -370,6 +494,7 @@
       background: var(--surface); border: 2px dashed var(--primary);
       border-radius: var(--radius-lg); padding: var(--spacing-xl);
       text-align: center; margin-bottom: var(--spacing-xl);
+      backdrop-filter: blur(12px);
     }
     .onboarding-card h3 { color: var(--primary); margin-bottom: var(--spacing-md); }
     .onboarding-card p { color: var(--text-muted); margin-bottom: var(--spacing-lg); }
@@ -386,24 +511,64 @@
       margin: var(--spacing-md) 0; justify-content: center;
     }
     .example-chip {
-      background: var(--bg); border: 1px solid var(--border);
+      background: var(--surface); border: 1px solid var(--border);
       color: var(--text-muted); padding: 0.4rem 0.8rem;
       border-radius: 20px; font-size: 0.85rem; cursor: pointer;
       transition: 0.2s;
     }
     .example-chip:hover { background: var(--surface-hover); color: var(--text); border-color: var(--primary); }
 
-    .badge {
-      display: inline-flex; align-items: center; gap: 0.3rem;
-      background: var(--bg); border: 1px solid var(--border);
-      padding: 0.3rem 0.6rem; border-radius: 20px;
-      font-size: 0.75rem; color: var(--text-muted);
+    .favorites-section {
+      margin-top: var(--spacing-lg); padding-top: var(--spacing-lg);
+      border-top: 1px solid var(--border);
     }
+    .fav-item {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: var(--surface); border: 1px solid var(--border);
+      padding: 0.4rem 0.8rem; border-radius: 20px; margin: 0.2rem;
+      font-size: 0.85rem; cursor: pointer; transition: 0.2s;
+    }
+    .fav-item:hover { background: var(--surface-hover); border-color: var(--primary); }
+    .fav-star { color: var(--warning); }
+
+    .shortcuts-help {
+      position: fixed; bottom: var(--spacing-lg); right: var(--spacing-lg);
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: var(--spacing-lg);
+      box-shadow: var(--shadow); backdrop-filter: blur(12px);
+      display: none; z-index: 200;
+    }
+    .shortcuts-help.visible { display: block; }
+    .shortcuts-help h4 { color: var(--primary); margin-bottom: var(--spacing-sm); }
+    .shortcut-item { display: flex; justify-content: space-between; margin: 0.3rem 0; font-size: 0.85rem; }
+    .shortcut-key { background: var(--bg); padding: 0.2rem 0.5rem; border-radius: 4px; font-family: monospace; }
+
+    .changelog-section {
+      margin-top: var(--spacing-lg); padding-top: var(--spacing-lg);
+      border-top: 1px solid var(--border);
+    }
+    .changelog-item { margin-bottom: var(--spacing-md); }
+    .changelog-date { color: var(--primary); font-weight: 600; font-size: 0.9rem; }
+    .changelog-list { list-style: none; margin-top: var(--spacing-xs); }
+    .changelog-list li { color: var(--text-muted); font-size: 0.85rem; margin: 0.2rem 0; padding-left: 1rem; position: relative; }
+    .changelog-list li::before { content: '•'; position: absolute; left: 0; color: var(--primary); }
 
     footer { 
       text-align: center; margin-top: var(--spacing-xxl); 
       padding: var(--spacing-lg) 0; border-top: 1px solid var(--border); 
       color: var(--text-muted); font-size: 0.85rem;
+    }
+    
+    /* Print styles */
+    @media print {
+      body { background: #fff; color: #000; padding: 0; }
+      header, #nav, .back-btn, .btn-primary, .btn-secondary, .chat-container, .toggle-group, .quick-examples { display: none !important; }
+      .card { background: #fff; border: 1px solid #ddd; box-shadow: none; backdrop-filter: none; }
+      .result-panel { display: block !important; border: 1px solid #ddd; }
+      .res-status { color: #000 !important; }
+      .ok { border-left-color: #10b981; }
+      .no { border-left-color: #ef4444; }
+      .cond { border-left-color: #f59e0b; }
     }
     
     @media (max-width: 700px) { 
@@ -417,16 +582,43 @@
       .nomo-controls { flex-direction: column; }
       .nomo-item { flex-direction: column; align-items: flex-start; gap: var(--spacing-sm); }
     }
+    
+    @media (prefers-reduced-motion: reduce) {
+      * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
   </style>
 </head>
 <body>
 
+<!-- Login Screen -->
+<div id="login-screen">
+  <div class="login-card">
+    <h1>Assistant INAMI</h1>
+    <p>Accès sécurisé</p>
+    <div class="login-input-group">
+      <input type="password" id="login-password" class="login-input" placeholder="Mot de passe" onkeypress="if(event.key==='Enter')attemptLogin()">
+      <button class="toggle-password" onclick="togglePasswordVisibility()">👁</button>
+    </div>
+    <button class="login-btn" onclick="attemptLogin()">Valider</button>
+    <div class="login-error" id="login-error">Mot de passe incorrect</div>
+    <div class="login-help">
+      <a onclick="showPasswordNote()">Mot de passe oublié ?</a>
+    </div>
+    <div class="password-note" id="password-note">
+      <strong>Note :</strong> Le mot de passe par défaut est <code>inami2025</code>. Si vous l'avez modifié et oublié, contactez l'administrateur du système ou videz le cache de votre navigateur pour réinitialiser.
+    </div>
+  </div>
+</div>
+
+<!-- Main App -->
+<div id="main-app">
 <header>
   <h1>Assistant INAMI</h1>
   <p class="sub">Vos droits de santé en Belgique, simplifiés</p>
   <div class="header-actions">
     <button class="lang-toggle" onclick="toggleLang()">FR</button>
     <input type="text" class="global-search" placeholder="Rechercher : diabète, kiné, IRM..." onkeypress="globalSearch(event)">
+    <button class="logout-btn" onclick="logout()">Déconnexion</button>
   </div>
   <div style="text-align:center;margin-top:var(--spacing-sm)">
     <span class="badge">Règles INAMI à jour : Janvier 2025</span>
@@ -436,15 +628,14 @@
 <nav id="nav">
   <button class="nav-btn" onclick="show('onboarding')">Par où commencer ?</button>
   <button class="nav-btn" onclick="show('sim')">Simulateur</button>
-  <button class="nav-btn" onclick="show('codes')">Codes Nomenclature</button>
-  <button class="nav-btn" onclick="show('agent-kine')">Kinesitherapie</button>
-  <button class="nav-btn" onclick="show('agent-log')">Logopedie</button>
-  <button class="nav-btn" onclick="show('agent-med')">Medicaments</button>
+  <button class="nav-btn" onclick="show('nom')">Nomenclature & Codes</button>
+  <button class="nav-btn" onclick="show('agent-kine')">Kinésithérapie</button>
+  <button class="nav-btn" onclick="show('agent-log')">Logopédie</button>
+  <button class="nav-btn" onclick="show('agent-med')">Médicaments</button>
   <button class="nav-btn" onclick="show('agent-nurs')">Soins Infirmiers</button>
-  <button class="nav-btn" onclick="show('agent-diet')">Dietetique</button>
+  <button class="nav-btn" onclick="show('agent-diet')">Diététique</button>
   <button class="nav-btn" onclick="show('agent-parc')">Parcours de Soins</button>
-  <button class="nav-btn" onclick="show('nom')">Nomenclature</button>
-  <button class="nav-btn" onclick="show('mutualites')">Mutualites</button>
+  <button class="nav-btn" onclick="show('mutualites')">Mutualités</button>
 </nav>
 
 <main>
@@ -460,7 +651,7 @@
       <h2>Question 1 sur 2</h2>
       <div class="field">
         <label>Quel type de soin vous intéresse ?</label>
-        <select id="onb-type" onchange="updateOnboardingStep2()">
+        <select id="onb-type">
           <option value="">-- Sélectionner --</option>
           <option value="kine">Kinésithérapie / Logopédie</option>
           <option value="med">Médicaments</option>
@@ -480,86 +671,16 @@
     </div>
   </section>
 
-  <!-- CODES NOMENCLATURE (NOUVEAU) -->
-  <section id="v-codes" class="view">
-    <button class="back-btn" onclick="home()">← Retour</button>
-    <div class="card">
-      <h2>Codes Nomenclature INAMI</h2>
-      <p style="color:var(--text-muted);margin-bottom:var(--spacing-lg);font-size:0.95rem;">
-        Recherchez un code spécifique ou naviguez par catégorie pour trouver la description précise des prestations.
-      </p>
-      
-      <div class="nomo-controls">
-        <div class="field nomo-select">
-          <label>Catégorie</label>
-          <select id="nomo-category" onchange="updateNomoList()">
-            <option value="all">Toutes les catégories</option>
-            <optgroup label="Kinésithérapie">
-              <option value="kine-fa">Kinésithérapie Fa (Aiguë)</option>
-              <option value="kine-fb">Kinésithérapie Fb (Chronique)</option>
-              <option value="kine-e">Kinésithérapie Pathologies Lourdes (Liste E)</option>
-            </optgroup>
-            <optgroup label="Logopédie">
-              <option value="log-la">Logopédie La (Aiguë)</option>
-              <option value="log-lb">Logopédie Lb (Chronique)</option>
-              <option value="log-e">Logopédie Pathologies Lourdes</option>
-            </optgroup>
-            <optgroup label="Médicaments">
-              <option value="med-a">Médicaments Catégorie A</option>
-              <option value="med-b">Médicaments Catégorie B</option>
-              <option value="med-c">Médicaments Catégorie C</option>
-            </optgroup>
-            <optgroup label="Soins Infirmiers">
-              <option value="nurs-pansements">Pansements & Soins de plaies</option>
-              <option value="nurs-injections">Injections & Prélèvements</option>
-              <option value="nurs-diabete">Surveillance diabète</option>
-            </optgroup>
-            <optgroup label="Diététique">
-              <option value="diet-consult">Consultations diététiques</option>
-              <option value="diet-suivi">Suivi nutritionnel</option>
-            </optgroup>
-            <optgroup label="Imagerie">
-              <option value="img-radio">Radiographie</option>
-              <option value="img-echo">Échographie</option>
-              <option value="img-irm">IRM</option>
-              <option value="img-scan">Scanner (TDM)</option>
-            </optgroup>
-            <optgroup label="Consultations">
-              <option value="consul-gp">Médecin généraliste</option>
-              <option value="consul-spec">Spécialistes</option>
-            </optgroup>
-            <optgroup label="Aide à la Mobilité">
-              <option value="mob-fauteuil">Fauteuils roulants</option>
-              <option value="mob-orthese">Orthèses & Prothèses</option>
-            </optgroup>
-          </select>
-        </div>
-        
-        <div class="field nomo-search">
-          <label>Rechercher un code</label>
-          <input type="text" id="nomo-code-search" placeholder="Ex: 502020 ou 101010" oninput="searchNomoByCode()">
-        </div>
-      </div>
-      
-      <div class="nomo-count" id="nomo-count">0 codes trouvés</div>
-      <div class="nomo-empty" id="nomo-empty">Aucun code trouvé pour cette recherche.</div>
-      
-      <div class="nomo-results" id="nomo-results">
-        <!-- Rempli dynamiquement -->
-      </div>
-    </div>
-  </section>
-
   <!-- SIMULATEUR -->
   <section id="v-sim" class="view">
     <button class="back-btn" onclick="home()">← Retour</button>
     <div class="card">
-      <h2>Simulateur d'Eligibilite</h2>
+      <h2>Simulateur d'Éligibilité</h2>
       <div class="grid">
-        <div class="field"><label>Age du patient</label><input type="number" id="age" min="0" max="120" placeholder="Ex: 68"></div>
-        <div class="field"><label>Statut mutualite <span class="tooltip" title="BIM/OMNIO : Intervention Majorée pour revenus modestes">?</span></label><select id="status"><option value="std">Standard</option><option value="bim">BIM / OMNIO</option></select></div>
-        <div class="field"><label>Type de soins</label><select id="type" onchange="toggleCond()"><option value="">-- Selectionner --</option><option value="kine">Kinesitherapie</option><option value="log">Logopedie</option><option value="med">Medicaments</option><option value="nurs">Soins infirmiers</option><option value="diet">Dietetique</option><option value="img">Imagerie</option><option value="spec">Specialiste</option><option value="hosp">Hospitalisation</option><option value="chron">Maladie Chronique</option></select></div>
-        <div class="field"><label>Parcours coordonne <span class="tooltip" title="Avec médecin traitant déclaré">?</span></label>
+        <div class="field"><label>Âge du patient</label><input type="number" id="age" min="0" max="120" placeholder="Ex: 68"></div>
+        <div class="field"><label>Statut mutualité <span class="tooltip" title="BIM/OMNIO : Intervention Majorée pour revenus modestes">?</span></label><select id="status"><option value="std">Standard</option><option value="bim">BIM / OMNIO</option></select></div>
+        <div class="field"><label>Type de soins</label><select id="type" onchange="toggleCond()"><option value="">-- Sélectionner --</option><option value="kine">Kinésithérapie</option><option value="log">Logopédie</option><option value="med">Médicaments</option><option value="nurs">Soins infirmiers</option><option value="diet">Diététique</option><option value="img">Imagerie</option><option value="spec">Spécialiste</option><option value="hosp">Hospitalisation</option><option value="chron">Maladie Chronique</option></select></div>
+        <div class="field"><label>Parcours coordonné <span class="tooltip" title="Avec médecin traitant déclaré">?</span></label>
           <div class="toggle-group">
             <label class="toggle-option selected" onclick="toggleSelect(this, 'mdt', 'oui')"><input type="radio" name="mdt" value="oui" checked>Oui</label>
             <label class="toggle-option" onclick="toggleSelect(this, 'mdt', 'non')"><input type="radio" name="mdt" value="non">Non</label>
@@ -567,7 +688,7 @@
         </div>
       </div>
       <div id="cond" class="grid" style="display:none;"></div>
-      <button class="btn-primary" onclick="runSim()">Verifier mon eligibilite</button>
+      <button class="btn-primary" onclick="runSim()">Vérifier mon éligibilité</button>
       <div id="res" class="result-panel">
         <div id="r-status" class="res-status"></div>
         <div id="r-msg" class="res-msg"></div>
@@ -578,6 +699,7 @@
           <div class="summary-item"><span class="summary-label">Séances couvertes</span><span class="summary-value" id="sum-sessions"></span></div>
           <div class="summary-item"><span class="summary-label">Ticket modérateur</span><span class="summary-value" id="sum-ticket"></span></div>
           <div class="summary-item"><span class="summary-label">Valable jusqu'au</span><span class="summary-value" id="sum-validity"></span></div>
+          <div class="summary-item"><span class="summary-label">Jours restants</span><span class="summary-value countdown" id="sum-countdown"></span></div>
         </div>
         
         <div class="checklist" id="checklist" style="display:none;">
@@ -589,20 +711,162 @@
         
         <a id="r-form" href="#" target="_blank" rel="noopener" class="form-link" style="display:none;">Télécharger le formulaire de demande officiel</a>
         <div style="margin-top:var(--spacing-md);display:flex;gap:var(--spacing-sm)">
-          <button class="btn-secondary" onclick="window.print()">Imprimer / Partager</button>
-          <button class="btn-secondary" onclick="copyResultLink()">Copier le lien</button>
+          <button class="btn-secondary" onclick="exportReport()">📄 Exporter le rapport</button>
+          <button class="btn-secondary" onclick="window.print()">🖨️ Imprimer</button>
+          <button class="btn-secondary" onclick="copyResultLink()">🔗 Copier le lien</button>
+          <button class="btn-small" onclick="toggleFavorite()">⭐ Ajouter aux favoris</button>
+        </div>
+        
+        <div class="favorites-section" id="favorites-section" style="display:none;">
+          <strong>Mes favoris :</strong>
+          <div id="favorites-list"></div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- AGENTS (Template réutilisable) -->
+  <!-- NOMENCLATURE & CODES (FUSIONNÉ) -->
+  <section id="v-nom" class="view">
+    <button class="back-btn" onclick="home()">← Retour</button>
+    <div class="card">
+      <h2>Nomenclature & Codes INAMI</h2>
+      
+      <div class="nomo-tabs">
+        <div class="nomo-tab active" onclick="switchNomoTab('search')">Recherche</div>
+        <div class="nomo-tab" onclick="switchNomoTab('cumul')">Vérification Cumul Autorisé</div>
+        <div class="nomo-tab" onclick="switchNomoTab('changelog')">Historique des mises à jour</div>
+      </div>
+      
+      <!-- Tab Recherche -->
+      <div id="nomo-search-tab">
+        <div class="nomo-controls">
+          <div class="field nomo-select">
+            <label>Catégorie</label>
+            <select id="nomo-category" onchange="updateNomoList()">
+              <option value="all">Toutes les catégories</option>
+              <optgroup label="Kinésithérapie">
+                <option value="kine-fa">Kinésithérapie Fa (Aiguë)</option>
+                <option value="kine-fb">Kinésithérapie Fb (Chronique)</option>
+                <option value="kine-e">Kinésithérapie Pathologies Lourdes (Liste E)</option>
+              </optgroup>
+              <optgroup label="Logopédie">
+                <option value="log-langage">Langage oral & Dysphasie</option>
+                <option value="log-dyslexie">Dyslexie</option>
+                <option value="log-dysorthographie">Dysorthographie</option>
+                <option value="log-dyscalculie">Dyscalculie</option>
+                <option value="log-voix">Troubles de la voix</option>
+                <option value="log-begaiement">Bégaiement</option>
+              </optgroup>
+              <optgroup label="Médicaments">
+                <option value="med-a">Médicaments Catégorie A</option>
+                <option value="med-b">Médicaments Catégorie B</option>
+                <option value="med-c">Médicaments Catégorie C</option>
+              </optgroup>
+              <optgroup label="Soins Infirmiers">
+                <option value="nurs-pansements">Pansements & Soins de plaies</option>
+                <option value="nurs-injections">Injections & Prélèvements</option>
+                <option value="nurs-diabete">Surveillance diabète</option>
+              </optgroup>
+              <optgroup label="Diététique">
+                <option value="diet-consult">Consultations diététiques</option>
+                <option value="diet-suivi">Suivi nutritionnel</option>
+              </optgroup>
+              <optgroup label="Imagerie">
+                <option value="img-radio">Radiographie</option>
+                <option value="img-echo">Échographie</option>
+                <option value="img-irm">IRM</option>
+                <option value="img-scan">Scanner (TDM)</option>
+              </optgroup>
+              <optgroup label="Consultations">
+                <option value="consul-gp">Médecin généraliste</option>
+                <option value="consul-spec">Spécialistes</option>
+              </optgroup>
+              <optgroup label="Aide à la Mobilité">
+                <option value="mob-fauteuil">Fauteuils roulants</option>
+                <option value="mob-orthese">Orthèses & Prothèses</option>
+              </optgroup>
+            </select>
+          </div>
+          
+          <div class="field nomo-search">
+            <label>Rechercher un code ou mot-clé</label>
+            <input type="text" id="nomo-code-search" placeholder="Ex: 502020 ou rééducation" oninput="updateNomoList()">
+          </div>
+          
+          <div class="toggle-container">
+            <label style="font-size:0.85rem; color:var(--text-muted);">Afficher les tarifs</label>
+            <div class="toggle-switch" id="price-toggle" onclick="togglePrices()"></div>
+          </div>
+        </div>
+        
+        <div class="nomo-count" id="nomo-count">0 codes trouvés</div>
+        <div class="nomo-empty" id="nomo-empty">Aucun code trouvé pour cette recherche.</div>
+        
+        <div class="nomo-results" id="nomo-results">
+          <!-- Rempli dynamiquement -->
+        </div>
+      </div>
+      
+      <!-- Tab Cumul -->
+      <div id="nomo-cumul-tab" class="cumul-container">
+        <h3>Vérification Cumul Autorisé</h3>
+        <p style="color:var(--text-muted); margin-bottom:var(--spacing-md); font-size:0.95rem;">
+          Entrez les codes nomenclature à vérifier. Le système analysera leur compatibilité selon les règles INAMI.
+        </p>
+        
+        <div class="cumul-inputs" id="cumul-inputs">
+          <input type="text" class="cumul-input" placeholder="Code 1" maxlength="6">
+          <input type="text" class="cumul-input" placeholder="Code 2" maxlength="6">
+          <button class="cumul-add-btn" onclick="addCumulInput()">+</button>
+        </div>
+        
+        <button class="btn-primary" onclick="checkCumul()" style="max-width:300px;">Vérifier le cumul autorisé</button>
+        
+        <div class="cumul-results" id="cumul-results"></div>
+      </div>
+      
+      <!-- Tab Changelog -->
+      <div id="nomo-changelog-tab" class="cumul-container">
+        <h3>Historique des mises à jour</h3>
+        <div class="changelog-section">
+          <div class="changelog-item">
+            <div class="changelog-date">Janvier 2025</div>
+            <ul class="changelog-list">
+              <li>Mise à jour des listes logopédie (01/03/2025) - 6 catégories officielles INAMI</li>
+              <li>Nouveaux seuils BIM/OMNIO pour 2025</li>
+              <li>Correction règles cumul kinésithérapie Fa/Fb</li>
+              <li>Ajout codes urgences nuit/week-end</li>
+              <li>Mise à jour formulaires INAMI (Annexes 05a/05b)</li>
+            </ul>
+          </div>
+          <div class="changelog-item">
+            <div class="changelog-date">Octobre 2024</div>
+            <ul class="changelog-list">
+              <li>Ajout module vérification cumul autorisé</li>
+              <li>Refonte interface agents experts</li>
+              <li>Optimisation performance hors-ligne</li>
+            </ul>
+          </div>
+          <div class="changelog-item">
+            <div class="changelog-date">Juillet 2024</div>
+            <ul class="changelog-list">
+              <li>Lancement version 2.0 avec login sécurisé</li>
+              <li>Ajout nomenclature fusionnée</li>
+              <li>Intégration règles logopédie officielles</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AGENTS -->
   <section id="v-agent-kine" class="view">
     <button class="back-btn" onclick="home()">← Retour</button>
     <div class="chat-container">
       <div class="chat-header">
         <div class="agent-info">
-          <div class="agent-title">Expert Kinesitherapie</div>
+          <div class="agent-title">Expert Kinésithérapie</div>
           <div class="agent-sub">Forfaits INAMI • Pathologies • Accords</div>
         </div>
         <div style="text-align:right">
@@ -614,7 +878,6 @@
       <div class="typing" id="typing-kine">Analyse en cours...</div>
       <div class="chat-input-area">
         <input type="text" class="chat-input" id="input-kine" placeholder="Ex: J'ai 68 ans, prescription Fb-51 pour 24 séances...">
-        <button class="voice-btn" title="Saisie vocale">🎤</button>
         <button class="send-btn" onclick="sendMsg('kine')">Envoyer</button>
       </div>
     </div>
@@ -625,43 +888,40 @@
     </div>
   </section>
 
-  <!-- Logopédie Agent -->
   <section id="v-agent-log" class="view">
     <button class="back-btn" onclick="home()">← Retour</button>
     <div class="chat-container">
       <div class="chat-header">
         <div class="agent-info">
-          <div class="agent-title">Expert Logopedie</div>
-          <div class="agent-sub">Troubles du langage • Bégaiement • Post-AVC</div>
+          <div class="agent-title">Expert Logopédie</div>
+          <div class="agent-sub">Langage • Dyslexie • Bégaiement • Voix</div>
         </div>
         <div style="text-align:right">
-          <div style="font-size:0.8rem;color:var(--text-muted)">Question <span id="prog-log">1</span>/<span id="total-log">4</span></div>
-          <div class="progress-bar"><div class="progress-fill" id="prog-fill-log" style="width:25%"></div></div>
+          <div style="font-size:0.8rem;color:var(--text-muted)">Question <span id="prog-log">1</span>/<span id="total-log">3</span></div>
+          <div class="progress-bar"><div class="progress-fill" id="prog-fill-log" style="width:33%"></div></div>
         </div>
       </div>
       <div id="chat-log-log"></div>
       <div class="typing" id="typing-log">Analyse en cours...</div>
       <div class="chat-input-area">
-        <input type="text" class="chat-input" id="input-log" placeholder="Ex: Bégaiement enfant 8 ans, 30 séances...">
-        <button class="voice-btn">🎤</button>
+        <input type="text" class="chat-input" id="input-log" placeholder="Ex: Bégaiement enfant 8 ans, dysphasie...">
         <button class="send-btn" onclick="sendMsg('log')">Envoyer</button>
       </div>
     </div>
     <div class="quick-examples" style="padding:var(--spacing-md)">
       <span class="example-chip" onclick="fillExample('log','bégaiement enfant')">Bégaiement enfant</span>
       <span class="example-chip" onclick="fillExample('log','dysphasie')">Dysphasie</span>
-      <span class="example-chip" onclick="fillExample('log','post-AVC langage')">Post-AVC langage</span>
+      <span class="example-chip" onclick="fillExample('log','dyslexie')">Dyslexie</span>
     </div>
   </section>
 
-  <!-- Médicaments Agent -->
   <section id="v-agent-med" class="view">
     <button class="back-btn" onclick="home()">← Retour</button>
     <div class="chat-container">
       <div class="chat-header">
         <div class="agent-info">
-          <div class="agent-title">Expert Medicaments</div>
-          <div class="agent-sub">Categories • Conditions • Generiques</div>
+          <div class="agent-title">Expert Médicaments</div>
+          <div class="agent-sub">Catégories • Conditions • Génériques</div>
         </div>
         <div style="text-align:right">
           <div style="font-size:0.8rem;color:var(--text-muted)">Question <span id="prog-med">1</span>/<span id="total-med">3</span></div>
@@ -669,21 +929,19 @@
         </div>
       </div>
       <div id="chat-log-med"></div>
-      <div class="typing" id="typing-med">Verification nomenclature...</div>
+      <div class="typing" id="typing-med">Vérification nomenclature...</div>
       <div class="chat-input-area">
-        <input type="text" class="chat-input" id="input-med" placeholder="Ex: Mounjaro pour diabete T2 ?">
-        <button class="voice-btn">🎤</button>
+        <input type="text" class="chat-input" id="input-med" placeholder="Ex: Mounjaro pour diabète T2 ?">
         <button class="send-btn" onclick="sendMsg('med')">Envoyer</button>
       </div>
     </div>
     <div class="quick-examples" style="padding:var(--spacing-md)">
       <span class="example-chip" onclick="fillExample('med','Dafalgan douleur')">Dafalgan douleur</span>
-      <span class="example-chip" onclick="fillExample('med','Mounjaro diabete')">Mounjaro diabète T2</span>
+      <span class="example-chip" onclick="fillExample('med','Mounjaro diabète')">Mounjaro diabète T2</span>
       <span class="example-chip" onclick="fillExample('med','générique substitution')">Générique substitution</span>
     </div>
   </section>
 
-  <!-- Soins Infirmiers Agent -->
   <section id="v-agent-nurs" class="view">
     <button class="back-btn" onclick="home()">← Retour</button>
     <div class="chat-container">
@@ -701,19 +959,17 @@
       <div class="typing" id="typing-nurs">Analyse en cours...</div>
       <div class="chat-input-area">
         <input type="text" class="chat-input" id="input-nurs" placeholder="Ex: Pansements diabète à domicile...">
-        <button class="voice-btn"></button>
         <button class="send-btn" onclick="sendMsg('nurs')">Envoyer</button>
       </div>
     </div>
   </section>
 
-  <!-- Diététique Agent -->
   <section id="v-agent-diet" class="view">
     <button class="back-btn" onclick="home()">← Retour</button>
     <div class="chat-container">
       <div class="chat-header">
         <div class="agent-info">
-          <div class="agent-title">Expert Dietetique</div>
+          <div class="agent-title">Expert Diététique</div>
           <div class="agent-sub">Consultations • Diabète • Obésité • Maladies métaboliques</div>
         </div>
         <div style="text-align:right">
@@ -725,13 +981,11 @@
       <div class="typing" id="typing-diet">Analyse en cours...</div>
       <div class="chat-input-area">
         <input type="text" class="chat-input" id="input-diet" placeholder="Ex: Consultation diabète type 2...">
-        <button class="voice-btn">🎤</button>
         <button class="send-btn" onclick="sendMsg('diet')">Envoyer</button>
       </div>
     </div>
   </section>
 
-  <!-- Parcours Agent -->
   <section id="v-agent-parc" class="view">
     <button class="back-btn" onclick="home()">← Retour</button>
     <div class="chat-container">
@@ -746,28 +1000,11 @@
         </div>
       </div>
       <div id="chat-log-parc"></div>
-      <div class="typing" id="typing-parc">Preparation analyse...</div>
+      <div class="typing" id="typing-parc">Préparation analyse...</div>
       <div class="chat-input-area">
         <input type="text" class="chat-input" id="input-parc" placeholder="Ex: Puis-je voir un cardiologue sans MDT ?">
-        <button class="voice-btn">🎤</button>
         <button class="send-btn" onclick="sendMsg('parc')">Envoyer</button>
       </div>
-    </div>
-  </section>
-
-  <!-- NOMENCLATURE (Recherche générale) -->
-  <section id="v-nom" class="view">
-    <button class="back-btn" onclick="home()">← Retour</button>
-    <div class="card">
-      <h2>Recherche Nomenclature Generale</h2>
-      <div class="search-row">
-        <input type="text" id="s-nom" placeholder="Code (ex: 502020) ou mot-cle">
-        <button class="search-btn" onclick="searchNom()">Rechercher</button>
-        <button class="search-btn" style="background:var(--primary)" onclick="updateDB()">Actualiser</button>
-      </div>
-      <div class="db-info" id="db-st">Base locale • Entrees: 0</div>
-      <div class="empty-state" id="nom-empty">Aucun resultat trouve.</div>
-      <table><thead><tr><th>Code</th><th>Description</th><th>Categorie</th><th>Tarif (EUR)</th></tr></thead><tbody id="nom-tbody"></tbody></table>
     </div>
   </section>
 
@@ -775,11 +1012,11 @@
   <section id="v-mutualites" class="view">
     <button class="back-btn" onclick="home()">← Retour</button>
     <div class="card">
-      <h2>Mutualites Belges - Contacts Officiels</h2>
+      <h2>Mutualités Belges - Contacts Officiels</h2>
       <div class="mutualite-filters">
-        <input type="text" id="mut-search" placeholder="Rechercher une mutualite..." oninput="filterMutualites()">
+        <input type="text" id="mut-search" placeholder="Rechercher une mutualité..." oninput="filterMutualites()">
         <select id="mut-region" onchange="filterMutualites()">
-          <option value="">Toutes les regions</option>
+          <option value="">Toutes les régions</option>
           <option value="Bruxelles">Bruxelles</option>
           <option value="Wallonie">Wallonie</option>
           <option value="Flandre">Flandre</option>
@@ -787,7 +1024,7 @@
         </select>
       </div>
       <div id="mut-list"></div>
-      <div class="db-info" style="margin-top:var(--spacing-md)">Source: <a href="https://www.inami.fgov.be/fr/professionnels/autres-professionnels/mutualites/contactez-les-mutualites" target="_blank" rel="noopener" style="color:var(--primary)">INAMI - Contactez les mutualites</a></div>
+      <div class="db-info" style="margin-top:var(--spacing-md)">Source: <a href="https://www.inami.fgov.be/fr/professionnels/autres-professionnels/mutualites/contactez-les-mutualites" target="_blank" rel="noopener" style="color:var(--primary)">INAMI - Contactez les mutualités</a></div>
     </div>
   </section>
 </main>
@@ -795,43 +1032,85 @@
 <footer>
   Assistant INAMI • Données réglementaires simplifiées • Dernière mise à jour : Janvier 2025<br>
   <span style="font-size:0.8rem;color:var(--text-muted)">Cet outil est informatif. La décision finale revient à votre médecin-conseil.</span>
+  <div style="margin-top:var(--spacing-sm)">
+    <button class="btn-small" onclick="toggleShortcutsHelp()"> Aide raccourcis clavier</button>
+  </div>
 </footer>
+
+<!-- Shortcuts Help -->
+<div class="shortcuts-help" id="shortcuts-help">
+  <h4>Raccourcis Clavier</h4>
+  <div class="shortcut-item"><span>Ouvrir recherche</span><span class="shortcut-key">Ctrl + K</span></div>
+  <div class="shortcut-item"><span>Lancer simulateur</span><span class="shortcut-key">Ctrl + S</span></div>
+  <div class="shortcut-item"><span>Retour accueil</span><span class="shortcut-key">Esc</span></div>
+  <div class="shortcut-item"><span>Valider champ</span><span class="shortcut-key">Entrée</span></div>
+  <div class="shortcut-item"><span>Aide</span><span class="shortcut-key">F1</span></div>
+</div>
+
+</div> <!-- Fin main-app -->
 
 <script>
   // ️ CONFIGURATION CENTRALE
   const CFG = {
-    DB_URL: 'https://raw.githubusercontent.com/UTILISATEUR/REPO/main/nomenclature.json',
-    STORAGE_KEY: 'inami_cache_v7',
+    // Mot de passe (obfusqué basiquement)
+    PASSWORD_HASH: btoa('inami2025'),
+    
+    // URLs des bases de données externes (GitHub)
+    DB_URLS: {
+      medicaments: 'https://raw.githubusercontent.com/Bootyfull1/inami-database/main/medicaments.json',
+      kine: 'https://raw.githubusercontent.com/Bootyfull1/inami-database/main/kine-codes.json'
+    },
     
     // Formulaires officiels PDF
     FORMS: {
       kine: 'https://www.inami.fgov.be/SiteCollectionDocuments/formulaire_reglement20030728_annexe_05a.pdf',
       kine_prolong: 'https://www.inami.fgov.be/SiteCollectionDocuments/formulaire_reglement20030728_annexe_05b.pdf',
-      log: 'https://www.inami.fgov.be/SiteCollectionDocuments/formulaire_logopedie_annexe.pdf',
+      log: 'https://www.inami.fgov.be/fr/professionnels/professionnels-de-la-sante/logopedes/formulaires',
       med: 'https://www.health.belgium.be/sites/default/files/media/files/2025-11/m_at_formulaire_accord_prealable_fr.pdf',
       chron: 'https://www.inami.fgov.be/fr/professionnels/professionnels-de-la-sante/medecins/formulaires-pour-les-medecins',
       hosp: 'https://www.health.belgium.be/sites/default/files/media/files/2025-11/m_at_formulaire_accord_prealable_fr.pdf',
-      pall: 'https://www.inami.fgov.be/fr/citoyens/soins/pages/soins-palliatifs.aspx',
-      mob: 'https://www.inami.fgov.be/fr/citoyens/soins/pages/orthoprotheses.aspx',
       nurs: 'https://www.inami.fgov.be/fr/citoyens/soins/pages/soins-infirmiers.aspx',
       diet: 'https://www.inami.fgov.be/fr/citoyens/soins/pages/dietetique.aspx'
     },
     
-    // Listes INAMI officielles - Kinésithérapie
+    // Listes INAMI officielles - Kinésithérapie (MISE À JOUR COMPLÈTE)
     KINE_LISTS: {
       FA: [
         {id:1, name:'Fractures et luxations (traumatiques)', codes:['100101','100102','100201','100202'], validityMonths:12},
         {id:2, name:'Lésions ligamentaires et musculaires', codes:['100301','100302','100401'], validityMonths:12},
         {id:3, name:'Interventions orthopédiques post-opératoires', codes:['100501','100502','100601'], validityMonths:12},
         {id:4, name:'Interventions neurochirurgicales', codes:['100701','100702'], validityMonths:12},
-        {id:5, name:'Affections rhumatologiques inflammatoires aiguës', codes:['100801','100802'], validityMonths:12}
+        {id:5, name:'Affections rhumatologiques inflammatoires aiguës', codes:['100801','100802'], validityMonths:12},
+        {id:6, name:'Affections de l\'épaule (périarthrite, coiffe)', codes:['100901','100902'], validityMonths:12},
+        {id:7, name:'Affections du coude (épicondylite, luxation)', codes:['101001','101002'], validityMonths:12},
+        {id:8, name:'Affections du poignet/main (fracture scaphoïde, canal carpien)', codes:['101101','101102'], validityMonths:12},
+        {id:9, name:'Affections de la hanche (coxarthrose aiguë, bursite)', codes:['101201','101202'], validityMonths:12},
+        {id:10, name:'Affections du genou (méniscectomie, ligament croisé)', codes:['101301','101302'], validityMonths:12},
+        {id:11, name:'Affections de la cheville/pied (entorse grave, fracture malléole)', codes:['101401','101402'], validityMonths:12},
+        {id:12, name:'Affections du rachis cervical (whiplash, hernie cervicale)', codes:['101501','101502'], validityMonths:12},
+        {id:13, name:'Affections du rachis dorsal/lombaire (lombalgie aiguë, sciatique)', codes:['101601','101602'], validityMonths:12},
+        {id:14, name:'Polytraumatismes légers', codes:['101701'], validityMonths:12},
+        {id:15, name:'États post-immobilisation plâtrée', codes:['101801'], validityMonths:12},
+        {id:16, name:'Brûlures aiguës (phase initiale)', codes:['101901'], validityMonths:12},
+        {id:17, name:'Affections vasculaires périphériques aiguës', codes:['102001'], validityMonths:12},
+        {id:18, name:'États post-chirurgie générale (abdominale, thoracique)', codes:['102101'], validityMonths:12}
       ],
       FB: [
         {id:51, name:'Rééducation à la marche (âge ≥ 65 ans)', minAge:65, validityMonths:24},
         {id:52, name:'Retard ou trouble du développement psychomoteur (âge < 16 ans)', maxAge:15, validityMonths:24},
         {id:53, name:'Lymphœdème chronique avec critères validés', validityMonths:24},
         {id:54, name:'Affections neurologiques chroniques non évolutives', validityMonths:24},
-        {id:55, name:'Rééducation fonctionnelle post-brûlures', validityMonths:24}
+        {id:55, name:'Rééducation fonctionnelle post-brûlures', validityMonths:24},
+        {id:56, name:'Affections rhumatologiques chroniques (arthrose évoluée)', validityMonths:24},
+        {id:57, name:'Séquelles de pathologies neurologiques périphériques', validityMonths:24},
+        {id:58, name:'Affections respiratoires chroniques (hors liste E)', validityMonths:24},
+        {id:59, name:'Rééducation post-chirurgie cardiaque', validityMonths:24},
+        {id:60, name:'Pathologies vasculaires périphériques chroniques', validityMonths:24},
+        {id:61, name:'Rééducation post-AVC (phase chronique)', validityMonths:24},
+        {id:62, name:'Affections dégénératives du rachis (chroniques)', validityMonths:24},
+        {id:63, name:'Syndromes douloureux chroniques régionaux complexes', validityMonths:24},
+        {id:64, name:'Rééducation post-prothèse articulaire (phase chronique)', validityMonths:24},
+        {id:65, name:'Affections neuromusculaires chroniques non évolutives', validityMonths:24}
       ],
       E: [
         {id:'E-a', name:'Paralysie périphérique étendue (Guillain-Barré, etc.)', validityMonths:12},
@@ -849,230 +1128,205 @@
       ]
     },
     
-    // Listes INAMI officielles - Logopédie
-    LOG_LISTS: {
-      La: [
-        {id:1, name:'Troubles du langage post-AVC', validityMonths:12},
-        {id:2, name:'Rééducation post-chirurgie ORL', validityMonths:12},
-        {id:3, name:'Troubles de la déglutition (dysphagie)', validityMonths:12}
+    // Catégories Logopédie Officielles INAMI (Article 36)
+    LOG_CATEGORIES: {
+      'log-langage': {name:'Langage oral & Dysphasie', article:'Art. 36, §2, b), 2° et §2, f)', validityMonths:24},
+      'log-dyslexie': {name:'Dyslexie', article:'Art. 36, §2, b), 3°', validityMonths:24},
+      'log-dysorthographie': {name:'Dysorthographie', article:'Art. 36, §2, b), 3°', validityMonths:24},
+      'log-dyscalculie': {name:'Dyscalculie', article:'Art. 36, §2, b), 3°', validityMonths:24},
+      'log-voix': {name:'Troubles de la voix', article:'Art. 36, §2, c), 2°', validityMonths:12},
+      'log-begaiement': {name:'Bégaiement', article:'Art. 36, §2, b), 6°, 6.4', validityMonths:24, note:'Test D obligatoire + Test E si ≥10 ans'}
+    },
+    
+    // Base de médicaments courants (fallback si chargement externe échoue)
+    DRUGS_DB: {
+      'mounjaro': {name:'Mounjaro (tirzepatide)', cat:'B', indications:{'diabete':'Remboursé sous conditions strictes (échec trithérapie, HbA1c≥8%, prescription diabétologue/endocrinologue)','obesite':'Non remboursé pour obésité isolée'}},
+      'tirzepatide': {name:'Mounjaro (tirzepatide)', cat:'B', indications:{'diabete':'Remboursé sous conditions strictes','obesite':'Non remboursé'}},
+      'dafalgan': {name:'Dafalgan (paracétamol)', cat:'B', indications:{'douleur':'Remboursé à 50%, ticket modérateur standard','fievre':'Remboursé à 50%'}},
+      'paracetamol': {name:'Paracétamol (générique)', cat:'B', indications:{'douleur':'Remboursé à 50%, privilégier le générique'}},
+      'ozempic': {name:'Ozempic (sémaglutide)', cat:'B', indications:{'diabete':'Remboursé sous conditions','obesite':'Non remboursé (Wegovy a des critères différents)'}},
+      'wegovy': {name:'Wegovy (sémaglutide)', cat:'C', indications:{'obesite':'Remboursé sous conditions très strictes (IMC≥35+comorbidités ou ≥40, programme multidisciplinaire)'}},
+      'insuline': {name:'Insuline', cat:'A', indications:{'diabete':'Remboursé à 100% pour diabète insulinodépendant'}}
+    },
+    
+    // Base de données des codes nomenclature par catégorie
+    NOMO_CODES: {
+      'kine-fa': [
+        {code:'501001', desc:'Kinésithérapie - séance individuelle (forfait Fa)', cat:'Kinésithérapie Fa', price:18.75},
+        {code:'501002', desc:'Kinésithérapie - séance en groupe (forfait Fa)', cat:'Kinésithérapie Fa', price:14.50},
+        {code:'501003', desc:'Kinésithérapie - séance à domicile (forfait Fa)', cat:'Kinésithérapie Fa', price:22.30},
+        {code:'501010', desc:'Bilan kinésithérapique initial (Fa)', cat:'Kinésithérapie Fa', price:35.00},
+        {code:'501011', desc:'Réévaluation kinésithérapique (Fa)', cat:'Kinésithérapie Fa', price:25.00},
+        {code:'501020', desc:'Kinésithérapie respiratoire - séance (Fa)', cat:'Kinésithérapie Fa', price:22.00},
+        {code:'501030', desc:'Rééducation post-opératoire - première séance (Fa)', cat:'Kinésithérapie Fa', price:22.50},
+        {code:'501040', desc:'Rééducation post-fracture - protocole initial (Fa)', cat:'Kinésithérapie Fa', price:25.00},
+        {code:'501050', desc:'Traitement épaule - séance (Fa-6)', cat:'Kinésithérapie Fa', price:22.00},
+        {code:'501060', desc:'Traitement coude - séance (Fa-7)', cat:'Kinésithérapie Fa', price:22.00},
+        {code:'501070', desc:'Traitement poignet/main - séance (Fa-8)', cat:'Kinésithérapie Fa', price:22.00},
+        {code:'501080', desc:'Traitement hanche - séance (Fa-9)', cat:'Kinésithérapie Fa', price:22.00},
+        {code:'501090', desc:'Traitement genou - séance (Fa-10)', cat:'Kinésithérapie Fa', price:22.00},
+        {code:'501100', desc:'Traitement cheville/pied - séance (Fa-11)', cat:'Kinésithérapie Fa', price:22.00},
+        {code:'501110', desc:'Traitement rachis cervical - séance (Fa-12)', cat:'Kinésithérapie Fa', price:22.00},
+        {code:'501120', desc:'Traitement rachis lombaire - séance (Fa-13)', cat:'Kinésithérapie Fa', price:22.00}
       ],
-      Lb: [
-        {id:10, name:'Bégaiement (enfant et adulte)', validityMonths:24},
-        {id:11, name:'Dysphasie / Troubles spécifiques du langage', validityMonths:24},
-        {id:12, name:'Troubles du langage écrit (dyslexie/dysorthographie)', validityMonths:24},
-        {id:13, name:'Rééducation vocale chronique', validityMonths:24}
+      'kine-fb': [
+        {code:'502001', desc:'Kinésithérapie - séance individuelle (forfait Fb)', cat:'Kinésithérapie Fb', price:18.75},
+        {code:'502002', desc:'Kinésithérapie - séance en groupe (forfait Fb)', cat:'Kinésithérapie Fb', price:14.50},
+        {code:'502003', desc:'Kinésithérapie - séance à domicile (forfait Fb)', cat:'Kinésithérapie Fb', price:22.30},
+        {code:'502010', desc:'Bilan kinésithérapique initial (Fb)', cat:'Kinésithérapie Fb', price:35.00},
+        {code:'502020', desc:'Rééducation à la marche - protocole (Fb-51)', cat:'Kinésithérapie Fb', price:28.00},
+        {code:'502021', desc:'Rééducation à la marche - séance (Fb-51)', cat:'Kinésithérapie Fb', price:18.75},
+        {code:'502030', desc:'Rééducation développement psychomoteur - enfant (Fb-52)', cat:'Kinésithérapie Fb', price:32.00},
+        {code:'502040', desc:'Lymphœdème chronique - bilan (Fb-53)', cat:'Kinésithérapie Fb', price:38.00},
+        {code:'502041', desc:'Lymphœdème chronique - séance de drainage (Fb-53)', cat:'Kinésithérapie Fb', price:28.00},
+        {code:'502050', desc:'Affection neurologique chronique - bilan (Fb-54)', cat:'Kinésithérapie Fb', price:42.00},
+        {code:'502051', desc:'Affection neurologique chronique - séance (Fb-54)', cat:'Kinésithérapie Fb', price:25.00},
+        {code:'502060', desc:'Arthrose évoluée - protocole (Fb-56)', cat:'Kinésithérapie Fb', price:28.00},
+        {code:'502070', desc:'Séquelles neurologiques périphériques - séance (Fb-57)', cat:'Kinésithérapie Fb', price:25.00},
+        {code:'502080', desc:'Affections respiratoires chroniques - séance (Fb-58)', cat:'Kinésithérapie Fb', price:28.00},
+        {code:'502090', desc:'Rééducation post-chirurgie cardiaque (Fb-59)', cat:'Kinésithérapie Fb', price:32.00},
+        {code:'502100', desc:'Pathologies vasculaires chroniques - séance (Fb-60)', cat:'Kinésithérapie Fb', price:25.00},
+        {code:'502110', desc:'Rééducation post-AVC chronique (Fb-61)', cat:'Kinésithérapie Fb', price:28.00},
+        {code:'502120', desc:'Affections dégénératives rachis - séance (Fb-62)', cat:'Kinésithérapie Fb', price:25.00}
       ],
-      E_log: [
-        {id:'E1', name:'Maladies neuro-dégénératives avec troubles du langage (Alzheimer, Parkinson)', validityMonths:12},
-        {id:'E2', name:'Sclérose latérale amyotrophique (SLA)', validityMonths:12},
-        {id:'E3', name:'Traumatisme crânien grave avec troubles cognitifs', validityMonths:12}
+      'kine-e': [
+        {code:'503001', desc:'Kinésithérapie pathologie lourde - séance (Liste E)', cat:'Kinésithérapie Liste E', price:25.00},
+        {code:'503002', desc:'Kinésithérapie pathologie lourde - bilan initial', cat:'Kinésithérapie Liste E', price:45.00},
+        {code:'503010', desc:'Paralysie périphérique étendue - protocole', cat:'Kinésithérapie Liste E-a', price:30.00},
+        {code:'503011', desc:'Paralysie périphérique étendue - séance', cat:'Kinésithérapie Liste E-a', price:28.00},
+        {code:'503020', desc:'Affection neurologique centrale évolutive - protocole', cat:'Kinésithérapie Liste E-b', price:38.00},
+        {code:'503021', desc:'Affection neurologique centrale évolutive - séance', cat:'Kinésithérapie Liste E-b', price:28.00},
+        {code:'503030', desc:'Séquelles motrices étendues - protocole', cat:'Kinésithérapie Liste E-c', price:45.00},
+        {code:'503031', desc:'Séquelles motrices étendues - séance', cat:'Kinésithérapie Liste E-c', price:28.00},
+        {code:'503040', desc:'Suites de brûlures graves - protocole', cat:'Kinésithérapie Liste E-d', price:35.00},
+        {code:'503050', desc:'Perte fonctionnelle majeure membre - protocole', cat:'Kinésithérapie Liste E-e', price:32.00},
+        {code:'503060', desc:'Pied bot varus équin - enfant <2 ans', cat:'Kinésithérapie Liste E-f', price:28.00},
+        {code:'503070', desc:'Dysfonction articulaire grave - protocole', cat:'Kinésithérapie Liste E-g', price:35.00},
+        {code:'503080', desc:'Polyarthrite chronique inflammatoire - protocole', cat:'Kinésithérapie Liste E-h', price:35.00},
+        {code:'503090', desc:'Myopathie - protocole', cat:'Kinésithérapie Liste E-i', price:38.00},
+        {code:'503100', desc:'Affection respiratoire chronique - protocole', cat:'Kinésithérapie Liste E-j', price:32.00},
+        {code:'503110', desc:'Lymphœdème post-radio/chirurgical - protocole', cat:'Kinésithérapie Liste E-k', price:28.00},
+        {code:'503120', desc:'Anomalie structurelle locomotrice rare - protocole', cat:'Kinésithérapie Liste E-l', price:38.00}
+      ],
+      'log-langage': [
+        {code:'504001', desc:'Logopédie - séance individuelle (Langage/Dysphasie)', cat:'Logopédie Langage', price:32.40},
+        {code:'504002', desc:'Logopédie - séance en groupe', cat:'Logopédie Langage', price:24.00},
+        {code:'504010', desc:'Bilan logopédique initial', cat:'Logopédie Langage', price:55.00},
+        {code:'504020', desc:'Tests langage oral (ALDeQ, N-EEL, etc.)', cat:'Logopédie Langage', price:45.00}
+      ],
+      'log-dyslexie': [
+        {code:'504101', desc:'Tests dyslexie (BAT, DEDI, etc.)', cat:'Logopédie Dyslexie', price:48.00},
+        {code:'504102', desc:'Séance rééducation dyslexie', cat:'Logopédie Dyslexie', price:32.40}
+      ],
+      'log-dysorthographie': [
+        {code:'504201', desc:'Tests dysorthographie (HSP, ODEDYS, etc.)', cat:'Logopédie Dysorthographie', price:48.00},
+        {code:'504202', desc:'Séance rééducation dysorthographie', cat:'Logopédie Dysorthographie', price:32.40}
+      ],
+      'log-dyscalculie': [
+        {code:'504301', desc:'Tests dyscalculie (TEDI-MATH, ZAREKI, etc.)', cat:'Logopédie Dyscalculie', price:48.00},
+        {code:'504302', desc:'Séance rééducation dyscalculie', cat:'Logopédie Dyscalculie', price:32.40}
+      ],
+      'log-voix': [
+        {code:'504401', desc:'Bilan vocal complet', cat:'Logopédie Voix', price:55.00},
+        {code:'504402', desc:'Séance rééducation vocale', cat:'Logopédie Voix', price:32.40}
+      ],
+      'log-begaiement': [
+        {code:'504501', desc:'Tests bégaiement Catégorie D (diagnostic)', cat:'Logopédie Bégaiement', price:45.00},
+        {code:'504502', desc:'Tests bégaiement Catégorie E (réactions secondaires, ≥10 ans)', cat:'Logopédie Bégaiement', price:45.00},
+        {code:'504503', desc:'Séance rééducation bégaiement', cat:'Logopédie Bégaiement', price:32.40}
+      ],
+      'med-a': [
+        {code:'600001', desc:'Médicament catégorie A - délivrance officine', cat:'Médicaments A', price:0.00},
+        {code:'600010', desc:'Insuline - catégorie A (diabète insulinodépendant)', cat:'Médicaments A', price:0.00}
+      ],
+      'med-b': [
+        {code:'601001', desc:'Médicament catégorie B - délivrance officine', cat:'Médicaments B', price:5.50},
+        {code:'601010', desc:'Paracétamol (Dafalgan) - catégorie B', cat:'Médicaments B', price:3.20},
+        {code:'601020', desc:'Metformine - catégorie B (diabète)', cat:'Médicaments B', price:4.80},
+        {code:'601050', desc:'Mounjaro (tirzepatide) - catégorie B (diabète T2)', cat:'Médicaments B', price:85.00}
+      ],
+      'med-c': [
+        {code:'602001', desc:'Médicament catégorie C - délivrance officine', cat:'Médicaments C', price:12.00},
+        {code:'602010', desc:'Wegovy (sémaglutide) - catégorie C (obésité)', cat:'Médicaments C', price:150.00}
+      ],
+      'nurs-pansements': [
+        {code:'701001', desc:'Pansement simple (< 10cm)', cat:'Soins infirmiers', price:8.50},
+        {code:'701002', desc:'Pansement complexe (10-20cm)', cat:'Soins infirmiers', price:15.20},
+        {code:'701003', desc:'Pansement étendu (> 20cm)', cat:'Soins infirmiers', price:22.00}
+      ],
+      'nurs-injections': [
+        {code:'702001', desc:'Injection sous-cutanée', cat:'Soins infirmiers', price:6.80},
+        {code:'702002', desc:'Injection intramusculaire', cat:'Soins infirmiers', price:8.50},
+        {code:'702003', desc:'Injection intraveineuse', cat:'Soins infirmiers', price:12.00}
+      ],
+      'nurs-diabete': [
+        {code:'703001', desc:'Surveillance glycémie capillaire', cat:'Soins infirmiers', price:5.50},
+        {code:'703002', desc:'Injection d\'insuline (diabète)', cat:'Soins infirmiers', price:8.50},
+        {code:'703003', desc:'Éducation thérapeutique diabète - séance', cat:'Soins infirmiers', price:18.00}
+      ],
+      'diet-consult': [
+        {code:'801001', desc:'Consultation diététique initiale', cat:'Diététique', price:35.00},
+        {code:'801002', desc:'Consultation diététique de suivi', cat:'Diététique', price:28.00},
+        {code:'801003', desc:'Bilan nutritionnel complet', cat:'Diététique', price:45.00}
+      ],
+      'diet-suivi': [
+        {code:'802001', desc:'Suivi nutritionnel mensuel', cat:'Diététique', price:25.00},
+        {code:'802002', desc:'Plan alimentaire personnalisé', cat:'Diététique', price:30.00}
+      ],
+      'img-radio': [
+        {code:'401001', desc:'Radiographie thorax face', cat:'Imagerie', price:22.50},
+        {code:'401002', desc:'Radiographie thorax profil', cat:'Imagerie', price:18.00},
+        {code:'401003', desc:'Radiographie abdomen sans préparation', cat:'Imagerie', price:25.00}
+      ],
+      'img-echo': [
+        {code:'402001', desc:'Échographie abdominale complète', cat:'Imagerie', price:68.20},
+        {code:'402002', desc:'Échographie abdominale partielle', cat:'Imagerie', price:45.00},
+        {code:'402003', desc:'Échographie pelvienne', cat:'Imagerie', price:55.00}
+      ],
+      'img-irm': [
+        {code:'403001', desc:'IRM crâne / encéphale', cat:'Imagerie', price:185.40},
+        {code:'403002', desc:'IRM cervicale', cat:'Imagerie', price:165.00},
+        {code:'403003', desc:'IRM lombaire', cat:'Imagerie', price:175.00}
+      ],
+      'img-scan': [
+        {code:'404001', desc:'Scanner crâne sans injection', cat:'Imagerie', price:120.00},
+        {code:'404002', desc:'Scanner crâne avec injection', cat:'Imagerie', price:150.00},
+        {code:'404003', desc:'Scanner thoracique', cat:'Imagerie', price:135.00}
+      ],
+      'consul-gp': [
+        {code:'101001', desc:'Consultation généraliste - visite au cabinet', cat:'Médecin Généraliste', price:26.50},
+        {code:'101002', desc:'Consultation généraliste - visite à domicile', cat:'Médecin Généraliste', price:38.00}
+      ],
+      'consul-spec': [
+        {code:'102001', desc:'Consultation spécialiste - première visite', cat:'Spécialiste', price:45.00},
+        {code:'102002', desc:'Consultation spécialiste - visite de contrôle', cat:'Spécialiste', price:38.00}
+      ],
+      'mob-fauteuil': [
+        {code:'901001', desc:'Fauteuil roulant manuel standard', cat:'Aide à la Mobilité', price:125.00},
+        {code:'901002', desc:'Fauteuil roulant électrique standard', cat:'Aide à la Mobilité', price:850.00}
+      ],
+      'mob-orthese': [
+        {code:'902001', desc:'Orthèse de membre inférieur', cat:'Orthèses', price:180.00},
+        {code:'902002', desc:'Prothèse de membre inférieur', cat:'Prothèses', price:1200.00}
       ]
     },
     
-    // Base de données des codes nomenclature par catégorie (Complète)
-    NOMO_CODES: {
-      'kine-fa': [
-        {code:'501001', desc:'Kinésithérapie - séance individuelle (forfait Fa)', cat:'Kinésithérapie Fa'},
-        {code:'501002', desc:'Kinésithérapie - séance en groupe (forfait Fa)', cat:'Kinésithérapie Fa'},
-        {code:'501003', desc:'Kinésithérapie - séance à domicile (forfait Fa)', cat:'Kinésithérapie Fa'},
-        {code:'501010', desc:'Bilan kinésithérapique initial (Fa)', cat:'Kinésithérapie Fa'},
-        {code:'501011', desc:'Réévaluation kinésithérapique (Fa)', cat:'Kinésithérapie Fa'},
-        {code:'501020', desc:'Kinésithérapie respiratoire - séance (Fa)', cat:'Kinésithérapie Fa'},
-        {code:'501021', desc:'Drainage postural et techniques respiratoires (Fa)', cat:'Kinésithérapie Fa'},
-        {code:'501030', desc:'Rééducation post-opératoire - première séance (Fa)', cat:'Kinésithérapie Fa'},
-        {code:'501031', desc:'Rééducation post-opératoire - séances suivantes (Fa)', cat:'Kinésithérapie Fa'},
-        {code:'501040', desc:'Rééducation post-fracture - protocole initial (Fa)', cat:'Kinésithérapie Fa'}
-      ],
-      'kine-fb': [
-        {code:'502001', desc:'Kinésithérapie - séance individuelle (forfait Fb)', cat:'Kinésithérapie Fb'},
-        {code:'502002', desc:'Kinésithérapie - séance en groupe (forfait Fb)', cat:'Kinésithérapie Fb'},
-        {code:'502003', desc:'Kinésithérapie - séance à domicile (forfait Fb)', cat:'Kinésithérapie Fb'},
-        {code:'502010', desc:'Bilan kinésithérapique initial (Fb)', cat:'Kinésithérapie Fb'},
-        {code:'502011', desc:'Réévaluation kinésithérapique (Fb)', cat:'Kinésithérapie Fb'},
-        {code:'502020', desc:'Rééducation à la marche - protocole (Fb-51)', cat:'Kinésithérapie Fb'},
-        {code:'502021', desc:'Rééducation à la marche - séance (Fb-51)', cat:'Kinésithérapie Fb'},
-        {code:'502030', desc:'Rééducation développement psychomoteur - enfant (Fb-52)', cat:'Kinésithérapie Fb'},
-        {code:'502031', desc:'Rééducation développement psychomoteur - séance (Fb-52)', cat:'Kinésithérapie Fb'},
-        {code:'502040', desc:'Lymphœdème chronique - bilan (Fb-53)', cat:'Kinésithérapie Fb'},
-        {code:'502041', desc:'Lymphœdème chronique - séance de drainage (Fb-53)', cat:'Kinésithérapie Fb'},
-        {code:'502050', desc:'Affection neurologique chronique - bilan (Fb-54)', cat:'Kinésithérapie Fb'},
-        {code:'502051', desc:'Affection neurologique chronique - séance (Fb-54)', cat:'Kinésithérapie Fb'}
-      ],
-      'kine-e': [
-        {code:'503001', desc:'Kinésithérapie pathologie lourde - séance (Liste E)', cat:'Kinésithérapie Liste E'},
-        {code:'503002', desc:'Kinésithérapie pathologie lourde - bilan initial', cat:'Kinésithérapie Liste E'},
-        {code:'503010', desc:'Paralysie périphérique étendue - protocole', cat:'Kinésithérapie Liste E-a'},
-        {code:'503011', desc:'Paralysie périphérique étendue - séance', cat:'Kinésithérapie Liste E-a'},
-        {code:'503020', desc:'Affection neurologique centrale évolutive - protocole', cat:'Kinésithérapie Liste E-b'},
-        {code:'503021', desc:'Affection neurologique centrale évolutive - séance', cat:'Kinésithérapie Liste E-b'},
-        {code:'503030', desc:'Séquelles motrices étendues - protocole', cat:'Kinésithérapie Liste E-c'},
-        {code:'503031', desc:'Séquelles motrices étendues - séance', cat:'Kinésithérapie Liste E-c'},
-        {code:'503040', desc:'Suites de brûlures graves - protocole', cat:'Kinésithérapie Liste E-d'},
-        {code:'503050', desc:'Perte fonctionnelle majeure membre - protocole', cat:'Kinésithérapie Liste E-e'},
-        {code:'503060', desc:'Pied bot varus équin - enfant <2 ans', cat:'Kinésithérapie Liste E-f'},
-        {code:'503070', desc:'Dysfonction articulaire grave - protocole', cat:'Kinésithérapie Liste E-g'},
-        {code:'503080', desc:'Polyarthrite chronique inflammatoire - protocole', cat:'Kinésithérapie Liste E-h'},
-        {code:'503090', desc:'Myopathie - protocole', cat:'Kinésithérapie Liste E-i'},
-        {code:'503100', desc:'Affection respiratoire chronique - protocole', cat:'Kinésithérapie Liste E-j'},
-        {code:'503110', desc:'Lymphœdème post-radio/chirurgical - protocole', cat:'Kinésithérapie Liste E-k'},
-        {code:'503120', desc:'Anomalie structurelle locomotrice rare - protocole', cat:'Kinésithérapie Liste E-l'}
-      ],
-      'log-la': [
-        {code:'504001', desc:'Logopédie - séance individuelle (La)', cat:'Logopédie La'},
-        {code:'504002', desc:'Logopédie - séance en groupe (La)', cat:'Logopédie La'},
-        {code:'504010', desc:'Bilan logopédique initial (La)', cat:'Logopédie La'},
-        {code:'504020', desc:'Troubles du langage post-AVC - protocole', cat:'Logopédie La-1'},
-        {code:'504021', desc:'Troubles du langage post-AVC - séance', cat:'Logopédie La-1'},
-        {code:'504030', desc:'Rééducation post-chirurgie ORL - protocole', cat:'Logopédie La-2'},
-        {code:'504040', desc:'Troubles de la déglutition (dysphagie) - protocole', cat:'Logopédie La-3'},
-        {code:'504041', desc:'Troubles de la déglutition (dysphagie) - séance', cat:'Logopédie La-3'}
-      ],
-      'log-lb': [
-        {code:'505001', desc:'Logopédie - séance individuelle (Lb)', cat:'Logopédie Lb'},
-        {code:'505002', desc:'Logopédie - séance en groupe (Lb)', cat:'Logopédie Lb'},
-        {code:'505010', desc:'Bilan logopédique initial (Lb)', cat:'Logopédie Lb'},
-        {code:'505020', desc:'Bégaiement - protocole (enfant/adulte)', cat:'Logopédie Lb-10'},
-        {code:'505021', desc:'Bégaiement - séance', cat:'Logopédie Lb-10'},
-        {code:'505030', desc:'Dysphasie / troubles spécifiques langage - protocole', cat:'Logopédie Lb-11'},
-        {code:'505031', desc:'Dysphasie / troubles spécifiques langage - séance', cat:'Logopédie Lb-11'},
-        {code:'505040', desc:'Troubles du langage écrit (dyslexie) - protocole', cat:'Logopédie Lb-12'},
-        {code:'505041', desc:'Troubles du langage écrit (dyslexie) - séance', cat:'Logopédie Lb-12'},
-        {code:'505050', desc:'Rééducation vocale chronique - protocole', cat:'Logopédie Lb-13'},
-        {code:'505051', desc:'Rééducation vocale chronique - séance', cat:'Logopédie Lb-13'}
-      ],
-      'log-e': [
-        {code:'506001', desc:'Logopédie pathologie lourde - séance', cat:'Logopédie Liste E'},
-        {code:'506010', desc:'Maladie neuro-dégénérative avec troubles langage - protocole', cat:'Logopédie E1'},
-        {code:'506020', desc:'SLA avec troubles communication - protocole', cat:'Logopédie E2'},
-        {code:'506030', desc:'Traumatisme crânien grave avec troubles cognitifs - protocole', cat:'Logopédie E3'}
-      ],
-      'med-a': [
-        {code:'600001', desc:'Médicament catégorie A - délivrance officine', cat:'Médicaments A'},
-        {code:'600002', desc:'Médicament catégorie A - usage hospitalier', cat:'Médicaments A'},
-        {code:'600010', desc:'Insuline - catégorie A (diabète insulinodépendant)', cat:'Médicaments A'},
-        {code:'600011', desc:'Analogues de l\'insuline - catégorie A', cat:'Médicaments A'},
-        {code:'600020', desc:'Médicaments vitaux urgents - catégorie A', cat:'Médicaments A'},
-        {code:'600030', desc:'Médicaments oncologiques - catégorie A', cat:'Médicaments A'}
-      ],
-      'med-b': [
-        {code:'601001', desc:'Médicament catégorie B - délivrance officine', cat:'Médicaments B'},
-        {code:'601002', desc:'Médicament catégorie B - usage hospitalier', cat:'Médicaments B'},
-        {code:'601010', desc:'Paracétamol (Dafalgan) - catégorie B', cat:'Médicaments B'},
-        {code:'601011', desc:'Ibuprofène - catégorie B', cat:'Médicaments B'},
-        {code:'601020', desc:'Metformine - catégorie B (diabète)', cat:'Médicaments B'},
-        {code:'601030', desc:'Antibiotiques courants - catégorie B', cat:'Médicaments B'},
-        {code:'601040', desc:'Antidépresseurs IRS - catégorie B', cat:'Médicaments B'},
-        {code:'601050', desc:'Mounjaro (tirzepatide) - catégorie B (diabète T2)', cat:'Médicaments B'},
-        {code:'601051', desc:'Ozempic (sémaglutide) - catégorie B (diabète T2)', cat:'Médicaments B'}
-      ],
-      'med-c': [
-        {code:'602001', desc:'Médicament catégorie C - délivrance officine', cat:'Médicaments C'},
-        {code:'602010', desc:'Wegovy (sémaglutide) - catégorie C (obésité)', cat:'Médicaments C'},
-        {code:'602020', desc:'Médicaments confort - catégorie C', cat:'Médicaments C'},
-        {code:'602030', desc:'Compléments nutritionnels spécifiques - catégorie C', cat:'Médicaments C'}
-      ],
-      'nurs-pansements': [
-        {code:'701001', desc:'Pansement simple (< 10cm)', cat:'Soins infirmiers'},
-        {code:'701002', desc:'Pansement complexe (10-20cm)', cat:'Soins infirmiers'},
-        {code:'701003', desc:'Pansement étendu (> 20cm)', cat:'Soins infirmiers'},
-        {code:'701004', desc:'Pansement spécial (escarre, brûlure)', cat:'Soins infirmiers'},
-        {code:'701005', desc:'Soins de plaie chirurgicale', cat:'Soins infirmiers'},
-        {code:'701006', desc:'Ablation de sutures / agrafes', cat:'Soins infirmiers'}
-      ],
-      'nurs-injections': [
-        {code:'702001', desc:'Injection sous-cutanée', cat:'Soins infirmiers'},
-        {code:'702002', desc:'Injection intramusculaire', cat:'Soins infirmiers'},
-        {code:'702003', desc:'Injection intraveineuse', cat:'Soins infirmiers'},
-        {code:'702004', desc:'Prélèvement sanguin veineux', cat:'Soins infirmiers'},
-        {code:'702005', desc:'Prélèvement capillaire', cat:'Soins infirmiers'},
-        {code:'702006', desc:'Perfusion intraveineuse', cat:'Soins infirmiers'},
-        {code:'702007', desc:'Pose de cathéter veineux périphérique', cat:'Soins infirmiers'}
-      ],
-      'nurs-diabete': [
-        {code:'703001', desc:'Surveillance glycémie capillaire', cat:'Soins infirmiers'},
-        {code:'703002', desc:'Injection d\'insuline (diabète)', cat:'Soins infirmiers'},
-        {code:'703003', desc:'Éducation thérapeutique diabète - séance', cat:'Soins infirmiers'},
-        {code:'703004', desc:'Contrôle site d\'injection', cat:'Soins infirmiers'},
-        {code:'703005', desc:'Surveillance pied diabétique', cat:'Soins infirmiers'}
-      ],
-      'diet-consult': [
-        {code:'801001', desc:'Consultation diététique initiale', cat:'Diététique'},
-        {code:'801002', desc:'Consultation diététique de suivi', cat:'Diététique'},
-        {code:'801003', desc:'Bilan nutritionnel complet', cat:'Diététique'},
-        {code:'801004', desc:'Éducation thérapeutique nutritionnelle', cat:'Diététique'},
-        {code:'801005', desc:'Consultation diététique diabète', cat:'Diététique'},
-        {code:'801006', desc:'Consultation diététique obésité', cat:'Diététique'}
-      ],
-      'diet-suivi': [
-        {code:'802001', desc:'Suivi nutritionnel mensuel', cat:'Diététique'},
-        {code:'802002', desc:'Plan alimentaire personnalisé', cat:'Diététique'},
-        {code:'802003', desc:'Réévaluation nutritionnelle', cat:'Diététique'}
-      ],
-      'img-radio': [
-        {code:'401001', desc:'Radiographie thorax face', cat:'Imagerie'},
-        {code:'401002', desc:'Radiographie thorax profil', cat:'Imagerie'},
-        {code:'401003', desc:'Radiographie abdomen sans préparation', cat:'Imagerie'},
-        {code:'401004', desc:'Radiographie membre supérieur', cat:'Imagerie'},
-        {code:'401005', desc:'Radiographie membre inférieur', cat:'Imagerie'},
-        {code:'401006', desc:'Radiographie colonne vertébrale', cat:'Imagerie'},
-        {code:'401007', desc:'Radiographie bassin / hanche', cat:'Imagerie'},
-        {code:'401008', desc:'Radiographie crâne', cat:'Imagerie'},
-        {code:'401009', desc:'Radiographie sinus', cat:'Imagerie'},
-        {code:'401010', desc:'Radiographie panoramique dentaire', cat:'Imagerie'}
-      ],
-      'img-echo': [
-        {code:'402001', desc:'Échographie abdominale complète', cat:'Imagerie'},
-        {code:'402002', desc:'Échographie abdominale partielle', cat:'Imagerie'},
-        {code:'402003', desc:'Échographie pelvienne', cat:'Imagerie'},
-        {code:'402004', desc:'Échographie obstétricale', cat:'Imagerie'},
-        {code:'402005', desc:'Échographie mammaire', cat:'Imagerie'},
-        {code:'402006', desc:'Échographie thyroïdienne', cat:'Imagerie'},
-        {code:'402007', desc:'Échographie des parties molles', cat:'Imagerie'},
-        {code:'402008', desc:'Échographie Doppler vasculaire', cat:'Imagerie'},
-        {code:'402009', desc:'Échographie cardiaque (TTE)', cat:'Imagerie'},
-        {code:'402010', desc:'Échographie rénale', cat:'Imagerie'}
-      ],
-      'img-irm': [
-        {code:'403001', desc:'IRM crâne / encéphale', cat:'Imagerie'},
-        {code:'403002', desc:'IRM cervicale', cat:'Imagerie'},
-        {code:'403003', desc:'IRM dorsale', cat:'Imagerie'},
-        {code:'403004', desc:'IRM lombaire', cat:'Imagerie'},
-        {code:'403005', desc:'IRM articulaire (genou, épaule, etc.)', cat:'Imagerie'},
-        {code:'403006', desc:'IRM abdominale', cat:'Imagerie'},
-        {code:'403007', desc:'IRM pelvienne', cat:'Imagerie'},
-        {code:'403008', desc:'IRM mammaire', cat:'Imagerie'},
-        {code:'403009', desc:'IRM cardiaque', cat:'Imagerie'},
-        {code:'403010', desc:'IRM avec injection de produit de contraste', cat:'Imagerie'}
-      ],
-      'img-scan': [
-        {code:'404001', desc:'Scanner crâne sans injection', cat:'Imagerie'},
-        {code:'404002', desc:'Scanner crâne avec injection', cat:'Imagerie'},
-        {code:'404003', desc:'Scanner thoracique', cat:'Imagerie'},
-        {code:'404004', desc:'Scanner abdominal', cat:'Imagerie'},
-        {code:'404005', desc:'Scanner osseux', cat:'Imagerie'}
-      ],
-      'consul-gp': [
-        {code:'101001', desc:'Consultation généraliste - visite au cabinet', cat:'Médecin Généraliste'},
-        {code:'101002', desc:'Consultation généraliste - visite à domicile', cat:'Médecin Généraliste'},
-        {code:'101003', desc:'Consultation généraliste - visite de nuit/week-end', cat:'Médecin Généraliste'}
-      ],
-      'consul-spec': [
-        {code:'102001', desc:'Consultation spécialiste - première visite', cat:'Spécialiste'},
-        {code:'102002', desc:'Consultation spécialiste - visite de contrôle', cat:'Spécialiste'},
-        {code:'102003', desc:'Consultation spécialiste - visite à domicile', cat:'Spécialiste'}
-      ],
-      'mob-fauteuil': [
-        {code:'901001', desc:'Fauteuil roulant manuel standard', cat:'Aide à la Mobilité'},
-        {code:'901002', desc:'Fauteuil roulant manuel ergonomique', cat:'Aide à la Mobilité'},
-        {code:'901003', desc:'Fauteuil roulant électrique standard', cat:'Aide à la Mobilité'},
-        {code:'901004', desc:'Fauteuil roulant électrique tout-terrain', cat:'Aide à la Mobilité'}
-      ],
-      'mob-orthese': [
-        {code:'902001', desc:'Orthèse de membre inférieur', cat:'Orthèses'},
-        {code:'902002', desc:'Orthèse de colonne vertébrale', cat:'Orthèses'},
-        {code:'902003', desc:'Prothèse de membre inférieur', cat:'Prothèses'},
-        {code:'902004', desc:'Prothèse mammaire externe', cat:'Prothèses'}
-      ]
+    // Règles de cumul INAMI
+    CUMUL_RULES: {
+      'kine-fa,kine-fb': {allowed:false, reason:'Kiné Fa et Fb non cumulables le même jour'},
+      'kine-fa,kine-e': {allowed:false, reason:'Kiné Fa et Liste E non cumulables (protocoles distincts)'},
+      'kine-fb,kine-e': {allowed:false, reason:'Kiné Fb et Liste E non cumulables (protocoles distincts)'},
+      'log-langage,log-dyslexie': {allowed:true, reason:'Cumul autorisé (catégories distinctes)'},
+      'log-langage,log-begaiement': {allowed:true, reason:'Cumul autorisé (troubles distincts)'},
+      'kine-fa,med-b': {allowed:true, reason:'Cumul autorisé (prestations différentes)'},
+      'kine-fb,med-b': {allowed:true, reason:'Cumul autorisé (prestations différentes)'},
+      'nurs-pansements,kine-fa': {allowed:true, reason:'Cumul autorisé (soins distincts)'},
+      'img-irm,consul-spec': {allowed:true, reason:'Cumul autorisé (examen + consultation)'},
+      'diet-consult,med-b': {allowed:true, reason:'Cumul autorisé (diététique + médicaments)'},
+      'med-a,med-b': {allowed:true, reason:'Cumul autorisé (catégories médicaments différentes)'},
+      'med-a,med-c': {allowed:false, reason:'Médicaments A et C généralement non prescrits simultanément sauf exception'},
+      'kine-fa,kine-fa': {allowed:false, reason:'Maximum 1 séance kiné Fa par jour sauf accord spécial'},
+      'kine-fb,kine-fb': {allowed:false, reason:'Maximum 1 séance kiné Fb par jour sauf accord spécial'}
     },
     
     // Mutualités officielles
@@ -1085,17 +1339,6 @@
       {name:'Vlaams & Neutraal Ziekenfonds', website:'https://www.vnz.be', phone:'02 513 08 08', email:'info@vnz.be', regions:['Flandre'], contact:'https://www.vnz.be/contact'},
       {name:'Mutualité Socialiste', website:'https://www.mutualitesocialiste.be', phone:'02 515 01 11', email:'info@mutualitesocialiste.be', regions:['Bruxelles','Wallonie'], contact:'https://www.mutualitesocialiste.be/contact'}
     ],
-    
-    // Base de médicaments courants pour détection contextuelle
-    DRUGS_DB: {
-      'mounjaro': {name:'Mounjaro (tirzepatide)', cat:'B', indications:{'diabete':'Remboursé sous conditions strictes (échec trithérapie, HbA1c≥8%, prescription diabétologue/endocrinologue)','obesite':'Non remboursé pour obésité isolée'}},
-      'tirzepatide': {name:'Mounjaro (tirzepatide)', cat:'B', indications:{'diabete':'Remboursé sous conditions strictes','obesite':'Non remboursé'}},
-      'dafalgan': {name:'Dafalgan (paracétamol)', cat:'B', indications:{'douleur':'Remboursé à 50%, ticket modérateur standard','fievre':'Remboursé à 50%'}},
-      'paracetamol': {name:'Paracétamol (générique)', cat:'B', indications:{'douleur':'Remboursé à 50%, privilégier le générique'}},
-      'ozempic': {name:'Ozempic (sémaglutide)', cat:'B', indications:{'diabete':'Remboursé sous conditions','obesite':'Non remboursé (Wegovy a des critères différents)'}},
-      'wegovy': {name:'Wegovy (sémaglutide)', cat:'C', indications:{'obesite':'Remboursé sous conditions très strictes (IMC≥35+comorbidités ou ≥40, programme multidisciplinaire)'}},
-      'insuline': {name:'Insuline', cat:'A', indications:{'diabete':'Remboursé à 100% pour diabète insulinodépendant'}}
-    },
     
     // Configuration des agents experts
     AGENT_CONFIG: {
@@ -1113,12 +1356,10 @@
           const age = parseInt(slots.age) || 0;
           let status = 'ok', ref = [], validityMonths = 12;
           
-          // Validation âge Fb-51
           if (slots.pathology.includes('51') && (slots.category.toUpperCase().includes('FB') || slots.category.toLowerCase().includes('fb'))) {
             if (age < 65) return { status: 'refus', msg: `La pathologie Fb-51 (Rééducation à la marche) exige un âge minimum de 65 ans. Âge saisi : ${age} ans.`, ref: ['Nomenclature Kinésithérapie, Art. 7'] };
           }
           
-          // Validation séances et accord préalable
           if (sess > 18 || slots.category.toLowerCase().includes('e') || slots.category.toLowerCase().includes('pathologie')) {
             status = 'conditionnel'; 
             msg += 'Un accord du médecin-conseil est obligatoire pour dépasser les forfaits standards ou pour les pathologies lourdes.'; 
@@ -1139,25 +1380,46 @@
       log: {
         greeting: "Bonjour. Expert en logopédie. Pour vérifier vos droits au remboursement, répondez aux questions suivantes.",
         steps: [
-          { key: 'category', prompt: "Catégorie : La (aiguë), Lb (chronique) ou Pathologie Lourde (Liste E logopédie) ?" },
-          { key: 'pathology', prompt: "Numéro/code de la pathologie ? (Ex: Lb-10 pour bégaiement)" },
-          { key: 'sessions', prompt: "Nombre de séances prévues ?" },
-          { key: 'age', prompt: "Âge du patient ?" }
+          { key: 'category', prompt: "Quelle catégorie de trouble logopédique concerne votre demande ? (Langage/Dysphasie, Dyslexie, Dysorthographie, Dyscalculie, Voix, Bégaiement)" },
+          { key: 'age', prompt: "Quel est l'âge du patient ?" },
+          { key: 'tests', prompt: "Avez-vous déjà passé les tests officiels pour cette catégorie ?" }
         ],
         evaluate: (slots) => {
-          let msg = `Analyse logopédie ${slots.category} / ${slots.pathology} : `;
-          const sess = parseInt(slots.sessions) || 0;
-          let status = 'ok', ref = [];
+          let msg = `Analyse logopédie - ${slots.category} : `;
+          const age = parseInt(slots.age) || 0;
+          let status = 'ok', ref = [], validityMonths = 24;
           
-          if (sess > 30 && slots.category === 'La') {
-            status = 'conditionnel'; msg += 'Au-delà de 30 séances en catégorie La, un accord préalable est requis.'; ref.push('Protocole Logopédie');
+          const catKey = Object.keys(CFG.LOG_CATEGORIES).find(k => slots.category.toLowerCase().includes(k.split('-')[1]));
+          if (catKey) {
+            const catInfo = CFG.LOG_CATEGORIES[catKey];
+            validityMonths = catInfo.validityMonths;
+            msg = `Catégorie : ${catInfo.name} (${catInfo.article}). Validité : ${validityMonths} mois. `;
+            
+            if (slots.category.toLowerCase().includes('begaiement')) {
+              if (age >= 10 && slots.tests?.toLowerCase().includes('non')) {
+                status = 'conditionnel';
+                msg += 'Pour le bégaiement à partir de 10 ans, le test Catégorie E est obligatoire en plus du test D.';
+                ref.push('Listes limitatives tests bégaiement INAMI');
+              } else {
+                msg += 'Tests Catégorie D requis (obligatoires). Test E requis si patient ≥10 ans.';
+                ref.push('Art. 36, §2, b), 6°, 6.4');
+              }
+            } else {
+              if (slots.tests?.toLowerCase().includes('non')) {
+                status = 'conditionnel';
+                msg += 'Les tests officiels de la liste limitative INAMI sont requis pour le remboursement.';
+                ref.push(catInfo.article);
+              } else {
+                msg += 'Conditions standard remplies si tests officiels validés.';
+                ref.push(catInfo.article);
+              }
+            }
+          } else {
+            msg += 'Veuillez préciser la catégorie parmi : Langage/Dysphasie, Dyslexie, Dysorthographie, Dyscalculie, Voix, Bégaiement.';
+            status = 'conditionnel';
           }
-          if (slots.category === 'Lb' && sess > 60) {
-            status = 'conditionnel'; msg += 'Le forfait Lb est de 60 séances/an. Au-delà, accord médecin-conseil nécessaire.'; ref.push('Nomenclature Logopédie');
-          }
-          if (status === 'ok') { msg += 'Conditions standard remplies.'; ref.push('Forfaits Logopédie INAMI'); }
           
-          return { status, msg, ref, validityMonths: slots.category === 'E_log' ? 12 : 24, sessions: sess };
+          return { status, msg, ref, validityMonths, sessions: 0 };
         }
       },
       
@@ -1173,7 +1435,6 @@
           const lower = (slots.drug + ' ' + slots.indication).toLowerCase();
           let status = 'ok', ref = [];
           
-          // Recherche dans la base de médicaments
           let drugInfo = null;
           for (const [key, info] of Object.entries(CFG.DRUGS_DB)) {
             if (lower.includes(key)) { drugInfo = info; break; }
@@ -1257,35 +1518,128 @@
           return { status: 'ok', msg, ref: ['Coordination des Soins'] };
         }
       }
-    },
-    
-    // Données de nomenclature de base (fallback)
-    FALLBACK: [
-      {c:'101010',d:'Consultation généraliste (visite)',cat:'Généraliste',t:26.50},
-      {c:'102010',d:'Consultation spécialiste (1ère)',cat:'Spécialiste',t:45.00},
-      {c:'502020',d:'Kiné - forfait rééducation',cat:'Kinésithérapie',t:18.75},
-      {c:'503010',d:'Logopédie - séance individuelle',cat:'Logopédie',t:32.40},
-      {c:'400001',d:'IRM crâne / encéphale',cat:'Imagerie',t:185.40},
-      {c:'301010',d:'Échographie abdominale',cat:'Imagerie',t:68.20},
-      {c:'201010',d:'Radio thorax face',cat:'Imagerie',t:22.50},
-      {c:'601010',d:'Analyses biologiques standard',cat:'Labo',t:42.00},
-      {c:'701010',d:'Pansements complexes',cat:'Soins',t:15.80},
-      {c:'801010',d:'Fauteuil roulant manuel',cat:'Matériel',t:125.00},
-      {c:'901010',d:'Chirurgie ambulatoire',cat:'Hospitalisation',t:85.50},
-      {c:'110210',d:'Vaccination grippe',cat:'Prévention',t:12.50},
-      {c:'167101',d:'Accord préalable hospitalisation',cat:'Administratif',t:0.00}
-    ]
+    }
   };
 
   // État global
-  let nomData = [...CFG.FALLBACK];
   const chatSessions = {};
-  const onboardingData = {};
+  let showPrices = false;
+  let favorites = JSON.parse(localStorage.getItem('inami_favorites') || '[]');
+
+  // ==================== LOGIN ====================
+  function attemptLogin() {
+    const password = document.getElementById('login-password').value;
+    if (btoa(password) === CFG.PASSWORD_HASH) {
+      localStorage.setItem('inami_session', 'active');
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('main-app').style.display = 'block';
+      show('onboarding');
+      loadFavorites();
+    } else {
+      document.getElementById('login-error').style.display = 'block';
+      setTimeout(() => { document.getElementById('login-error').style.display = 'none'; }, 3000);
+    }
+  }
+  
+  function togglePasswordVisibility() {
+    const input = document.getElementById('login-password');
+    input.type = input.type === 'password' ? 'text' : 'password';
+  }
+  
+  function showPasswordNote() {
+    const note = document.getElementById('password-note');
+    note.style.display = note.style.display === 'block' ? 'none' : 'block';
+  }
+  
+  function logout() {
+    localStorage.removeItem('inami_session');
+    location.reload();
+  }
+  
+  // Vérifier session existante
+  if (localStorage.getItem('inami_session') === 'active') {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('main-app').style.display = 'block';
+  }
+
+  // ==================== CHARGEMENT BASES DE DONNÉES EXTERNES ====================
+  async function loadAllExternalDBs() {
+    // Charger médicaments
+    try {
+      const response = await fetch(CFG.DB_URLS.medicaments, { cache: 'no-store' });
+      if (!response.ok) throw new Error('HTTP ' + response.status);
+      const data = await response.json();
+      
+      const drugsDB = {};
+      data.medicaments.forEach(med => {
+        const key = med.principeActif.toLowerCase().split(' ')[0];
+        drugsDB[key] = {
+          name: med.nom || med.principeActif,
+          cat: med.categorie,
+          indications: {}
+        };
+        med.indications.forEach(ind => {
+          const reimbursed = med.remboursement > 0;
+          const conditions = med.accordPrealable ? 'sous conditions strictes' : 'standard';
+          const ticket = reimbursed ? (med.remboursement === 100 ? '100%' : med.remboursement + '%') : '0%';
+          drugsDB[key].indications[ind] = `${reimbursed ? 'Remboursé à ' + ticket : 'Non remboursé'} (${conditions})`;
+        });
+      });
+      Object.assign(CFG.DRUGS_DB, drugsDB);
+      console.log(`✅ Base médicaments chargée : ${data.totalMedicaments} spécialités`);
+    } catch (error) {
+      console.error('❌ Erreur chargement médicaments:', error);
+    }
+    
+    // Charger kinésithérapie
+    try {
+      const response = await fetch(CFG.DB_URLS.kine, { cache: 'no-store' });
+      if (!response.ok) throw new Error('HTTP ' + response.status);
+      const data = await response.json();
+      
+      // Mettre à jour les catégories et pathologies
+      if (data.categories) {
+        CFG.KINE_LISTS = {};
+        for (const [catKey, catData] of Object.entries(data.categories)) {
+          CFG.KINE_LISTS[catKey] = catData.pathologies.map(p => ({
+            id: p.id,
+            name: p.name,
+            codes: p.codes?.map(c => c.code) || [],
+            validityMonths: catData.validityMonths,
+            minAge: p.ageRestrictions?.min,
+            maxAge: p.ageRestrictions?.max
+          }));
+          
+          // Ajouter les codes à NOMO_CODES
+          CFG.NOMO_CODES[`kine-${catKey.toLowerCase()}`] = p.codes?.map(c => ({
+            code: c.code,
+            desc: c.desc,
+            cat: `Kinésithérapie ${catKey}`,
+            price: c.price
+          })) || [];
+        }
+      }
+      
+      // Mettre à jour les règles de cumul
+      if (data.cumulationRules) {
+        CFG.CUMUL_RULES = {};
+        data.cumulationRules.forEach(rule => {
+          CFG.CUMUL_RULES[rule.codes.join(',')] = {allowed: rule.allowed, reason: rule.reason};
+        });
+      }
+      
+      console.log(`✅ Base kinésithérapie chargée : ${Object.keys(data.categories || {}).length} catégories`);
+    } catch (error) {
+      console.error('❌ Erreur chargement kinésithérapie:', error);
+      console.log('Utilisation des données locales par défaut');
+    }
+  }
 
   // ==================== NAVIGATION ====================
   function show(id) {
     document.querySelectorAll('.view').forEach(v => v.style.display = 'none');
-    document.getElementById(`v-${id}`).style.display = 'block';
+    const el = document.getElementById(`v-${id}`);
+    if (el) el.style.display = 'block';
     document.getElementById('nav').style.display = 'none';
     document.querySelector('h1').style.display = 'none';
     document.querySelector('.sub').style.display = 'none';
@@ -1294,7 +1648,7 @@
     
     if (id === 'mutualites') renderMutualites();
     if (id === 'onboarding') resetOnboarding();
-    if (id === 'codes') updateNomoList(); // Initialiser la liste des codes
+    if (id === 'nom') updateNomoList();
   }
   
   function home() {
@@ -1304,6 +1658,7 @@
     document.querySelector('.sub').style.display = 'block';
     document.querySelector('header .header-actions').style.display = 'flex';
     document.querySelector('header .badge').style.display = 'inline-flex';
+    show('onboarding');
   }
 
   function toggleLang() {
@@ -1316,7 +1671,7 @@
     if (e.key === 'Enter') {
       const q = e.target.value.toLowerCase();
       if (q.includes('kiné') || q.includes('kine') || q.includes('séance')) show('agent-kine');
-      else if (q.includes('log') || q.includes('langage') || q.includes('bégaiement')) show('agent-log');
+      else if (q.includes('log') || q.includes('langage') || q.includes('bégaiement') || q.includes('dyslexie')) show('agent-log');
       else if (q.includes('médicament') || q.includes('med') || q.includes('remboursement')) show('agent-med');
       else if (q.includes('infirmier') || q.includes('pansement') || q.includes('diabète')) show('agent-nurs');
       else if (q.includes('diététique') || q.includes('nutrition')) show('agent-diet');
@@ -1326,6 +1681,19 @@
       e.target.value = '';
     }
   }
+
+  function toggleShortcutsHelp() {
+    const help = document.getElementById('shortcuts-help');
+    help.classList.toggle('visible');
+  }
+
+  // Raccourcis clavier
+  document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.key === 'k') { e.preventDefault(); show('nom'); }
+    if (e.ctrlKey && e.key === 's') { e.preventDefault(); show('sim'); }
+    if (e.key === 'Escape') { home(); }
+    if (e.key === 'F1') { e.preventDefault(); toggleShortcutsHelp(); }
+  });
 
   // ==================== TOGGLE SELECT ====================
   function toggleSelect(el, name, value) {
@@ -1342,15 +1710,13 @@
     if (!t) { c.style.display = 'none'; return; }
     c.style.display = 'grid';
 
-    if (t === 'kine' || t === 'log') {
-      const lists = t === 'kine' ? CFG.KINE_LISTS : CFG.LOG_LISTS;
-      const cats = t === 'kine' ? ['FA','FB','E'] : ['La','Lb','E_log'];
-      const labels = t === 'kine' ? {FA:'Fa (Aiguë)',FB:'Fb (Chronique)',E:'Pathologie Lourde'} : {La:'La (Aiguë)',Lb:'Lb (Chronique)',E_log:'Pathologie Lourde'};
-      
+    if (t === 'kine') {
       c.innerHTML = `
         <div class="field"><label>Catégorie INAMI</label>
-          <select id="s-cat" onchange="updatePathologies('${t}')">
-            ${cats.map(cat => `<option value="${cat}">${labels[cat]}</option>`).join('')}
+          <select id="s-cat" onchange="updatePathologies('kine')">
+            <option value="FA">Fa (Aiguë)</option>
+            <option value="FB">Fb (Chronique)</option>
+            <option value="E">Pathologie Lourde (Liste E)</option>
           </select>
         </div>
         <div class="field"><label>Pathologie</label><select id="s-path"><option value="">-- Charger --</option></select></div>
@@ -1361,19 +1727,29 @@
             <label class="toggle-option" onclick="toggleSelect(this, 's-presc', 'non')"><input type="radio" name="s-presc" value="non">Non</label>
           </div>
         </div>
+        <div class="field" id="opcode-field" style="display:none">
+          <label>Code opératoire <span class="tooltip" title="Code de l'acte chirurgical">?</span></label>
+          <input type="text" id="s-opcode" placeholder="Ex: 100101">
+        </div>
       `;
-      updatePathologies(t);
-      
-      // Ajout champ code opératoire pour Fa-1
-      if (t === 'kine') {
-        c.innerHTML += `
-          <div class="field" id="opcode-field" style="display:none">
-            <label>Code opératoire <span class="tooltip" title="Code de l'acte chirurgical">?</span></label>
-            <input type="text" id="s-opcode" placeholder="Ex: 100101">
-          </div>
-        `;
-      }
+      updatePathologies('kine');
     } 
+    else if (t === 'log') {
+      c.innerHTML = `
+        <div class="field"><label>Catégorie logopédie</label>
+          <select id="s-cat">
+            ${Object.entries(CFG.LOG_CATEGORIES).map(([k,v]) => `<option value="${k}">${v.name}</option>`).join('')}
+          </select>
+        </div>
+        <div class="field"><label>Séances demandées</label><input type="number" id="s-sess" min="1" max="100"></div>
+        <div class="field"><label>Prescription médicale</label>
+          <div class="toggle-group">
+            <label class="toggle-option selected" onclick="toggleSelect(this, 's-presc', 'oui')"><input type="radio" name="s-presc" value="oui" checked>Oui</label>
+            <label class="toggle-option" onclick="toggleSelect(this, 's-presc', 'non')"><input type="radio" name="s-presc" value="non">Non</label>
+          </div>
+        </div>
+      `;
+    }
     else if (t === 'med') {
       c.innerHTML = `<div class="field"><label>Catégorie médicament</label><select id="s-med"><option value="A">A (100%)</option><option value="B">B (50-80%)</option><option value="C">C (30-40%)</option><option value="D">D (0%)</option></select></div>
         <div class="field"><label>Accord préalable requis ?</label>
@@ -1411,7 +1787,7 @@
     if (!cat || !pathSel) return;
     
     pathSel.innerHTML = '';
-    const lists = type === 'kine' ? CFG.KINE_LISTS : CFG.LOG_LISTS;
+    const lists = CFG.KINE_LISTS;
     (lists[cat] || []).forEach(p => {
       const opt = document.createElement('option');
       opt.value = p.id;
@@ -1419,7 +1795,6 @@
       pathSel.appendChild(opt);
     });
     
-    // Afficher champ code opératoire pour Fa-1
     if (opcodeField) {
       opcodeField.style.display = (type === 'kine' && cat === 'FA' && pathSel.value === '1') ? 'flex' : 'none';
     }
@@ -1436,8 +1811,8 @@
     const v = id => document.getElementById(id)?.value;
     let formUrl = '#';
 
-    if (tp === 'kine' || tp === 'log') {
-      const n = +v('s-sess') || 0, cat = v('s-cat') || (tp==='kine'?'FA':'La'), path = v('s-path');
+    if (tp === 'kine') {
+      const n = +v('s-sess') || 0, cat = v('s-cat') || 'FA', path = v('s-path');
       const presc = v('s-presc') || 'oui';
       if (n <= 0) return alert('Nombre de séances requis.');
       if (presc === 'non') return alert('Prescription médicale obligatoire pour le remboursement INAMI.');
@@ -1446,8 +1821,7 @@
       r.m = `Catégorie : ${cat} (Path. ${path}). Séances : ${n}.`;
       r.sessions = n;
       
-      // Validation code opératoire pour Fa-1
-      if (tp === 'kine' && cat === 'FA' && path === '1') {
+      if (cat === 'FA' && path === '1') {
         const opCode = v('s-opcode')?.trim();
         if (!opCode) return alert('Le code opératoire est requis pour la pathologie Fa-1.');
         const validCodes = CFG.KINE_LISTS.FA[0].codes;
@@ -1457,32 +1831,30 @@
         }
       }
       
-      // Vérification âge pour Fb-51
-      if (tp === 'kine' && path === '51' && cat === 'FB' && age < 65) { 
+      if (path === '51' && cat === 'FB' && age < 65) { 
         r.s = 'no'; r.m += ` La pathologie Fb-51 (Rééducation à la marche) exige un âge minimum de 65 ans. Âge saisi : ${age} ans.`; 
       }
-      
-      // Vérification délais de renouvellement (historique)
-      const hasPrevious = document.getElementById('s-previous')?.value === 'oui';
-      if (hasPrevious) {
-        const monthsAgo = +document.getElementById('s-months')?.value || 0;
-        const lists = tp === 'kine' ? CFG.KINE_LISTS : CFG.LOG_LISTS;
-        const pathData = lists[cat]?.find(p => p.id == path);
-        const validity = pathData?.validityMonths || 12;
-        
-        if (monthsAgo < validity) {
-          r.s = 'no'; r.m += ` Délai de renouvellement non respecté. Un nouveau protocole ne peut être ouvert avant ${validity - monthsAgo} mois.`;
-          r.ref.push(`Validité du protocole : ${validity} mois`);
-        } else {
-          r.m += ` Renouvellement possible – Le délai de carence de ${validity} mois est respecté.`;
-        }
-      }
-      
-      else if (n > (tp==='log' && cat==='La' ? 30 : 18) || cat.toLowerCase().includes('e')) {
-        r.s = 'cond'; r.m += ' Accord médecin-conseil obligatoire.'; r.ref.push('Protocole de soins préalable'); formUrl = CFG.FORMS[tp];
-        r.validityMonths = cat === 'E' || cat === 'E_log' ? 12 : 24;
-      } else { r.ref.push(`Forfaits ${tp==='kine'?'Kinésithérapie':'Logopédie'} INAMI`); r.validityMonths = cat.includes('b') ? 24 : 12; }
+      else if (n > 18 || cat === 'E') {
+        r.s = 'cond'; r.m += ' Accord médecin-conseil obligatoire.'; r.ref.push('Protocole de soins préalable'); formUrl = CFG.FORMS.kine;
+        r.validityMonths = cat === 'E' ? 12 : 24;
+      } else { r.ref.push('Forfaits Kinésithérapie INAMI'); r.validityMonths = cat === 'FB' ? 24 : 12; }
     } 
+    else if (tp === 'log') {
+      const n = +v('s-sess') || 0, cat = v('s-cat');
+      const presc = v('s-presc') || 'oui';
+      if (n <= 0) return alert('Nombre de séances requis.');
+      if (presc === 'non') return alert('Prescription médicale obligatoire.');
+      
+      const catInfo = CFG.LOG_CATEGORIES[cat];
+      r.s = 'ok'; r.m = `Catégorie : ${catInfo.name}. ${catInfo.article}. Validité : ${catInfo.validityMonths} mois. `;
+      r.sessions = n;
+      r.validityMonths = catInfo.validityMonths;
+      
+      if (cat === 'log-begaiement') {
+        r.m += 'Tests Catégorie D obligatoires. Test E requis si patient ≥10 ans.';
+      }
+      r.ref.push(catInfo.article);
+    }
     else if (tp === 'med') {
       if (mdt === 'non') return alert('Parcours/Ordonnance requis.');
       const cat = v('s-med'), pri = v('s-pri');
@@ -1491,7 +1863,7 @@
       r.validityMonths = 6;
     } 
     else if (tp === 'nurs' || tp === 'diet') {
-      const care = v('s-care'), presc = v('s-presc');
+      const presc = v('s-presc');
       if (presc === 'non') return alert('Prescription médicale obligatoire.');
       r.s = 'ok'; r.m = `${tp==='nurs'?'Soins infirmiers':'Consultations diététiques'} remboursés selon nomenclature.`; r.ref.push(`Prestations ${tp==='nurs'?'Infirmières':'Diététiques'} INAMI`);
       r.validityMonths = 12;
@@ -1537,6 +1909,11 @@
       const validityDate = new Date();
       validityDate.setMonth(validityDate.getMonth() + r.validityMonths);
       document.getElementById('sum-validity').textContent = validityDate.toLocaleDateString('fr-BE', {year:'numeric', month:'long', day:'numeric'});
+      
+      // Countdown
+      const now = new Date();
+      const daysLeft = Math.ceil((validityDate - now) / (1000 * 60 * 60 * 24));
+      document.getElementById('sum-countdown').textContent = daysLeft > 0 ? `${daysLeft} jours` : 'Expiré';
     } else {
       sum.style.display = 'none';
     }
@@ -1549,7 +1926,228 @@
     const link = document.getElementById('r-form');
     link.href = formUrl; link.style.display = formUrl !== '#' ? 'inline-block' : 'none';
     
+    // Auto-reset des champs
+    setTimeout(() => {
+      document.getElementById('age').value = '';
+      document.getElementById('type').value = '';
+      document.getElementById('cond').innerHTML = '';
+      document.getElementById('cond').style.display = 'none';
+    }, 100);
+    
     el.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  // ==================== EXPORT RAPPORT ====================
+  function exportReport() {
+    const content = document.getElementById('res').innerHTML;
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(`
+      <html><head><title>Rapport Patient - Assistant INAMI</title>
+      <style>
+        body { font-family: system-ui, sans-serif; padding: 2rem; color: #000; }
+        h2 { color: #1e40af; border-bottom: 2px solid #1e40af; padding-bottom: 0.5rem; }
+        .res-status { font-size: 1.2rem; font-weight: bold; margin-bottom: 1rem; }
+        .ok { color: #059669; } .no { color: #dc2626; } .cond { color: #d97706; }
+        .summary-card { background: #f8fafc; border: 1px solid #e2e8f0; padding: 1rem; margin: 1rem 0; border-radius: 8px; }
+        .checklist { margin-top: 1rem; }
+        .form-link { display: none; }
+        .btn-secondary, .btn-small { display: none; }
+        footer { margin-top: 2rem; font-size: 0.8rem; color: #666; border-top: 1px solid #ddd; padding-top: 1rem; }
+      </style></head><body>
+      <h1>Assistant INAMI - Rapport Patient</h1>
+      <p>Date: ${new Date().toLocaleDateString('fr-BE')} | Heure: ${new Date().toLocaleTimeString('fr-BE')}</p>
+      <hr>
+      ${content}
+      <footer>Ce rapport est généré à titre informatif. La décision finale revient au médecin-conseil INAMI.</footer>
+      </body></html>
+    `);
+    printWindow.document.close();
+    printWindow.print();
+  }
+
+  // ==================== FAVORIS ====================
+  function loadFavorites() {
+    const list = document.getElementById('favorites-list');
+    const section = document.getElementById('favorites-section');
+    if (favorites.length > 0) {
+      section.style.display = 'block';
+      list.innerHTML = favorites.map((f, i) => `
+        <span class="fav-item" onclick="applyFavorite(${i})">
+          <span class="fav-star">★</span> ${f.label}
+          <span style="color:var(--danger);cursor:pointer;" onclick="event.stopPropagation();removeFavorite(${i})">×</span>
+        </span>
+      `).join('');
+    } else {
+      section.style.display = 'none';
+    }
+  }
+  
+  function toggleFavorite() {
+    const label = document.getElementById('r-msg').textContent.substring(0, 50);
+    if (label && !favorites.find(f => f.label === label)) {
+      favorites.push({label, date: new Date().toISOString()});
+      localStorage.setItem('inami_favorites', JSON.stringify(favorites));
+      loadFavorites();
+      alert('Ajouté aux favoris !');
+    }
+  }
+  
+  function removeFavorite(index) {
+    favorites.splice(index, 1);
+    localStorage.setItem('inami_favorites', JSON.stringify(favorites));
+    loadFavorites();
+  }
+  
+  function applyFavorite(index) {
+    alert('Favoris sélectionné : ' + favorites[index].label);
+  }
+
+  // ==================== NOMENCLATURE ====================
+  function switchNomoTab(tab) {
+    document.querySelectorAll('.nomo-tab').forEach(t => t.classList.remove('active'));
+    event.target.classList.add('active');
+    
+    document.getElementById('nomo-search-tab').style.display = tab === 'search' ? 'block' : 'none';
+    document.getElementById('nomo-cumul-tab').classList.toggle('active', tab === 'cumul');
+    document.getElementById('nomo-changelog-tab').classList.toggle('active', tab === 'changelog');
+    
+    if (tab === 'search') updateNomoList();
+  }
+  
+  function togglePrices() {
+    showPrices = !showPrices;
+    document.getElementById('price-toggle').classList.toggle('active', showPrices);
+    updateNomoList();
+  }
+  
+  function updateNomoList() {
+    const category = document.getElementById('nomo-category')?.value || 'all';
+    const searchVal = (document.getElementById('nomo-code-search')?.value || '').trim().toLowerCase();
+    let results = [];
+
+    if (searchVal) {
+      for (const catKey in CFG.NOMO_CODES) {
+        results = results.concat(CFG.NOMO_CODES[catKey].filter(item => 
+          item.code.includes(searchVal) || item.desc.toLowerCase().includes(searchVal)
+        ));
+      }
+    } else {
+      if (category === 'all') {
+        for (const catKey in CFG.NOMO_CODES) {
+          results = results.concat(CFG.NOMO_CODES[catKey]);
+        }
+      } else {
+        results = CFG.NOMO_CODES[category] || [];
+      }
+    }
+
+    renderNomoResults(results);
+  }
+
+  function renderNomoResults(list) {
+    const container = document.getElementById('nomo-results');
+    const countEl = document.getElementById('nomo-count');
+    const emptyEl = document.getElementById('nomo-empty');
+    
+    container.innerHTML = '';
+    countEl.textContent = `${list.length} codes trouvés`;
+    
+    if (list.length === 0) {
+      emptyEl.style.display = 'block';
+    } else {
+      emptyEl.style.display = 'none';
+      list.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'nomo-item';
+        div.innerHTML = `
+          <span class="nomo-code">
+            ${item.code}
+            <button class="copy-code-btn" onclick="copyCode('${item.code}')" title="Copier le code"></button>
+          </span>
+          <span class="nomo-desc">${item.desc}</span>
+          <span class="nomo-cat">${item.cat}</span>
+          ${showPrices ? `<span class="nomo-price">${item.price.toFixed(2)} €</span>` : ''}
+        `;
+        container.appendChild(div);
+      });
+    }
+  }
+  
+  function copyCode(code) {
+    navigator.clipboard.writeText(code).then(() => {
+      alert(`Code ${code} copié !`);
+    });
+  }
+
+  // ==================== CUMUL AUTORISÉ ====================
+  function addCumulInput() {
+    const container = document.getElementById('cumul-inputs');
+    const count = container.querySelectorAll('.cumul-input').length + 1;
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'cumul-input';
+    input.placeholder = `Code ${count}`;
+    input.maxLength = 6;
+    container.insertBefore(input, container.querySelector('.cumul-add-btn'));
+  }
+  
+  function checkCumul() {
+    const inputs = document.querySelectorAll('.cumul-input');
+    const codes = Array.from(inputs).map(i => i.value.trim()).filter(v => v);
+    
+    if (codes.length < 2) {
+      alert('Veuillez entrer au moins 2 codes à vérifier.');
+      return;
+    }
+    
+    const resultsDiv = document.getElementById('cumul-results');
+    resultsDiv.innerHTML = '';
+    
+    // Vérifier toutes les paires
+    for (let i = 0; i < codes.length; i++) {
+      for (let j = i + 1; j < codes.length; j++) {
+        const code1 = codes[i];
+        const code2 = codes[j];
+        
+        // Trouver les catégories des codes
+        let cat1 = '', cat2 = '';
+        for (const [catKey, items] of Object.entries(CFG.NOMO_CODES)) {
+          if (items.find(item => item.code === code1)) cat1 = catKey;
+          if (items.find(item => item.code === code2)) cat2 = catKey;
+        }
+        
+        // Chercher règle de cumul
+        const ruleKey1 = `${cat1},${cat2}`;
+        const ruleKey2 = `${cat2},${cat1}`;
+        const rule = CFG.CUMUL_RULES[ruleKey1] || CFG.CUMUL_RULES[ruleKey2];
+        
+        const resultDiv = document.createElement('div');
+        resultDiv.className = `cumul-item ${rule ? (rule.allowed ? 'cumul-ok' : 'cumul-no') : 'cumul-cond'}`;
+        
+        if (rule) {
+          resultDiv.innerHTML = `
+            <span><strong>${code1}</strong> + <strong>${code2}</strong></span>
+            <span>${rule.allowed ? '✅ Cumul autorisé' : '❌ Non cumulable'}</span>
+          `;
+          resultDiv.title = rule.reason;
+        } else {
+          resultDiv.innerHTML = `
+            <span><strong>${code1}</strong> + <strong>${code2}</strong></span>
+            <span>️ Pas de règle spécifique - Consultez votre mutualité</span>
+          `;
+        }
+        
+        resultsDiv.appendChild(resultDiv);
+      }
+    }
+    
+    // Auto-reset après vérification
+    setTimeout(() => {
+      document.querySelectorAll('.cumul-input').forEach((input, index) => {
+        if (index < 2) input.value = '';
+        else input.remove();
+      });
+    }, 2000);
   }
 
   // ==================== AGENTS CHAT INTELLIGENTS ====================
@@ -1581,7 +2179,6 @@
     if (session.step === 0 && !session.initialParsed) {
       const lower = txt.toLowerCase();
       
-      // Détection médicament + indication
       if (type === 'med') {
         for (const [key, info] of Object.entries(CFG.DRUGS_DB)) {
           if (lower.includes(key)) {
@@ -1594,7 +2191,6 @@
         }
       }
       
-      // Détection catégorie/pathologie kiné/log
       if (['kine','log'].includes(type)) {
         if (lower.includes('fa') || lower.includes('fb') || lower.includes('la') || lower.includes('lb') || lower.includes('liste e')) {
           session.slots.category = lower.match(/(fa|fb|la|lb|e)/i)?.[0].toUpperCase();
@@ -1610,13 +2206,11 @@
       session.initialParsed = true;
     }
     
-    // Gestion des questions avec skip si info déjà extraite
     const currentStep = cfg.steps[session.step];
     if (currentStep && !session.slots[currentStep.key]) {
       session.slots[currentStep.key] = txt;
       session.step++;
     }
-    // Si la slot était déjà remplie par extraction, on passe à la suivante
     else if (currentStep && session.slots[currentStep.key]) {
       session.step++;
     }
@@ -1628,7 +2222,6 @@
       typ.style.display = 'none';
       
       if (session.step < cfg.steps.length) {
-        // Vérifier si la prochaine question a déjà une réponse extraite
         const nextStep = cfg.steps[session.step];
         if (nextStep && session.slots[nextStep.key]) {
           session.step++;
@@ -1659,7 +2252,6 @@
     
     let msg = result.msg;
     
-    // Vérifier si l'utilisateur a demandé une source
     const sourceKeywords = ['source', 'référence', 'lien', 'url', 'site', 'officiel', 'inami', 'preuve', 'document', 'où trouver', 'consulter', 'vérifier', 'page', 'formulaire'];
     const lastUserMsg = document.querySelectorAll(`#chat-log-${type} .msg.user`).item(document.querySelectorAll(`#chat-log-${type} .msg.user`).length - 1)?.textContent.toLowerCase() || '';
     
@@ -1695,7 +2287,6 @@
     sendMsg(type);
   }
 
-  // Écouteurs clavier pour chats
   ['kine','log','med','nurs','diet','parc'].forEach(t => {
     const inp = document.getElementById(`input-${t}`);
     inp.addEventListener('keypress', e => { if(e.key==='Enter') sendMsg(t); });
@@ -1712,10 +2303,6 @@
   function startOnboarding() {
     document.querySelector('.onboarding-card').style.display = 'none';
     document.getElementById('onboarding-questions').style.display = 'block';
-  }
-  
-  function updateOnboardingStep2() {
-    // Placeholder pour étape 2 dynamique
   }
   
   function nextOnboardingStep() {
@@ -1741,87 +2328,6 @@
   
   function goToRecommended() {
     document.getElementById('onboarding-go').click();
-  }
-
-  // ==================== NOMENCLATURE (Recherche Générale) ====================
-  function loadDB() {
-    const c = localStorage.getItem(CFG.STORAGE_KEY);
-    if (c) { try { const d = JSON.parse(c); nomData = d.data; updSt(d.ts); } catch(e) { nomData = [...CFG.FALLBACK]; } }
-    renderNom(nomData);
-  }
-  function updSt(ts) { document.getElementById('db-st').textContent = ts ? `Base: ${nomData.length} entrées • Synchro: ${new Date(ts).toLocaleString('fr-BE')}` : `Base locale: ${nomData.length} entrées`; }
-  function renderNom(d) {
-    const tb = document.getElementById('nom-tbody'), em = document.getElementById('nom-empty');
-    tb.innerHTML = ''; if (!d.length) { em.style.display = 'block'; return; } em.style.display = 'none';
-    d.forEach(i => {
-      const r = document.createElement('tr');
-      r.innerHTML = `<td class="n-code">${i.c}</td><td>${i.d}</td><td>${i.cat}</td><td>${i.t.toFixed(2)}</td>`;
-      tb.appendChild(r);
-    });
-  }
-  function searchNom() { 
-    const q = document.getElementById('s-nom').value.trim().toLowerCase();
-    renderNom(q ? nomData.filter(i => i.c.includes(q) || i.d.toLowerCase().includes(q) || i.cat.toLowerCase().includes(q)) : nomData); 
-  }
-  async function updateDB() {
-    const ld = document.getElementById('db-st'); ld.textContent = 'Synchronisation...';
-    try { const res = await fetch(CFG.DB_URL, {cache:'no-store'}); if(!res.ok) throw new Error(); const d=await res.json(); if(!Array.isArray(d)) throw new Error(); nomData=d; localStorage.setItem(CFG.STORAGE_KEY,JSON.stringify({data:d,ts:Date.now()})); updSt(Date.now()); renderNom(d); alert('Base mise à jour.'); }
-    catch(e) { alert('Échec synchro. Utilisation de la base locale.'); nomData=[...CFG.FALLBACK]; renderNom(nomData); }
-    finally { loadDB(); }
-  }
-
-  // ==================== CODES NOMENCLATURE (Nouveau Module) ====================
-  function updateNomoList() {
-    const category = document.getElementById('nomo-category').value;
-    const searchVal = document.getElementById('nomo-code-search').value.trim().toLowerCase();
-    let results = [];
-
-    if (searchVal) {
-      // Si recherche par code, chercher dans toutes les catégories
-      for (const catKey in CFG.NOMO_CODES) {
-        results = results.concat(CFG.NOMO_CODES[catKey].filter(item => item.code.includes(searchVal)));
-      }
-    } else {
-      // Sinon filtrer par catégorie
-      if (category === 'all') {
-        for (const catKey in CFG.NOMO_CODES) {
-          results = results.concat(CFG.NOMO_CODES[catKey]);
-        }
-      } else {
-        results = CFG.NOMO_CODES[category] || [];
-      }
-    }
-
-    renderNomoResults(results);
-  }
-
-  function searchNomoByCode() {
-    updateNomoList(); // Réutilise la logique combinée
-  }
-
-  function renderNomoResults(list) {
-    const container = document.getElementById('nomo-results');
-    const countEl = document.getElementById('nomo-count');
-    const emptyEl = document.getElementById('nomo-empty');
-    
-    container.innerHTML = '';
-    countEl.textContent = `${list.length} codes trouvés`;
-    
-    if (list.length === 0) {
-      emptyEl.style.display = 'block';
-    } else {
-      emptyEl.style.display = 'none';
-      list.forEach(item => {
-        const div = document.createElement('div');
-        div.className = 'nomo-item';
-        div.innerHTML = `
-          <span class="nomo-code">${item.code}</span>
-          <span class="nomo-desc">${item.desc}</span>
-          <span class="nomo-cat">${item.cat}</span>
-        `;
-        container.appendChild(div);
-      });
-    }
   }
 
   // ==================== MUTUALITÉS ====================
@@ -1856,7 +2362,6 @@
     });
   }
 
-  // ==================== UTILITAIRES ====================
   function copyResultLink() {
     const url = window.location.href.split('#')[0] + '#sim';
     navigator.clipboard.writeText(url).then(() => alert('Lien copié !')).catch(() => alert('Copie échouée'));
@@ -1864,16 +2369,17 @@
 
   // ==================== INIT ====================
   window.addEventListener('DOMContentLoaded', () => {
-    loadDB();
     // Initialiser les toggles
     document.querySelectorAll('.toggle-option').forEach(opt => {
       const input = opt.querySelector('input');
       if (input && input.checked) opt.classList.add('selected');
     });
-    // Voice button placeholder
-    document.querySelectorAll('.voice-btn').forEach(btn => {
-      btn.onclick = () => alert('Saisie vocale : fonctionnalité en développement. Veuillez taper votre question.');
-    });
+    
+    // Charger favoris
+    loadFavorites();
+    
+    // Charger les bases de données externes
+    loadAllExternalDBs();
   });
 </script>
 </body>
