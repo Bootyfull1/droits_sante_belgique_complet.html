@@ -3,31 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Simulateur interactif des droits de santé en Belgique (INAMI). Recherche nomenclature, vérification d'accords, parcours de soins.">
-  <title>🇧🇪 Simulateur INAMI | Droits & Nomenclature</title>
+  <meta name="description" content="Simulateur interactif INAMI Belgique + Assistant Chat & Nomenclature">
+  <title>🇧🇪 Assistant INAMI | Simulateur & Chat</title>
   <style>
     :root {
-      --bg: #0d1117;
-      --card: #161b22;
-      --text: #c9d1d9;
-      --text-muted: #8b949e;
-      --primary: #58a6ff;
-      --primary-dark: #1f6feb;
-      --accent: #3fb950;
-      --border: #30363d;
-      --warn-bg: #2a2100;
-      --warn: #d29922;
-      --danger: #f85149;
-      --success: #2ea043;
-      --input-bg: #21262d;
-      --shadow: 0 4px 12px rgba(0,0,0,0.5);
-      --hover: #1c232b;
+      --bg: #0d1117; --card: #161b22; --text: #c9d1d9; --muted: #8b949e;
+      --primary: #58a6ff; --primary-dk: #1f6feb; --accent: #3fb950;
+      --border: #30363d; --warn-bg: #2a2100; --warn: #d29922;
+      --danger: #f85149; --success: #2ea043; --input-bg: #21262d;
+      --shadow: 0 4px 12px rgba(0,0,0,0.5); --hover: #1c232b;
+      --chat-user: #1f6feb; --chat-bot: #21262d;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; padding: 1rem; min-height: 100vh; }
     header { text-align: center; margin-bottom: 1.5rem; }
     h1 { color: var(--primary); font-size: 1.8rem; margin-bottom: 0.5rem; }
-    .subtitle { color: var(--text-muted); font-size: 0.95rem; }
+    .sub { color: var(--muted); font-size: 0.9rem; }
     #disclaimer { background: var(--warn-bg); border: 1px solid var(--warn); color: var(--warn); padding: 0.8rem; border-radius: 8px; margin-bottom: 1.5rem; font-size: 0.9rem; text-align: center; }
     
     #nav { display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center; margin-bottom: 2rem; }
@@ -38,7 +29,6 @@
     .back { display: inline-block; margin-bottom: 1rem; background: #484f58; color: #fff; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; }
     .back:hover { background: #555d66; }
 
-    /* Cards */
     .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 1.2rem; margin-bottom: 1rem; box-shadow: var(--shadow); }
     .q { font-weight: 600; margin-bottom: 0.5rem; color: var(--primary); }
     .a { margin-top: 0.8rem; padding: 0.8rem; background: #1c2a1c; border-left: 4px solid var(--accent); border-radius: 6px; display: none; }
@@ -46,54 +36,67 @@
     .toggle { background: var(--accent); color: #fff; border: none; padding: 0.4rem 0.8rem; border-radius: 6px; cursor: pointer; margin-top: 0.5rem; }
     .toggle:hover { filter: brightness(1.1); }
 
-    /* Forms */
     .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
     .grp { display: flex; flex-direction: column; gap: 0.3rem; }
-    label { font-weight: 500; color: var(--text-muted); font-size: 0.9rem; }
+    label { font-weight: 500; color: var(--muted); font-size: 0.9rem; }
     input, select { background: var(--input-bg); border: 1px solid var(--border); color: var(--text); padding: 0.7rem; border-radius: 6px; font-size: 1rem; }
     input:focus, select:focus { outline: 2px solid var(--primary); border-color: transparent; }
     .submit { background: var(--primary); color: #fff; border: none; padding: 0.9rem; border-radius: 8px; font-weight: 600; cursor: pointer; width: 100%; margin-top: 1rem; }
-    .submit:hover { background: var(--primary-dark); }
+    .submit:hover { background: var(--primary-dk); }
     .res { margin-top: 1.5rem; padding: 1.2rem; border-radius: 10px; background: var(--card); border: 1px solid var(--border); display: none; }
     .status { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem; }
     .ok { color: var(--success); border-left: 4px solid var(--success); padding-left: 0.6rem; }
     .no { color: var(--danger); border-left: 4px solid var(--danger); padding-left: 0.6rem; }
     .cond { color: var(--warn); border-left: 4px solid var(--warn); padding-left: 0.6rem; }
-    .ref { margin-top: 0.6rem; font-size: 0.85rem; color: var(--text-muted); background: var(--bg); padding: 0.6rem; border-radius: 6px; }
+    .ref { margin-top: 0.6rem; font-size: 0.85rem; color: var(--muted); background: var(--bg); padding: 0.6rem; border-radius: 6px; }
 
-    /* Nomenclature */
+    /* Chat Styles */
+    #chat-wrap { display: flex; flex-direction: column; height: 70vh; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: var(--card); }
+    #chat-log { flex: 1; overflow-y: auto; padding: 1rem; display: flex; flex-direction: column; gap: 0.8rem; }
+    .msg { max-width: 85%; padding: 0.8rem 1rem; border-radius: 12px; font-size: 0.95rem; line-height: 1.4; animation: fade 0.3s; }
+    @keyframes fade { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:translateY(0); } }
+    .msg.user { align-self: flex-end; background: var(--chat-user); color: #fff; border-bottom-right-radius: 4px; }
+    .msg.bot { align-self: flex-start; background: var(--chat-bot); border: 1px solid var(--border); border-bottom-left-radius: 4px; }
+    .msg.bot strong { color: var(--primary); }
+    .msg.bot ul { margin: 0.5rem 0 0 1rem; }
+    #chat-area { display: flex; padding: 0.8rem; background: var(--input-bg); border-top: 1px solid var(--border); gap: 0.5rem; }
+    #chat-input { flex: 1; background: var(--card); border: 1px solid var(--border); color: var(--text); padding: 0.7rem; border-radius: 20px; }
+    #chat-send { background: var(--accent); color: #fff; border: none; padding: 0 1.2rem; border-radius: 20px; cursor: pointer; font-weight: 600; }
+    #chat-send:hover { filter: brightness(1.1); }
+    .typing { font-style: italic; color: var(--muted); font-size: 0.85rem; margin-top: 0.3rem; display: none; }
+
     .search-box { display: flex; gap: 0.8rem; flex-wrap: wrap; margin-bottom: 1rem; }
     .search-box input { flex: 1; min-width: 200px; }
     .search-box .btn { width: auto; margin: 0; background: var(--accent); color: #fff; border-color: var(--accent); }
-    .db-status { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem; text-align: right; }
+    .db-st { font-size: 0.8rem; color: var(--muted); margin-bottom: 1rem; text-align: right; }
     table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
     th, td { text-align: left; padding: 0.8rem; border-bottom: 1px solid var(--border); }
     th { color: var(--primary); }
     tr:hover { background: var(--hover); }
     .code { font-family: monospace; color: var(--accent); font-weight: 600; }
-    .empty { text-align: center; color: var(--text-muted); margin-top: 2rem; display: none; }
+    .empty { text-align: center; color: var(--muted); margin-top: 2rem; display: none; }
     .loader { color: var(--warn); font-weight: 500; display: none; margin-bottom: 1rem; }
 
-    footer { text-align: center; margin-top: 2rem; color: var(--text-muted); font-size: 0.8rem; }
-    @media (max-width: 600px) { h1 { font-size: 1.4rem; } .btn { flex: 1 1 100%; } th, td { padding: 0.5rem; font-size: 0.9rem; } }
+    footer { text-align: center; margin-top: 2rem; color: var(--muted); font-size: 0.8rem; }
+    @media (max-width: 600px) { h1 { font-size: 1.4rem; } .btn { flex: 1 1 100%; } th, td { padding: 0.5rem; font-size: 0.9rem; } #chat-wrap { height: 60vh; } }
   </style>
 </head>
 <body>
 
 <header>
-  <h1>🇧🇪 Simulateur INAMI</h1>
-  <p class="subtitle">Droits, Accords & Recherche Nomenclature</p>
+  <h1>🇧🇪 Assistant INAMI</h1>
+  <p class="sub">Simulateur, Chat & Recherche Nomenclature</p>
 </header>
 
 <div id="disclaimer">
-  ⚠️ <strong>Outil pédagogique.</strong> Les décisions réelles dépendent du médecin-conseil, de votre mutualité et de la clinique. 
-  Consultez <a href="https://www.inami.fed.be" target="_blank" style="color:inherit;text-decoration:underline;">inami.fed.be</a> pour les cas officiels.
+  ⚠️ <strong>Outil pédagogique.</strong> Les décisions officielles dépendent du médecin-conseil, de votre mutualité et de la clinique. 
+  Consultez <a href="https://www.inami.fed.be" target="_blank" style="color:inherit;text-decoration:underline;">inami.fed.be</a>.
 </div>
 
 <nav id="nav"></nav>
 
-<!-- VUES -->
 <section id="v-qa" class="view"><button class="back" onclick="home()">← Accueil</button><div id="qa-list"></div></section>
+
 <section id="v-sim" class="view"><button class="back" onclick="home()">← Accueil</button>
   <div class="card">
     <h2 style="color:var(--primary);margin-bottom:0.8rem;">🧮 Simulateur d'Accords</h2>
@@ -117,28 +120,38 @@
   <div class="card">
     <h2 style="color:var(--primary);margin-bottom:0.5rem;">🔍 Recherche Nomenclature</h2>
     <div class="search-box">
-      <input type="text" id="s-nom" placeholder="Code (ex: 502020) ou mot-clé (ex: IRM)">
+      <input type="text" id="s-nom" placeholder="Code (ex: 502020) ou mot-clé">
       <button class="btn" onclick="searchNom()">Rechercher</button>
       <button class="btn" onclick="updateDB()" style="background:var(--primary);border-color:var(--primary);">🔄 Actualiser</button>
     </div>
     <div class="loader" id="loader">⏳ Synchronisation...</div>
-    <div class="db-status" id="db-st">Base locale • Entrées: 0</div>
+    <div class="db-st" id="db-st">Base locale • Entrées: 0</div>
     <table><thead><tr><th>Code</th><th>Description</th><th>Catégorie</th><th>Tarif (€)</th></tr></thead><tbody id="nom-tbody"></tbody></table>
-    <div class="empty" id="nom-empty">Aucun résultat. Vérifiez la syntaxe ou actualisez la base.</div>
+    <div class="empty" id="nom-empty">Aucun résultat.</div>
   </div>
 </section>
 
-<footer>Données INAMI simplifiées • Licence MIT • Hébergé sur GitHub Pages</footer>
+<section id="v-chat" class="view"><button class="back" onclick="home()">← Accueil</button>
+  <div id="chat-wrap">
+    <div id="chat-log"></div>
+    <div class="typing" id="typing">L'assistant réfléchit...</div>
+    <div id="chat-area">
+      <input type="text" id="chat-input" placeholder="Ex: Combien de boîtes de médicaments ai-je droit ?">
+      <button id="chat-send" onclick="sendChat()">Envoyer</button>
+    </div>
+  </div>
+</section>
+
+<footer>Données INAMI simplifiées • Licence MIT • Optimisé pour GitHub Pages</footer>
 
 <script>
-  // ⚙️ CONFIGURATION
   const CFG = {
-    DB_URL: 'https://raw.githubusercontent.com/UTILISATEUR/REPO/main/nomenclature.json', // 👉 Remplacez par votre URL RAW
-    STORAGE_KEY: 'inami_cache_v1',
+    DB_URL: 'https://raw.githubusercontent.com/UTILISATEUR/REPO/main/nomenclature.json',
+    STORAGE_KEY: 'inami_cache_v2',
     QA: {
       kine: { t:'🧘 Kinésithérapie', q:[
         {q:'Faut-il une prescription ?', a:'Oui. L\'INAMI exige une ordonnance médicale. L\'accès direct n\'est pas remboursé légalement.'},
-        {q:'Combien de séances ?', a:'Forfaits de 9, 18, 30 ou 50 séances. Au-delà de 18 → accord médecin-conseil requis.'},
+        {q:'Combien de séances ?', a:'Forfaits de 9, 18, 30 ou 50 séances selon diagnostic. >18 → accord médecin-conseil requis.'},
         {q:'Conventionné vs non ?', a:'Conventionné = tarif INAMI. Non conventionné = honoraire libre, remboursement limité au tarif de référence.'}
       ]},
       med: { t:'💊 Médicaments', q:[
@@ -165,15 +178,24 @@
       {c:'901010',d:'Chirurgie ambulatoire',cat:'Hospitalisation',t:85.50},
       {c:'110210',d:'Vaccination grippe',cat:'Prévention',t:12.50},
       {c:'167101',d:'Accord préalable hospitalisation',cat:'Administratif',t:0.00}
+    ],
+    CHAT_RULES: [
+      { k: ['boîte','boites','médicament','medicament','droit médicament','nombre médicament','prescription médicament'], r: '<strong>Médicaments :</strong> Le nombre de boîtes dépend de la posologie prescrite et de la durée du traitement. L\'INAMI rembourse les quantités "raisonnables" selon le protocole. Pour les médicaments à délivrance contrôlée (ex: antidépresseurs, opioïdes), des limites mensuelles s\'appliquent. Vérifiez la catégorie A/B/C/D et le <strong>forfait de responsabilité</strong>.' },
+      { k: ['kiné','séance kiné','nombre séance','accord kiné','prolongation kiné'], r: '<strong>Kinésithérapie :</strong> Forfaits de 9, 18, 30 ou 50 séances. Au-delà de 18 séances, un <strong>accord préalable du médecin-conseil</strong> est généralement requis. Le type de kiné (respiratoire, neuro, post-op) influence les seuils et la prise en charge à 100%.' },
+      { k: ['accord préalable','préalable','autorisation','l113','médecin conseil'], r: '<strong>Accords Préalables :</strong> Nécessaires pour kiné >18 séances, certains médicaments hors liste, imagerie lourde hors parcours, hospitalisation programmée, prothèses, etc. Formulaire à envoyer au médecin-conseil de votre mutualité avec motif clinique.' },
+      { k: ['bim','omnio','viPO','intervention majorée','revenus modestes'], r: '<strong>Statut BIM/OMNIO :</strong> Réduit fortement le ticket modérateur, supprime certaines franchises et facilite l\'accès aux soins. Demande via votre mutualité avec justificatifs de revenus. Cumulable avec les protocoles de maladie chronique.' },
+      { k: ['mutuelle','complémentaire','remboursement','ticket modérateur','franchise'], r: '<strong>Remboursements :</strong> L\'INAMI couvre la base légale. Votre <strong>mutualité</strong> complète souvent le ticket modérateur (hospitalisation, kiné, lunettes, etc.). Contactez-les pour connaître votre formule exacte.' },
+      { k: ['générique','substitution','marque','différence prix'], r: '<strong>Génériques :</strong> Le pharmacien substitue automatiquement sauf mention "non substituable". Si vous refusez sans motif médical, le ticket modérateur peut être majoré. Le <strong>forfait de responsabilité</strong> fixe le prix de référence.' },
+      { k: ['nomenclature','code','tarif','recherche','prix acte'], r: '<strong>Nomenclature :</strong> Les actes sont identifiés par des codes à 6 chiffres. Les tarifs de référence sont fixés par arrêté royal. Utilisez l\'onglet <strong>🔍 Nomenclature</strong> pour rechercher un code ou un acte précis.' },
+      { k: ['aide','bonjour','salut','merci','info'], r: '<strong>Besoin d\'aide ?</strong> Posez-moi une question sur :<br>• Nombre de séances kiné / médicaments<br>• Accords préalables & médecin-conseil<br>• Statut BIM/OMNIO<br>• Recherche de codes nomenclature<br>Je réponds selon les règles INAMI actuelles.' }
     ]
   };
 
   let nomData = [...CFG.FALLBACK];
 
-  // 🧩 UI
   function init() {
     const nav = document.getElementById('nav');
-    const views = { '❓ Droits': 'v-qa', '🧮 Simulateur': 'v-sim', '🔍 Nomenclature': 'v-nom' };
+    const views = { '❓ Droits': 'v-qa', '🧮 Simulateur': 'v-sim', '💬 Assistant': 'v-chat', '🔍 Nomenclature': 'v-nom' };
     Object.entries(CFG.QA).forEach(([k,v]) => {
       const b = document.createElement('button'); b.className='btn'; b.textContent=v.t; b.onclick=()=>show('v-qa', renderQA(k));
       nav.appendChild(b);
@@ -183,26 +205,24 @@
       nav.appendChild(b);
     });
     loadDB();
+    addBot('👋 Bienvenue ! Posez une question sur vos droits INAMI, les accords préalables ou la nomenclature. Ex: <em>"Combien de boîtes de médicaments ai-je droit ?"</em>');
   }
 
   function show(id) {
     document.querySelectorAll('.view').forEach(v=>v.style.display='none');
     document.getElementById(id).style.display='block';
     document.getElementById('nav').style.display='none';
-    document.querySelector('h1').style.display='none';
-    document.querySelector('.subtitle').style.display='none';
-    document.getElementById('disclaimer').style.display='none';
+    ['h1','.sub','#disclaimer'].forEach(s=>document.querySelector(s).style.display='none');
   }
   function home() {
     document.querySelectorAll('.view').forEach(v=>v.style.display='none');
     document.getElementById('nav').style.display='flex';
     document.querySelector('h1').style.display='block';
-    document.querySelector('.subtitle').style.display='block';
+    document.querySelector('.sub').style.display='block';
     document.getElementById('disclaimer').style.display='block';
   }
   function renderQA(k) {
-    const list = document.getElementById('qa-list');
-    list.innerHTML = '';
+    const list = document.getElementById('qa-list'); list.innerHTML = '';
     CFG.QA[k].q.forEach(i => {
       const d = document.createElement('div'); d.className='card';
       d.innerHTML = `<div class="q">❓ ${i.q}</div><button class="toggle" onclick="this.nextElementSibling.classList.toggle('show');this.textContent=this.nextElementSibling.classList.contains('show')?'Masquer':'Voir'">Voir</button><div class="a">${i.a}</div>`;
@@ -210,17 +230,16 @@
     });
   }
 
-  // 🧮 SIMULATION
   function toggleCond() {
     const t = document.getElementById('type').value;
     const c = document.getElementById('cond'); c.innerHTML='';
     if(!t){c.style.display='none';return;} c.style.display='grid';
     const f = {
-      kine:'<div class="grp"><label>Séances</label><input type="number" id="s-kine" min="1" max="100"></div>',
-      med:'<div class="grp"><label>Catégorie</label><select id="s-med"><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option></select></div><div class="grp"><label>Accord préalable ?</label><select id="s-pri"><option value="0">Non</option><option value="1">Oui</option></select></div>',
-      img:'<div class="grp"><label>Type</label><select id="s-img"><option value="radio">Radio</option><option value="echo">Écho</option><option value="irm">IRM</option><option value="scan">Scanner</option></select></div>',
-      hosp:'<div class="grp"><label>Type</label><select id="s-hosp"><option value="urg">Urgence</option><option value="prog">Programmée</option></select></div>',
-      chron:'<div class="grp"><label>Pathologie</label><input type="text" id="s-chron" placeholder="Ex: Diabète type 2"></div>'
+      kine: `<div class="grp"><label>Type de kiné</label><select id="s-kine-type"><option value="gen">Rééducation générale</option><option value="postop">Post-opératoire</option><option value="resp">Respiratoire</option><option value="neuro">Neurologique</option><option value="ped">Pédiatrique</option></select></div><div class="grp"><label>Séances demandées</label><input type="number" id="s-kine" min="1" max="100"></div>`,
+      med: `<div class="grp"><label>Catégorie</label><select id="s-med"><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option></select></div><div class="grp"><label>Accord préalable ?</label><select id="s-pri"><option value="0">Non</option><option value="1">Oui</option></select></div>`,
+      img: `<div class="grp"><label>Type</label><select id="s-img"><option value="radio">Radio</option><option value="echo">Écho</option><option value="irm">IRM</option><option value="scan">Scanner</option></select></div>`,
+      hosp: `<div class="grp"><label>Type</label><select id="s-hosp"><option value="urg">Urgence</option><option value="prog">Programmée</option></select></div>`,
+      chron: `<div class="grp"><label>Pathologie</label><input type="text" id="s-chron" placeholder="Ex: Diabète type 2"></div>`
     };
     c.innerHTML = f[t]||'';
   }
@@ -236,9 +255,10 @@
     const v=id=>document.getElementById(id)?.value;
 
     if(tp==='kine'){
-      const n=+v('s-kine')||0; if(n<=0)return alert('Séances requises.');
-      r.s = mdt==='non'?'cond':'ok'; r.m=`Forfait ${n} séances.`;
-      if(n>18){r.s='cond';r.m+=' >18 → accord médecin-conseil.';r.ref.push('Art.114 Nomenclature');}
+      const n=+v('s-kine')||0, type=v('s-kine-type');
+      if(n<=0)return alert('Séances requises.');
+      r.s = mdt==='non'?'cond':'ok'; r.m=`Type : ${type}. Forfait ${n} séances.`;
+      if(n>18||['neuro','resp'].includes(type)){r.s='cond';r.m+=' Accord médecin-conseil requis.';r.ref.push('Art.114 Nomenclature / Protocole spécialisé');}
     }else if(tp==='med'){
       if(mdt==='non')return alert('Ordonnance obligatoire.');
       const cat=v('s-med'), pri=+v('s-pri');
@@ -275,17 +295,10 @@
   // 🔍 NOMENCLATURE
   function loadDB() {
     const c = localStorage.getItem(CFG.STORAGE_KEY);
-    if(c){
-      try{
-        const d=JSON.parse(c); nomData=d.data; updSt(d.ts);
-      }catch(e){nomData=[...CFG.FALLBACK];}
-    }
+    if(c){ try{ const d=JSON.parse(c); nomData=d.data; updSt(d.ts); }catch(e){nomData=[...CFG.FALLBACK];} }
     renderNom(nomData);
   }
-  function updSt(ts){
-    const n = nomData.length;
-    document.getElementById('db-st').textContent = ts?`Base: ${n} entrées • Synchro: ${new Date(ts).toLocaleString('fr-BE')}`:`Base locale: ${n} entrées`;
-  }
+  function updSt(ts){ document.getElementById('db-st').textContent = ts?`Base: ${nomData.length} entrées • Synchro: ${new Date(ts).toLocaleString('fr-BE')}`:`Base locale: ${nomData.length} entrées`; }
   function renderNom(d){
     const tb=document.getElementById('nom-tbody'), em=document.getElementById('nom-empty');
     tb.innerHTML=''; if(!d.length){em.style.display='block';return;} em.style.display='none';
@@ -304,14 +317,46 @@
     try{
       const res=await fetch(CFG.DB_URL,{cache:'no-store'});
       if(!res.ok)throw new Error('HTTP '+res.status);
-      const d=await res.json();
-      if(!Array.isArray(d))throw new Error('Format invalide');
-      nomData=d;
-      localStorage.setItem(CFG.STORAGE_KEY,JSON.stringify({data:d,ts:Date.now()}));
+      const d=await res.json(); if(!Array.isArray(d))throw new Error('Format invalide');
+      nomData=d; localStorage.setItem(CFG.STORAGE_KEY,JSON.stringify({data:d,ts:Date.now()}));
       updSt(Date.now()); renderNom(d); alert('✅ Base mise à jour.');
-    }catch(e){console.warn(e);alert('⚠️ Sync échouée. Utilisation locale.');nomData=[...CFG.FALLBACK];renderNom(nomData);}
-    finally{ld.style.display='none';}
+    }catch(e){ console.warn(e); alert('⚠️ Sync échouée. Utilisation locale.'); nomData=[...CFG.FALLBACK]; renderNom(nomData); }
+    finally{ ld.style.display='none'; }
   }
+
+  // 💬 CHAT
+  function addBot(html) {
+    const log = document.getElementById('chat-log');
+    const div = document.createElement('div'); div.className='msg bot'; div.innerHTML=html;
+    log.appendChild(div); log.scrollTop = log.scrollHeight;
+  }
+  function addUser(txt) {
+    const log = document.getElementById('chat-log');
+    const div = document.createElement('div'); div.className='msg user'; div.textContent=txt;
+    log.appendChild(div); log.scrollTop = log.scrollHeight;
+  }
+  function sendChat() {
+    const inp = document.getElementById('chat-input');
+    const txt = inp.value.trim(); if(!txt) return;
+    addUser(txt); inp.value = '';
+    const typ = document.getElementById('typing'); typ.style.display='block';
+    
+    setTimeout(() => {
+      typ.style.display='none';
+      const res = matchRule(txt.toLowerCase());
+      addBot(res);
+    }, 400);
+  }
+  function matchRule(q) {
+    let best = null; let max = 0;
+    CFG.CHAT_RULES.forEach(rule => {
+      rule.k.forEach(k => {
+        if(q.includes(k)) { max = k.length; best = rule.r; }
+      });
+    });
+    return best || '<strong>Je n\'ai pas trouvé de règle spécifique.</strong> Essayez de préciser : nombre de séances, type de médicament, accord préalable, ou utilisez l\'onglet 🔍 Nomenclature pour vérifier un code.';
+  }
+  document.getElementById('chat-input').addEventListener('keypress', e => { if(e.key==='Enter') sendChat(); });
 
   init();
 </script>
