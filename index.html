@@ -230,6 +230,12 @@
             <option value="">-- Sélectionner --</option>
             <option value="kine">Kinésithérapie</option>
             <option value="med">Médicaments</option>
+            <option value="log">Logopédie</option>
+            <option value="nurs">Soins infirmiers</option>
+            <option value="diet">Diététique</option>
+            <option value="img">Imagerie</option>
+            <option value="hosp">Hospitalisation</option>
+            <option value="chron">Maladie chronique</option>
             <option value="mobilite">Aide à la mobilité</option>
           </select>
         </div>
@@ -267,7 +273,7 @@
       </div>
       <div id="chat-log"></div>
       <div class="chat-input-area">
-        <input type="text" class="chat-input" id="input-agent" placeholder="Ex: Mounjaro est-il remboursé ?">
+        <input type="text" class="chat-input" id="input-agent" placeholder="Ex: Mounjaro est-il remboursé ? Conditions pour un fauteuil électrique...">
         <button class="send-btn" onclick="sendMsg()">Envoyer</button>
       </div>
     </div>
@@ -285,20 +291,81 @@ const CFG = {
     kine: 'https://raw.githubusercontent.com/Bootyfull1/inami-database/main/kine.json',
     medicaments: 'https://raw.githubusercontent.com/Bootyfull1/inami-database/main/medicaments.json',
     mobilite: 'https://raw.githubusercontent.com/Bootyfull1/inami-database/main/mobilite.json',
-    logopedie: 'https://raw.githubusercontent.com/Bootyfull1/inami-database/main/logopedie.json'
+    logopedie: 'https://raw.githubusercontent.com/Bootyfull1/inami-database/main/logopedie.json',
+    soins: 'https://raw.githubusercontent.com/Bootyfull1/inami-database/main/soins-infirmiers.json',
+    dietetique: 'https://raw.githubusercontent.com/Bootyfull1/inami-database/main/dietetique.json',
+    imagerie: 'https://raw.githubusercontent.com/Bootyfull1/inami-database/main/imagerie.json',
+    hospitalisation: 'https://raw.githubusercontent.com/Bootyfull1/inami-database/main/hospitalisation.json'
   },
   DRUGS: {
     'mounjaro': {name:'Mounjaro', cat:'B', indications:{'diabete':'Remboursé si échec trithérapie et HbA1c>=8%'}, prescripteur:'specialiste'},
     'insuline': {name:'Insuline', cat:'A', indications:{'diabete':'Remboursé à 100%'}, prescripteur:'generaliste'}
   },
-  KINE: {
-    FA: [{id:1, name:'Fractures', requiresSurgicalCode:true, maxSessions:18}, {id:2, name:'Ligaments', requiresSurgicalCode:false, maxSessions:18}],
-    FB: [{id:51, name:'Rééducation marche', minAge:65, maxSessions:18}]
-  }
+  // Listes complètes des pathologies Kiné
+  KINE_FA: [
+    {id:1, name:'Fractures et luxations (traumatiques)', requiresSurgicalCode:true, maxSessions:18},
+    {id:2, name:'Lésions ligamentaires et musculaires', requiresSurgicalCode:false, maxSessions:18},
+    {id:3, name:'Interventions orthopédiques post-opératoires', requiresSurgicalCode:true, maxSessions:18},
+    {id:4, name:'Interventions neurochirurgicales', requiresSurgicalCode:true, maxSessions:18},
+    {id:5, name:'Affections rhumatologiques inflammatoires aiguës', requiresSurgicalCode:false, maxSessions:18},
+    {id:6, name:'Affections de l\'épaule (périarthrite, coiffe)', requiresSurgicalCode:false, maxSessions:18},
+    {id:7, name:'Affections du coude (épicondylite, luxation)', requiresSurgicalCode:false, maxSessions:18},
+    {id:8, name:'Affections du poignet/main (fracture scaphoïde, canal carpien)', requiresSurgicalCode:false, maxSessions:18},
+    {id:9, name:'Affections de la hanche (coxarthrose aiguë, bursite)', requiresSurgicalCode:false, maxSessions:18},
+    {id:10, name:'Affections du genou (méniscectomie, ligament croisé)', requiresSurgicalCode:false, maxSessions:18},
+    {id:11, name:'Affections de la cheville/pied (entorse grave, fracture malléole)', requiresSurgicalCode:false, maxSessions:18},
+    {id:12, name:'Affections du rachis cervical (whiplash, hernie cervicale)', requiresSurgicalCode:false, maxSessions:18},
+    {id:13, name:'Affections du rachis dorsal/lombaire (lombalgie aiguë, sciatique)', requiresSurgicalCode:false, maxSessions:18},
+    {id:14, name:'Polytraumatismes légers', requiresSurgicalCode:false, maxSessions:18},
+    {id:15, name:'États post-immobilisation plâtrée', requiresSurgicalCode:false, maxSessions:18},
+    {id:16, name:'Brûlures aiguës (phase initiale)', requiresSurgicalCode:false, maxSessions:18},
+    {id:17, name:'Affections vasculaires périphériques aiguës', requiresSurgicalCode:false, maxSessions:18},
+    {id:18, name:'États post-chirurgie générale (abdominale, thoracique)', requiresSurgicalCode:false, maxSessions:18}
+  ],
+  KINE_FB: [
+    {id:51, name:'Rééducation à la marche (âge >= 65 ans)', minAge:65, maxSessions:18},
+    {id:52, name:'Retard ou trouble du développement psychomoteur (âge < 16 ans)', maxAge:15, maxSessions:18},
+    {id:53, name:'Lymphœdème chronique avec critères validés', maxSessions:18},
+    {id:54, name:'Affections neurologiques chroniques non évolutives', maxSessions:18},
+    {id:55, name:'Rééducation fonctionnelle post-brûlures', maxSessions:18},
+    {id:56, name:'Affections rhumatologiques chroniques (arthrose évoluée)', maxSessions:18},
+    {id:57, name:'Séquelles de pathologies neurologiques périphériques', maxSessions:18},
+    {id:58, name:'Affections respiratoires chroniques (hors liste E)', maxSessions:18},
+    {id:59, name:'Rééducation post-chirurgie cardiaque', maxSessions:18},
+    {id:60, name:'Pathologies vasculaires périphériques chroniques', maxSessions:18},
+    {id:61, name:'Rééducation post-AVC (phase chronique)', maxSessions:18},
+    {id:62, name:'Affections dégénératives du rachis (chroniques)', maxSessions:18},
+    {id:63, name:'Syndromes douloureux chroniques régionaux complexes', maxSessions:18},
+    {id:64, name:'Rééducation post-prothèse articulaire (phase chronique)', maxSessions:18},
+    {id:65, name:'Affections neuromusculaires chroniques non évolutives', maxSessions:18}
+  ],
+  KINE_E: [
+    {id:'E-a', name:'Paralysie périphérique étendue (Guillain-Barré, etc.)', maxSessions:'illimité'},
+    {id:'E-b', name:'Affections neurologiques centrales évolutives (SEP, Parkinson, SLA)', maxSessions:'illimité'},
+    {id:'E-c', name:'Séquelles motrices étendues (IMC, hémiplégie, spina bifida)', maxSessions:'illimité'},
+    {id:'E-d', name:'Suites de brûlures graves (membres/cou, phase évolutive)', maxSessions:'illimité'},
+    {id:'E-e', name:'Perte fonctionnelle majeure d\'un membre (amputation, agénésie)', maxSessions:'illimité'},
+    {id:'E-f', name:'Pied bot varus équin (enfant < 2 ans)', maxAge:2, maxSessions:'illimité'},
+    {id:'E-g', name:'Dysfonction articulaire grave (hémophilie, scoliose >=15° <18 ans)', maxAge:18, maxSessions:'illimité'},
+    {id:'E-h', name:'Polyarthrites chroniques inflammatoires (PR, spondylarthrite, lupus)', maxSessions:'illimité'},
+    {id:'E-i', name:'Myopathies (dystrophies musculaires, polymyosite)', maxSessions:'illimité'},
+    {id:'E-j', name:'Affections respiratoires chroniques (mucoviscidose, BPCO sévère)', maxSessions:'illimité'},
+    {id:'E-k', name:'Lymphœdème (post-radio/chirurgical avec critères objectifs)', maxSessions:'illimité'},
+    {id:'E-l', name:'Anomalie structurelle locomotrice ou affection rare (<5/10.000)', maxSessions:'illimité'}
+  ],
+  LOG_CATS: [
+    {id:'log-langage', name:'Langage oral et Dysphasie', validityMonths:24},
+    {id:'log-dyslexie', name:'Dyslexie', validityMonths:24},
+    {id:'log-dysorthographie', name:'Dysorthographie', validityMonths:24},
+    {id:'log-dyscalculie', name:'Dyscalculie', validityMonths:24},
+    {id:'log-voix', name:'Troubles de la voix', validityMonths:12},
+    {id:'log-begaiement', name:'Bégaiement', validityMonths:24}
+  ]
 };
 
 let allDB = {};
 let currentPath = null;
+let currentCategory = null;
 
 // Login
 function attemptLogin() {
@@ -352,11 +419,11 @@ function show(id) {
   if (el) el.style.display = 'block';
   
   if (id === 'agent' && document.getElementById('chat-log').children.length === 0) {
-    addMsg('agent', 'Bonjour. Je suis le Super Agent INAMI. Posez-moi votre question sur les médicaments, la kinésithérapie, ou l\'aide à la mobilité.');
+    addMsg('agent', 'Bonjour. Je suis le Super Agent INAMI. Posez-moi votre question sur les médicaments, la kinésithérapie, l\'aide à la mobilité, la logopédie, etc.');
   }
 }
 
-// Simulateur - Affichage conditions
+// Simulateur - Affichage conditions avec TOUTES les pathologies
 function toggleCond() {
   const t = document.getElementById('type').value;
   const c = document.getElementById('cond');
@@ -369,32 +436,42 @@ function toggleCond() {
   if (t === 'kine') {
     c.innerHTML = `
       <div class="field">
-        <label>Catégorie</label>
+        <label>Catégorie INAMI</label>
         <select id="s-cat" onchange="updatePaths()">
           <option value="">-- Choisir --</option>
-          <option value="FA">Fa (Aigu)</option>
-          <option value="FB">Fb (Chronique)</option>
+          <option value="FA">Fa (Aigu - 18 pathologies)</option>
+          <option value="FB">Fb (Chronique - 15 pathologies)</option>
+          <option value="E">Liste E (Pathologies lourdes - 12 pathologies)</option>
         </select>
       </div>
       <div class="field" id="path-field" style="display:none">
         <label>Pathologie</label>
-        <select id="s-path" onchange="updatePathLogic()"><option value="">-- Sélectionner --</option></select>
+        <select id="s-path" onchange="updatePathLogic()">
+          <option value="">-- Sélectionner --</option>
+        </select>
       </div>
-      <div class="field"><label>Séances</label><input type="number" id="s-sess" min="1"></div>
+      <div class="field"><label>Séances demandées</label><input type="number" id="s-sess" min="1" placeholder="Ex: 12"></div>
     `;
   } else if (t === 'med') {
     c.innerHTML = `
       <div class="field">
         <label>Médicament</label>
-        <input type="text" id="s-med" list="med-list" placeholder="Ex: Mounjaro">
+        <input type="text" id="s-med" list="med-list" placeholder="Ex: Mounjaro, insuline...">
         <datalist id="med-list"></datalist>
       </div>
-      <div class="field"><label>Pathologie</label><input type="text" id="s-patho" placeholder="Ex: diabète"></div>
+      <div class="field"><label>Pathologie concernée</label><input type="text" id="s-patho" placeholder="Ex: diabète, obésité..."></div>
       <div class="field">
-        <label>Prescripteur</label>
+        <label>Type de prescripteur</label>
         <select id="s-presc">
-          <option value="generaliste">Généraliste</option>
-          <option value="specialiste">Spécialiste</option>
+          <option value="generaliste">Médecin généraliste</option>
+          <option value="specialiste">Spécialiste (diabétologue, endocrinologue...)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Statut BIM/OMNIO</label>
+        <select id="s-bim">
+          <option value="non">Non</option>
+          <option value="oui">Oui</option>
         </select>
       </div>
     `;
@@ -407,16 +484,120 @@ function toggleCond() {
         dl.appendChild(o);
       });
     }, 50);
+  } else if (t === 'log') {
+    c.innerHTML = `
+      <div class="field">
+        <label>Catégorie logopédie</label>
+        <select id="s-log-cat">
+          <option value="">-- Sélectionner --</option>
+          ${CFG.LOG_CATS.map(c => `<option value="${c.id}">${c.name}</option>`).join('')}
+        </select>
+      </div>
+      <div class="field"><label>Séances demandées</label><input type="number" id="s-log-sess" min="1"></div>
+    `;
+  } else if (t === 'nurs') {
+    c.innerHTML = `
+      <div class="field">
+        <label>Type de soins</label>
+        <select id="s-nurs-type">
+          <option value="pansements">Pansements et soins de plaies</option>
+          <option value="injections">Injections et prélèvements</option>
+          <option value="diabete">Surveillance diabète</option>
+          <option value="sondage">Sondage urinaire</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Lieu des soins</label>
+        <select id="s-nurs-lieu">
+          <option value="domicile">À domicile</option>
+          <option value="institution">En institution</option>
+        </select>
+      </div>
+    `;
+  } else if (t === 'diet') {
+    c.innerHTML = `
+      <div class="field">
+        <label>Pathologie concernée</label>
+        <select id="s-diet-patho">
+          <option value="obesite">Obésité (IMC >= 30)</option>
+          <option value="diabete">Diabète</option>
+          <option value="renal">Insuffisance rénale chronique</option>
+          <option value="cancer">Cancer (dénutrition)</option>
+          <option value="tca">Troubles du comportement alimentaire</option>
+        </select>
+      </div>
+      <div class="field"><label>IMC (si obésité)</label><input type="number" id="s-diet-imc" step="0.1" placeholder="Ex: 32.5"></div>
+    `;
+  } else if (t === 'img') {
+    c.innerHTML = `
+      <div class="field">
+        <label>Type d'imagerie</label>
+        <select id="s-img-type">
+          <option value="radio">Radiographie</option>
+          <option value="echo">Échographie</option>
+          <option value="scanner">Scanner (TDM)</option>
+          <option value="irm">IRM</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Parcours coordonné</label>
+        <select id="s-img-parcours">
+          <option value="oui">Oui (avec MDT)</option>
+          <option value="non">Non (hors parcours)</option>
+        </select>
+      </div>
+    `;
+  } else if (t === 'hosp') {
+    c.innerHTML = `
+      <div class="field">
+        <label>Type d'hospitalisation</label>
+        <select id="s-hosp-type">
+          <option value="urgence">Urgence</option>
+          <option value="programmee">Programmée</option>
+          <option value="ambulatoire">Chirurgie ambulatoire</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Type de chambre</label>
+        <select id="s-hosp-chambre">
+          <option value="double">Chambre double (2 lits)</option>
+          <option value="individuelle">Chambre individuelle</option>
+        </select>
+      </div>
+    `;
+  } else if (t === 'chron') {
+    c.innerHTML = `
+      <div class="field">
+        <label>Pathologie chronique</label>
+        <select id="s-chron-patho">
+          <option value="diabete">Diabète insulinodépendant</option>
+          <option value="cancer">Cancer (phase active)</option>
+          <option value="renal">Insuffisance rénale chronique (stade 4-5)</option>
+          <option value="polyarthrite">Polyarthrite rhumatoïde sévère</option>
+          <option value="sep">Sclérose en plaques</option>
+        </select>
+      </div>
+    `;
   } else if (t === 'mobilite') {
     c.innerHTML = `
       <div class="field">
         <label>Type d'aide</label>
-        <select id="s-mob">
-          <option value="fauteuil">Fauteuil roulant</option>
-          <option value="deambulateur">Déambulateur</option>
+        <select id="s-mob-type">
+          <option value="fauteuil-manuel">Fauteuil roulant manuel</option>
+          <option value="fauteuil-electrique">Fauteuil roulant électrique</option>
+          <option value="deambulateur">Déambulateur / Rollator</option>
+          <option value="orthese">Orthèse (membre inférieur/supérieur)</option>
+          <option value="prothese">Prothèse (membre inférieur/supérieur)</option>
         </select>
       </div>
-      <div class="field"><label>Âge</label><input type="number" id="s-mob-age"></div>
+      <div class="field"><label>Âge du patient</label><input type="number" id="s-mob-age" placeholder="Ex: 45"></div>
+      <div class="field">
+        <label>Prescription médicale</label>
+        <select id="s-mob-presc">
+          <option value="oui">Oui</option>
+          <option value="non">Non</option>
+        </select>
+      </div>
     `;
   }
 }
@@ -426,13 +607,19 @@ function updatePaths() {
   const pf = document.getElementById('path-field');
   const ps = document.getElementById('s-path');
   ps.innerHTML = '<option value="">-- Sélectionner --</option>';
+  currentCategory = cat;
   
-  if (cat && CFG.KINE[cat]) {
+  let list = [];
+  if (cat === 'FA') list = CFG.KINE_FA;
+  else if (cat === 'FB') list = CFG.KINE_FB;
+  else if (cat === 'E') list = CFG.KINE_E;
+  
+  if (list.length > 0) {
     pf.style.display = 'flex';
-    CFG.KINE[cat].forEach(p => {
+    list.forEach(p => {
       const o = document.createElement('option');
       o.value = p.id;
-      o.textContent = p.id + ': ' + p.name;
+      o.textContent = (cat === 'E' ? p.id : 'Fa-' + p.id) + ' : ' + p.name;
       ps.appendChild(o);
     });
   } else {
@@ -443,21 +630,71 @@ function updatePaths() {
 function updatePathLogic() {
   const cat = document.getElementById('s-cat').value;
   const pid = document.getElementById('s-path').value;
-  if (cat && pid) {
-    currentPath = CFG.KINE[cat].find(p => p.id == pid);
+  
+  let list = [];
+  if (cat === 'FA') list = CFG.KINE_FA;
+  else if (cat === 'FB') list = CFG.KINE_FB;
+  else if (cat === 'E') list = CFG.KINE_E;
+  
+  if (pid) {
+    currentPath = list.find(p => p.id == (cat === 'E' ? pid : parseInt(pid)));
   }
 }
 
 // Exécution simulateur
 function runSim() {
   const tp = document.getElementById('type').value;
+  const age = +document.getElementById('age').value || 0;
   const res = document.getElementById('res');
   res.style.display = 'block';
   
-  if (tp === 'med') {
+  if (tp === 'kine') {
+    if (!currentPath) {
+      alert('Sélectionnez une pathologie');
+      return;
+    }
+    const sess = +document.getElementById('s-sess').value;
+    
+    // Vérification âge
+    if (currentPath.minAge && age < currentPath.minAge) {
+      document.getElementById('r-status').className = 'res-status no';
+      document.getElementById('r-status').textContent = 'REFUS';
+      document.getElementById('r-msg').innerHTML = `<strong>${currentPath.name}</strong><br>Âge minimum requis: ${currentPath.minAge} ans. Âge du patient: ${age} ans.`;
+      return;
+    }
+    if (currentPath.maxAge && age > currentPath.maxAge) {
+      document.getElementById('r-status').className = 'res-status no';
+      document.getElementById('r-status').textContent = 'REFUS';
+      document.getElementById('r-msg').innerHTML = `<strong>${currentPath.name}</strong><br>Réservé aux patients de moins de ${currentPath.maxAge + 1} ans.`;
+      return;
+    }
+    
+    let msg = `<strong>${currentPath.name}</strong><br>Remboursement prévu pour ${sess} séances.`;
+    let status = 'ok';
+    
+    if (sess > currentPath.maxSessions && currentPath.maxSessions !== 'illimité') {
+      msg = `Dépassement du forfait (${currentPath.maxSessions} séances). Accord préalable (formulaire 05a/05b) requis.`;
+      status = 'cond';
+    } else if (currentCategory === 'E') {
+      msg = `Pathologie lourde (Liste E). Accord préalable obligatoire + bilan spécialisé.`;
+      status = 'cond';
+    }
+    
+    document.getElementById('r-status').className = 'res-status ' + (status === 'ok' ? 'ok' : 'cond');
+    document.getElementById('r-status').textContent = status === 'ok' ? 'ÉLIGIBLE' : 'CONDITIONNEL';
+    document.getElementById('r-msg').innerHTML = msg;
+    document.getElementById('r-ref').innerHTML = '<strong>Source:</strong> Nomenclature Kinésithérapie INAMI - Annexe 05a/05b';
+    
+  } else if (tp === 'med') {
     const med = document.getElementById('s-med').value.toLowerCase();
     const patho = document.getElementById('s-patho').value.toLowerCase();
     const presc = document.getElementById('s-presc').value;
+    const bim = document.getElementById('s-bim').value;
+    
+    if (!med || !patho) {
+      alert('Remplissez le médicament et la pathologie');
+      return;
+    }
     
     let drug = null;
     for (const k in CFG.DRUGS) {
@@ -469,45 +706,84 @@ function runSim() {
     
     if (drug) {
       const indKey = Object.keys(drug.indications).find(k => patho.includes(k));
-      const info = indKey ? drug.indications[indKey] : 'Indication non précisée';
+      const info = indKey ? drug.indications[indKey] : 'Indication non précisée dans la base';
       
       let status = 'ok';
-      let msg = '<strong>' + drug.name + '</strong> (Cat. ' + drug.cat + ')<br>' + info;
+      let msg = `<strong>${drug.name}</strong> (Catégorie ${drug.cat}) pour ${patho}:<br>${info}`;
       
       if (drug.prescripteur === 'specialiste' && presc !== 'specialiste') {
         status = 'refus';
-        msg += '<br>Refus: Prescription spécialiste obligatoire';
+        msg += '<br><br><span style="color:var(--danger)">Refus: Prescription par spécialiste obligatoire (diabétologue/endocrinologue).</span>';
+      } else if (info.toLowerCase().includes('non rembours')) {
+        status = 'refus';
+      } else if (info.toLowerCase().includes('conditions')) {
+        status = 'cond';
       }
       
-      document.getElementById('r-status').className = 'res-status ' + (status === 'ok' ? 'ok' : 'no');
-      document.getElementById('r-status').textContent = status === 'ok' ? 'ÉLIGIBLE' : 'REFUS';
+      if (bim === 'oui' && status !== 'refus') {
+        msg += '<br><br><em>Statut BIM/OMNIO: Ticket modérateur réduit applicable.</em>';
+      }
+      
+      document.getElementById('r-status').className = 'res-status ' + (status === 'ok' ? 'ok' : (status === 'cond' ? 'cond' : 'no'));
+      document.getElementById('r-status').textContent = status === 'ok' ? 'ÉLIGIBLE' : (status === 'cond' ? 'CONDITIONNEL' : 'REFUS');
       document.getElementById('r-msg').innerHTML = msg;
+      document.getElementById('r-ref').innerHTML = '<strong>Source:</strong> Nomenclature Pharmaceutique INAMI';
     } else {
-      document.getElementById('r-status').className = 'res-status no';
+      document.getElementById('r-status').className = 'res-status cond';
       document.getElementById('r-status').textContent = 'NON TROUVÉ';
-      document.getElementById('r-msg').textContent = 'Médicament non trouvé dans la base';
+      document.getElementById('r-msg').textContent = 'Médicament non trouvé dans la base locale. Consultez le Super Agent pour plus d\'informations.';
     }
-  } else if (tp === 'kine') {
-    if (!currentPath) {
-      alert('Sélectionnez une pathologie');
+    
+  } else if (tp === 'log') {
+    const cat = document.getElementById('s-log-cat').value;
+    const sess = +document.getElementById('s-log-sess').value;
+    
+    if (!cat || !sess) {
+      alert('Sélectionnez une catégorie et entrez le nombre de séances');
       return;
     }
-    const sess = +document.getElementById('s-sess').value;
     
-    let msg = '<strong>' + currentPath.name + '</strong><br>Remboursement prévu pour ' + sess + ' séances';
-    if (sess > currentPath.maxSessions) {
-      msg = 'Dépassement du forfait (' + currentPath.maxSessions + ' séances). Accord préalable requis.';
-      document.getElementById('r-status').className = 'res-status cond';
-      document.getElementById('r-status').textContent = 'CONDITIONNEL';
-    } else {
-      document.getElementById('r-status').className = 'res-status ok';
-      document.getElementById('r-status').textContent = 'ÉLIGIBLE';
-    }
-    document.getElementById('r-msg').innerHTML = msg;
-  } else if (tp === 'mobilite') {
+    const catInfo = CFG.LOG_CATS.find(c => c.id === cat);
     document.getElementById('r-status').className = 'res-status ok';
     document.getElementById('r-status').textContent = 'ÉLIGIBLE';
-    document.getElementById('r-msg').innerHTML = 'Aide à la mobilité remboursée à 90%. Accord préalable L113 requis.';
+    document.getElementById('r-msg').innerHTML = `<strong>${catInfo.name}</strong><br>Remboursement prévu pour ${sess} séances.<br>Validité: ${catInfo.validityMonths} mois.`;
+    document.getElementById('r-ref').innerHTML = '<strong>Source:</strong> Article 36 Nomenclature Logopédie INAMI';
+    
+  } else if (tp === 'mobilite') {
+    const mobType = document.getElementById('s-mob-type').value;
+    const mobAge = +document.getElementById('s-mob-age').value || 0;
+    const presc = document.getElementById('s-mob-presc').value;
+    
+    if (presc === 'non') {
+      document.getElementById('r-status').className = 'res-status no';
+      document.getElementById('r-status').textContent = 'REFUS';
+      document.getElementById('r-msg').innerHTML = 'Une prescription médicale est obligatoire pour l\'aide à la mobilité.';
+      return;
+    }
+    
+    let msg = '';
+    if (mobType.includes('fauteuil-manuel')) {
+      msg = `Fauteuil roulant manuel remboursé à 90%.<br>Renouvellement: tous les 5 ans (2 ans si < 16 ans).<br>Accord préalable L113 requis.`;
+    } else if (mobType.includes('fauteuil-electrique')) {
+      msg = `Fauteuil roulant électrique remboursé à 90%.<br>Renouvellement: tous les 6 ans.<br>Accord préalable L113 + bilan pluridisciplinaire requis.`;
+    } else if (mobType === 'deambulateur') {
+      msg = `Déambulateur/Rollator remboursé à 75%.<br>Renouvellement: tous les 4 ans.<br>Pas d'accord préalable requis.`;
+    } else if (mobType === 'orthese') {
+      msg = `Orthèse remboursée à 75-90% selon complexité.<br>Renouvellement: 2-4 ans selon type.<br>Accord préalable pour orthèses complexes.`;
+    } else if (mobType === 'prothese') {
+      msg = `Prothèse remboursée à 90%.<br>Renouvellement: 5-6 ans (2-3 ans emboîture).<br>Accord préalable L113 + dossier complet requis.`;
+    }
+    
+    document.getElementById('r-status').className = 'res-status ok';
+    document.getElementById('r-status').textContent = 'ÉLIGIBLE';
+    document.getElementById('r-msg').innerHTML = msg;
+    document.getElementById('r-ref').innerHTML = '<strong>Source:</strong> Nomenclature Aide à la Mobilité INAMI - Chapitre 9';
+    
+  } else {
+    // Autres matières (nurs, diet, img, hosp, chron)
+    document.getElementById('r-status').className = 'res-status cond';
+    document.getElementById('r-status').textContent = 'INFORMATION REQUISE';
+    document.getElementById('r-msg').innerHTML = 'Pour cette matière, veuillez utiliser le Super Agent pour une analyse détaillée basée sur les fichiers JSON complets.';
   }
 }
 
@@ -582,7 +858,7 @@ function sendMsg() {
       resp += '<em>Domaine: ' + domain + '</em><br><br>';
       
       if (found.nomenclatureCodes) {
-        resp += '<strong>Codes:</strong><ul>';
+        resp += '<strong>Codes Nomenclature:</strong><ul>';
         found.nomenclatureCodes.slice(0, 3).forEach(c => {
           resp += '<li>' + c.code + ': ' + c.desc + ' (' + c.price + ' EUR)</li>';
         });
@@ -590,17 +866,22 @@ function sendMsg() {
       }
       
       if (found.rules) {
-        resp += '<strong>Conditions:</strong><ul>';
-        if (found.rules.requiresMedicalPrescription) resp += '<li>Prescription médicale requise</li>';
-        if (found.rules.priorAgreementRequired) resp += '<li style="color:var(--warning)">Accord préalable requis</li>';
+        resp += '<strong>Conditions de remboursement:</strong><ul>';
+        if (found.rules.requiresMedicalPrescription) resp += '<li>Prescription médicale requise (' + (found.rules.medicalSpecialist || 'Médecin traitant') + ')</li>';
+        if (found.rules.priorAgreementRequired) resp += '<li style="color:var(--warning)">Accord préalable (L113) requis</li>';
         if (found.rules.maxSessionsPerYear) resp += '<li>Plafond: ' + found.rules.maxSessionsPerYear + ' séances/an</li>';
+        if (found.rules.clinicalCriteria) {
+          const criteria = Array.isArray(found.rules.clinicalCriteria) ? found.rules.clinicalCriteria.join(', ') : found.rules.clinicalCriteria;
+          resp += '<li>Critères cliniques: ' + criteria + '</li>';
+        }
         resp += '</ul>';
       }
       
       // Suggestions
       let sugg = [];
-      if (domain === 'medicaments') sugg = ['Prescripteur?', 'Taux remboursement?'];
-      else if (domain === 'mobilite') sugg = ['Renouvellement?', 'Accord L113?'];
+      if (domain === 'medicaments') sugg = ['Prescripteur autorisé?', 'Taux de remboursement?'];
+      else if (domain === 'mobilite') sugg = ['Renouvellement?', 'Accord préalable L113?'];
+      else if (domain === 'kine') sugg = ['Quels sont les codes Fa?', 'Conditions Liste E?'];
       
       if (sugg.length > 0) {
         resp += '<div class="suggestion-chips">';
@@ -612,10 +893,10 @@ function sendMsg() {
       
       addMsg('agent', resp);
     } else {
-      if (lower.includes('bonjour')) {
-        addMsg('agent', 'Bonjour. Je peux vous renseigner sur les médicaments, la kinésithérapie, l\'aide à la mobilité, etc. Posez votre question.');
+      if (lower.includes('bonjour') || lower.includes('salut')) {
+        addMsg('agent', 'Bonjour. Je peux vous renseigner sur les médicaments, la kinésithérapie (Fa, Fb, Liste E), l\'aide à la mobilité, la logopédie, les soins infirmiers, etc. Posez votre question.');
       } else {
-        addMsg('agent', 'Je n\'ai pas trouvé d\'information précise. Essayez avec "Mounjaro", "fauteuil", "kiné", etc.');
+        addMsg('agent', 'Je n\'ai pas trouvé d\'information précise dans ma base. Essayez avec des termes comme "Mounjaro", "fauteuil électrique", "Fa-1", "Fb-51", "dyslexie", etc.');
       }
     }
   }, 300);
