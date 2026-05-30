@@ -1,66 +1,100 @@
-<!DOCTYPE html>
+
+                        <!DOCTYPE html>
+                        <html lang="en">
+                        <head>
+                            <meta charset="UTF-8">
+                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <style>
+                body {
+                  background-color: white; /* Ensure the iframe has a white background */
+                }
+
+                
+              </style>
+                        </head>
+                        <body>
+                            <!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Assistant INAMI - Expert</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Assistant INAMI</title>
   <style>
     :root {
-      --bg: #0f172a; --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-      --surface: rgba(30, 41, 59, 0.85); --surface-hover: rgba(51, 65, 85, 0.95);
-      --text: #f1f5f9; --text-muted: #94a3b8; --primary: #3b82f6; --primary-hover: #2563eb;
-      --accent: #10b981; --warning: #f59e0b; --danger: #ef4444;
-      --border: rgba(148, 163, 184, 0.2); --shadow: 0 12px 40px -8px rgba(0, 0, 0, 0.5);
-      --radius: 14px; --radius-lg: 20px; --font: system-ui, sans-serif;
-      --spacing-md: 1.2rem; --spacing-lg: 1.8rem;
+      --bg: #0f172a;
+      --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      --surface: rgba(30, 41, 59, 0.75);
+      --surface-hover: rgba(51, 65, 85, 0.9);
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --accent: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --border: rgba(148, 163, 184, 0.15);
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      --radius: 16px;
+      --radius-sm: 8px;
+      --font: 'Inter', system-ui, -apple-system, sans-serif;
+      --spacing: 1rem;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
-    body { font-family: var(--font); background: var(--bg-gradient); color: var(--text); padding: var(--spacing-md); min-height: 100vh; }
-    ::-webkit-scrollbar { width: 8px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
-
-    /* Login */
-    #login-screen { position: fixed; inset: 0; background: var(--bg-gradient); display: flex; align-items: center; justify-content: center; z-index: 1000; }
-    .login-card { background: var(--surface); padding: 2rem; border-radius: var(--radius-lg); width: 90%; max-width: 400px; text-align: center; border: 1px solid var(--border); }
-    .login-input { width: 100%; padding: 0.8rem; background: rgba(0,0,0,0.3); border: 1px solid var(--border); color: var(--text); border-radius: 8px; margin: 1rem 0; }
-    .login-btn { width: 100%; padding: 0.8rem; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
-
-    /* App Structure */
-    #main-app { display: none; max-width: 1000px; margin: 0 auto; }
+    * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
+    body { font-family: var(--font); background: var(--bg-gradient); color: var(--text); line-height: 1.5; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
+    
+    /* Login Screen */
+    #login-screen { position: fixed; inset: 0; background: var(--bg); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: var(--spacing); }
+    .login-card { background: var(--surface); backdrop-filter: blur(12px); padding: 2rem; border-radius: var(--radius); border: 1px solid var(--border); width: 100%; max-width: 400px; text-align: center; box-shadow: var(--shadow); }
+    .login-input { width: 100%; padding: 0.8rem; margin: 1rem 0; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-size: 1rem; }
+    .login-btn { width: 100%; padding: 0.8rem; background: var(--primary); color: white; border: none; border-radius: var(--radius-sm); font-weight: 600; cursor: pointer; font-size: 1rem; transition: 0.2s; }
+    .login-btn:hover { background: var(--primary-hover); }
+    
+    /* App Layout */
+    #main-app { display: none; width: 100%; max-width: 800px; padding: var(--spacing); }
     header { text-align: center; margin-bottom: 2rem; }
-    .nav-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
-    .nav-btn { background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 1.5rem; border-radius: var(--radius-lg); cursor: pointer; font-size: 1.1rem; font-weight: bold; }
-    .nav-btn:hover { background: var(--primary); color: white; transform: translateY(-2px); }
+    h1 { font-size: 1.8rem; margin-bottom: 0.5rem; letter-spacing: -0.5px; }
+    h2 { font-size: 1.3rem; margin-bottom: 1rem; color: var(--primary); border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
     
-    .view { display: none; animation: fadeIn 0.3s; }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem; margin-bottom: 1.5rem; }
-    h2 { color: var(--primary); margin-bottom: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
+    /* Navigation */
+    .nav-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+    .nav-btn { background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 1.2rem; border-radius: var(--radius); font-weight: 600; text-align: center; cursor: pointer; transition: 0.2s; box-shadow: var(--shadow); }
+    .nav-btn:hover, .nav-btn.active { background: var(--primary); color: white; border-color: var(--primary); transform: translateY(-2px); }
     
-    /* Formulaires Intelligents */
-    .smart-form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; }
-    .field { display: flex; flex-direction: column; gap: 0.5rem; }
-    label { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; }
-    input, select { background: rgba(0,0,0,0.2); border: 1px solid var(--border); color: var(--text); padding: 0.8rem; border-radius: 8px; }
-    input:focus, select:focus { border-color: var(--primary); }
+    /* Cards & Forms */
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: var(--shadow); }
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+    .field { display: flex; flex-direction: column; gap: 0.4rem; }
+    label { font-size: 0.8rem; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+    input, select, textarea { background: rgba(0,0,0,0.2); border: 1px solid var(--border); color: var(--text); padding: 0.8rem; border-radius: var(--radius-sm); width: 100%; font-size: 0.95rem; transition: 0.2s; }
+    input:focus, select:focus { border-color: var(--primary); background: rgba(0,0,0,0.3); }
     input.error { border-color: var(--danger); background: rgba(239, 68, 68, 0.1); }
     
-    /* Chat & Résultats */
-    .chat-container { height: 60vh; display: flex; flex-direction: column; background: var(--surface); border-radius: var(--radius-lg); border: 1px solid var(--border); }
-    .chat-log { flex: 1; overflow-y: auto; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; }
-    .msg { max-width: 80%; padding: 1rem; border-radius: 12px; line-height: 1.5; }
-    .msg.user { align-self: flex-end; background: var(--primary); color: white; }
-    .msg.agent { align-self: flex-start; background: var(--surface-hover); border: 1px solid var(--border); }
-    .msg.agent ul { margin-left: 1.2rem; margin-top: 0.5rem; }
-    .suggestion-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
-    .chip { background: rgba(59,130,246,0.1); color: var(--primary); padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.85rem; cursor: pointer; border: 1px solid var(--primary); }
-    .chat-input-area { display: flex; padding: 1rem; border-top: 1px solid var(--border); gap: 0.5rem; }
-    
-    .result-panel { margin-top: 1rem; padding: 1rem; border-radius: 8px; background: rgba(0,0,0,0.2); display: none; }
-    .status-ok { color: var(--accent); font-weight: bold; border-left: 3px solid var(--accent); padding-left: 0.5rem; }
-    .status-no { color: var(--danger); font-weight: bold; border-left: 3px solid var(--danger); padding-left: 0.5rem; }
-    .status-cond { color: var(--warning); font-weight: bold; border-left: 3px solid var(--warning); padding-left: 0.5rem; }
+    /* Chat Interface */
+    .chat-box { display: flex; flex-direction: column; height: 60vh; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+    .chat-log { flex: 1; padding: 1rem; overflow-y: auto; display: flex; flex-direction: column; gap: 0.8rem; }
+    .msg { max-width: 85%; padding: 0.8rem 1rem; border-radius: 12px; font-size: 0.9rem; line-height: 1.4; word-wrap: break-word; }
+    .msg.user { align-self: flex-end; background: var(--primary); color: white; border-bottom-right-radius: 4px; }
+    .msg.agent { align-self: flex-start; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-bottom-left-radius: 4px; }
+    .msg.agent ul { margin-left: 1rem; margin-top: 0.3rem; }
+    .suggestions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
+    .chip { background: rgba(59,130,246,0.15); color: var(--primary); padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem; cursor: pointer; border: 1px solid rgba(59,130,246,0.3); }
+    .chip:hover { background: rgba(59,130,246,0.3); }
+    .chat-input { display: flex; padding: 0.8rem; border-top: 1px solid var(--border); gap: 0.5rem; background: rgba(0,0,0,0.2); }
+    .chat-input input { border-radius: 20px; padding-left: 1.2rem; }
+    .send-btn { background: var(--accent); color: white; border: none; padding: 0 1.2rem; border-radius: 20px; font-weight: 600; cursor: pointer; }
 
-    .loader { text-align: center; padding: 2rem; color: var(--text-muted); display: none; }
+    /* Result Panel */
+    .result-box { margin-top: 1rem; padding: 1rem; border-radius: var(--radius-sm); background: rgba(0,0,0,0.2); display: none; border-left: 4px solid var(--text-muted); }
+    .res-ok { border-color: var(--accent); }
+    .res-no { border-color: var(--danger); }
+    .res-cond { border-color: var(--warning); }
+    .res-title { font-weight: bold; margin-bottom: 0.3rem; display: block; }
+    
+    /* Utilities */
+    .hidden { display: none; }
+    .loader { text-align: center; color: var(--text-muted); padding: 2rem; }
+    footer { text-align: center; margin-top: 2rem; font-size: 0.75rem; color: var(--text-muted); padding-bottom: 2rem; }
+    .disclaimer { font-size: 0.7rem; color: var(--warning); margin-top: 0.5rem; font-style: italic; }
   </style>
 </head>
 <body>
@@ -69,10 +103,10 @@
 <div id="login-screen">
   <div class="login-card">
     <h1>Assistant <span style="color:var(--primary)">INAMI</span></h1>
-    <p style="color:var(--text-muted)">Accès sécurisé</p>
-    <input type="password" id="password" class="login-input" placeholder="Mot de passe">
-    <button class="login-btn" onclick="login()">Valider</button>
-    <p id="login-error" style="color:var(--danger); margin-top:0.5rem; display:none;">Mot de passe incorrect</p>
+    <p style="color:var(--text-muted); margin-bottom:1rem;">Vos droits de santé en Belgique</p>
+    <input type="password" id="pwd" class="login-input" placeholder="Mot de passe">
+    <button class="login-btn" onclick="login()">Accéder</button>
+    <p id="err-msg" style="color:var(--danger); margin-top:0.5rem; display:none;">Mot de passe incorrect</p>
   </div>
 </div>
 
@@ -80,12 +114,12 @@
 <div id="main-app">
   <header>
     <h1>Assistant INAMI</h1>
-    <p style="color:var(--text-muted)">Expert multi-matières & Simulateur Dynamique</p>
+    <p style="color:var(--text-muted)">Expert multi-matières & Simulateur</p>
   </header>
 
   <nav class="nav-grid">
-    <button class="nav-btn" onclick="switchView('sim')">Simulateur Intelligent</button>
-    <button class="nav-btn" onclick="switchView('chat')">Super Agent</button>
+    <button class="nav-btn" onclick="show('sim')">Simulateur</button>
+    <button class="nav-btn" onclick="show('agent')">Super Agent</button>
     <button class="nav-btn" onclick="logout()">Déconnexion</button>
   </nav>
 
@@ -93,200 +127,232 @@
   <section id="sim" class="view">
     <div class="card">
       <h2>Simulateur d'Éligibilité</h2>
-      <div id="sim-loader" class="loader">Chargement des règles INAMI...</div>
-      
-      <div id="sim-content" style="display:none;">
-        <div class="smart-form-grid">
+      <div id="loader" class="loader">Chargement des règles...</div>
+      <div id="sim-body" class="hidden">
+        <div class="form-grid">
           <div class="field">
             <label>Type de soins</label>
-            <select id="sim-type" onchange="handleTypeChange()">
-              <option value="">-- Choisir une matière --</option>
+            <select id="type-select" onchange="buildForm()">
+              <option value="">-- Sélectionnez --</option>
               <option value="kine">Kinésithérapie</option>
               <option value="med">Médicaments</option>
-              <option value="mobilite">Aide à la Mobilité</option>
+              <option value="mobilite">Aide à la mobilité</option>
               <option value="log">Logopédie</option>
             </select>
           </div>
         </div>
         
-        <div id="dynamic-fields" class="smart-form-grid" style="margin-top:1.5rem;"></div>
+        <div id="dynamic-form" class="form-grid" style="margin-top:1rem;"></div>
         
-        <div id="sim-result" class="result-panel"></div>
+        <button class="login-btn" style="margin-top:1.5rem; background:var(--primary);" onclick="validate()">Vérifier</button>
         
-        <button class="nav-btn" style="width:100%; margin-top:1.5rem; background:var(--primary); color:white; border:none;" onclick="runSmartSim()">
-          Lancer l'analyse
-        </button>
+        <div id="result" class="result-box"></div>
       </div>
     </div>
   </section>
 
-  <!-- CHAT -->
-  <section id="chat" class="view">
-    <div class="chat-container">
-      <div style="padding:1rem; border-bottom:1px solid var(--border); background:rgba(0,0,0,0.2);">
-        <strong>Super Agent</strong> <span style="font-size:0.8rem; color:var(--text-muted)">| Base de connaissances chargée</span>
-      </div>
+  <!-- AGENT -->
+  <section id="agent" class="view hidden">
+    <div class="chat-box">
+      <div style="padding:1rem; border-bottom:1px solid var(--border); font-weight:600;">Super Agent INAMI</div>
       <div id="chat-log" class="chat-log">
-        <div class="msg agent">Bonjour. Je connais toutes les règles INAMI, mutualités et conditions d'éligibilité. Que souhaitez-vous vérifier ?</div>
+        <div class="msg agent">Bonjour. Je suis l'expert INAMI. Demandez-moi des infos sur les remboursements, les conditions, ou les codes.</div>
       </div>
-      <div class="chat-input-area">
-        <input type="text" id="chat-input" placeholder="Ex: Mounjaro remboursé ? Conditions kiné Fb-51..." style="flex:1;" onkeypress="if(event.key==='Enter') sendChat()">
-        <button class="nav-btn" style="padding:0 1.5rem; background:var(--accent); color:white; border:none;" onclick="sendChat()">Envoyer</button>
+      <div class="chat-input">
+        <input type="text" id="chat-input" placeholder="Ex: Mounjaro est-il remboursé ?">
+        <button class="send-btn" onclick="sendChat()">Envoyer</button>
       </div>
     </div>
   </section>
+
+  <footer>
+    <p>Données INAMI / Mutualités</p>
+    <p class="disclaimer">Cet outil est informatif. Consultez votre mutualité pour une décision officielle.</p>
+  </footer>
 </div>
 
 <script>
-  // --- DATA STORE ---
-  let DB = { faq: [], kine: [], meds: [] };
-  const PASSWORD = 'inami2025';
-
+  // --- DATA & CONFIG ---
+  const PWD = 'inami2025';
+  const JSON_URL = 'https://raw.githubusercontent.com/Bootyfull1/inami-database/main/faq-inami.json';
+  
+  let DB = [];
+  
   // --- INIT ---
   window.onload = () => {
-    if (localStorage.getItem('inami_session')) {
+    if(sessionStorage.getItem('auth')) {
       document.getElementById('login-screen').style.display = 'none';
       document.getElementById('main-app').style.display = 'block';
-      loadDatabase();
+      loadDB();
     }
   };
 
   function login() {
-    if (document.getElementById('password').value === PASSWORD) {
-      localStorage.setItem('inami_session', 'true');
+    if(document.getElementById('pwd').value === PWD) {
+      sessionStorage.setItem('auth', 'ok');
       location.reload();
     } else {
-      document.getElementById('login-error').style.display = 'block';
+      document.getElementById('err-msg').style.display = 'block';
     }
   }
-
-  function logout() {
-    localStorage.removeItem('inami_session');
-    location.reload();
-  }
-
-  function switchView(id) {
-    document.querySelectorAll('.view').forEach(v => v.style.display = 'none');
-    document.getElementById(id).style.display = 'block';
+  function logout() { sessionStorage.removeItem('auth'); location.reload(); }
+  function show(id) {
+    document.querySelectorAll('.view').forEach(el => el.classList.add('hidden'));
+    document.getElementById(id).classList.remove('hidden');
   }
 
   // --- DATA LOADING ---
-  async function loadDatabase() {
-    document.getElementById('sim-loader').style.display = 'block';
-    
-    // Chargement FAQ (Contient aussi les schémas de formulaire)
+  async function loadDB() {
     try {
-      const res = await fetch('https://raw.githubusercontent.com/Bootyfull1/inami-database/main/faq-inami.json');
-      if (res.ok) {
-        const data = await res.json();
-        DB.faq = data.faq_items;
-        
-        // Extraction des catégories uniques pour le menu
-        populateFormOptions();
-        
-        document.getElementById('sim-loader').style.display = 'none';
-        document.getElementById('sim-content').style.display = 'block';
-        console.log(`✅ ${DB.faq.length} règles chargées.`);
-      }
-    } catch (e) {
-      document.getElementById('sim-loader').textContent = "Erreur de chargement des données (Mode Hors-ligne)";
+      const res = await fetch(JSON_URL);
+      if(!res.ok) throw new Error('Network');
+      const data = await res.json();
+      DB = data.faq_items;
+    } catch(e) {
+      console.warn('Utilisation des données locales (Fallback)');
+      // Données de secours intégrées pour que le site ne plante jamais
+      DB = [
+        {id:"k-fa1",category:"kine",question:"Kiné Fa-1 (Fractures)",synonyms:["fracture","fa-1","code op"],answer:"Remboursé si code opératoire chirurgical fourni. 18 séances/12 mois.",criteria:{op:true,max:18,mois:12},sources:["INAMI Annexe 05a"],form_schema:{fields:[{id:"age",label:"Âge",type:"number"},{id:"code",label:"Code Opératoire (6 chiffres)",type:"text"}]}},
+        {id:"k-fb51",category:"kine",question:"Kiné Fb-51 (Marche +65ans)",synonyms:["marche","fb-51","senior","65 ans"],answer:"Remboursé pour patients >= 65 ans avec troubles de la marche. 18 séances/24 mois.",criteria:{minAge:65,max:18,mois:24},sources:["INAMI Annexe 05a"],form_schema:{fields:[{id:"age",label:"Âge",type:"number"},{id:"sessions",label:"Nombre de séances",type:"number"}]}},
+        {id:"m-moun",category:"med",question:"Mounjaro (Diabète)",synonyms:["mounjaro","tirzepatide","diabète"],answer:"Remboursé UNIQUEMENT pour Diabète T2 si échec trithérapie. Prescription SPÉCIALISTE obligatoire.",criteria:{spec:true},sources:["CRM"],form_schema:{fields:[{id:"patho",label:"Pathologie",type:"text"},{id:"presc",label:"Prescripteur",type:"select",options:["Généraliste","Spécialiste"]}]}},
+        {id:"mob-fr",category:"mobilite",question:"Fauteuil Roulant",synonyms:["fauteuil","fr","roulant"],answer:"Remboursé à 90%. Accord L113 obligatoire. Renouvelable tous les 5 ans.",criteria:{accord:true},sources:["Chapitre 9"],form_schema:{fields:[{id:"type",label:"Type",type:"select",options:["Manuel","Électrique"]},{id:"age",label:"Âge",type:"number"}]}}
+      ];
     }
+    document.getElementById('loader').style.display = 'none';
+    document.getElementById('sim-body').classList.remove('hidden');
   }
 
-  // --- SIMULATEUR DYNAMIQUE ---
-  function handleTypeChange() {
-    const type = document.getElementById('sim-type').value;
-    const container = document.getElementById('dynamic-fields');
+  // --- SIMULATEUR ---
+  function buildForm() {
+    const cat = document.getElementById('type-select').value;
+    const container = document.getElementById('dynamic-form');
     container.innerHTML = '';
-    document.getElementById('sim-result').style.display = 'none';
+    document.getElementById('result').style.display = 'none';
 
-    if (!type) return;
+    if(!cat) return;
 
-    // 1. Filtrer la FAQ pour trouver l'item "Guide" de cette catégorie
-    // On cherche un item qui a un "form_schema" complet pour cette catégorie
-    const guide = DB.faq.find(f => f.category === type && f.id.endsWith('-001'));
-    
-    if (!guide) {
-      container.innerHTML = '<p style="color:var(--warning)">Configuration formulaire non trouvée pour cette catégorie.</p>';
+    // On cherche un item "guide" pour cette catégorie qui a un schema
+    // Ou on prend le premier item de la catégorie
+    const item = DB.find(i => i.category === cat);
+    if(!item || !item.form_schema) {
+      container.innerHTML = '<p class="disclaimer">Configuration non disponible pour cette catégorie.</p>';
       return;
     }
 
-    // 2. Générer les champs basés sur le schema
-    const schema = guide.form_schema;
-    if (schema && schema.fields) {
-      schema.fields.forEach(field => {
-        const div = document.createElement('div');
-        div.className = 'field';
-        
-        let inputHTML = '';
-        if (field.type === 'number') {
-          inputHTML = `<input type="number" id="field-${field.id}" placeholder="${field.placeholder || ''}">`;
-        } else if (field.type === 'select') {
-          let opts = field.options.map(o => `<option value="${o}">${o}</option>`).join('');
-          inputHTML = `<select id="field-${field.id}">${opts}</select>`;
-        } else {
-          inputHTML = `<input type="text" id="field-${field.id}" placeholder="${field.placeholder || ''}">`;
-        }
-
-        div.innerHTML = `<label>${field.label}</label>${inputHTML}`;
-        container.appendChild(div);
-      });
-    }
+    item.form_schema.fields.forEach(f => {
+      const div = document.createElement('div');
+      div.className = 'field';
+      let html = `<label>${f.label}</label>`;
+      if(f.type === 'select') {
+        html += `<select id="inp-${f.id}">${f.options.map(o=>`<option>${o}</option>`).join('')}</select>`;
+      } else {
+        html += `<input type="${f.type}" id="inp-${f.id}" placeholder="${f.label}...">`;
+      }
+      div.innerHTML = html;
+      container.appendChild(div);
+    });
   }
 
-  function runSmartSim() {
-    const type = document.getElementById('sim-type').value;
-    if (!type) return alert('Sélectionnez un type de soin.');
-
-    // Récupérer les valeurs saisies
+  function validate() {
+    const cat = document.getElementById('type-select').value;
+    const item = DB.find(i => i.category === cat);
+    const resBox = document.getElementById('result');
+    
+    // Récupération des valeurs
     const inputs = {};
-    document.querySelectorAll('#dynamic-fields input, #dynamic-fields select').forEach(el => {
-      inputs[el.id.replace('field-', '')] = el.value;
+    document.querySelectorAll('#dynamic-form input, #dynamic-form select').forEach(el => {
+      inputs[el.id.replace('inp-','')] = el.value;
     });
 
-    // Trouver la règle correspondante
-    // Ici, on simule une recherche intelligente : on prend la règle la plus générique de la catégorie
-    // Dans une version pro, on utiliserait l'ID de pathologie sélectionné pour trouver la règle exacte
-    const rule = DB.faq.find(f => f.category === type); 
-    
-    const resPanel = document.getElementById('sim-result');
-    resPanel.style.display = 'block';
+    if(!item) return;
 
-    if (rule) {
-      // Vérification des critères
-      let issues = [];
-      if (rule.criteria) {
-        if (rule.criteria.minAge && inputs.age && inputs.age < rule.criteria.minAge) issues.push(`Âge minimum requis: ${rule.criteria.minAge} ans`);
-        if (rule.criteria.maxAge && inputs.age && inputs.age > rule.criteria.maxAge) issues.push(`Âge maximum: ${rule.criteria.maxAge} ans`);
-        // Ajoute ici d'autres vérifications basées sur le schema
-      }
+    // LOGIQUE DE VALIDATION STRICTE
+    let status = 'ok';
+    let msg = item.answer;
+    let issues = [];
 
-      if (issues.length > 0) {
-        resPanel.innerHTML = `<div class="status-no">NON ÉLIGIBLE</div><p style="margin-top:0.5rem">${issues.join('<br>')}</p>`;
-      } else {
-        resPanel.innerHTML = `<div class="status-ok">ÉLIGIBLE (Sous réserve)</div><p style="margin-top:0.5rem">${rule.answer.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</p>`;
+    if(item.criteria) {
+      if(item.criteria.minAge && inputs.age && parseInt(inputs.age) < item.criteria.minAge) {
+        status = 'no';
+        issues.push(`Âge minimum requis: ${item.criteria.minAge} ans (Saisi: ${inputs.age})`);
       }
+      if(item.criteria.op && !inputs.code) {
+        status = 'no';
+        issues.push(`Code opératoire chirurgical obligatoire`);
+      }
+      if(item.criteria.max && inputs.sessions && parseInt(inputs.sessions) > item.criteria.max) {
+        status = 'cond';
+        issues.push(`Dépassement de forfait (${item.criteria.max} séances). Accord préalable requis.`);
+      }
+      if(item.criteria.spec && inputs.presc === 'Généraliste') {
+        status = 'no';
+        issues.push(`Prescription par un SPÉCIALISTE obligatoire`);
+      }
+    }
+
+    // Affichage
+    resBox.style.display = 'block';
+    resBox.className = 'result-box'; // reset
+    if(status === 'ok') {
+      resBox.classList.add('res-ok');
+      resBox.innerHTML = `<span class="res-title" style="color:var(--accent)">✅ ÉLIGIBLE</span><p>${msg}</p>`;
+    } else if(status === 'no') {
+      resBox.classList.add('res-no');
+      resBox.innerHTML = `<span class="res-title" style="color:var(--danger)">❌ REFUS / CONDITIONS NON REMPLIES</span><ul>${issues.map(i=>`<li>${i}</li>`).join('')}</ul>`;
     } else {
-      resPanel.innerHTML = `<div class="status-cond">ANALYSE REQUISE</div><p>Utilisez le Super Agent pour une analyse détaillée.</p>`;
+      resBox.classList.add('res-cond');
+      resBox.innerHTML = `<span class="res-title" style="color:var(--warning)">⚠️ CONDITIONNEL</span><ul>${issues.map(i=>`<li>${i}</li>`).join('')}</ul><p style="margin-top:0.5rem;font-size:0.85rem">${msg}</p>`;
     }
   }
 
   // --- CHAT AGENT ---
   function sendChat() {
-    const input = document.getElementById('chat-input');
-    const txt = input.value.trim();
-    if (!txt) return;
+    const inp = document.getElementById('chat-input');
+    const txt = inp.value.trim();
+    if(!txt) return;
+    inp.value = '';
+    addMsg('user', txt);
+
+    // DÉTECTION DE DOMAINE (Règle cruciale)
+    const lower = txt.toLowerCase();
+    let domain = null;
+    if(lower.match(/\b(fa|fb|liste\s*e|kiné|kinésithérapie|séance|fracture)\b/)) domain = 'kine';
+    else if(lower.match(/\b(médicament|mounjaro|ozempic|insuline|comprimé|catégorie)\b/)) domain = 'med';
+    else if(lower.match(/\b(fauteuil|déambulateur|orthèse|prothèse|mobilité)\b/)) domain = 'mobilite';
+
+    // RECHERCHE FILTRÉE
+    const pool = domain ? DB.filter(i => i.category === domain) : DB;
     
-    addChatMsg('user', txt);
-    input.value = '';
+    let best = null;
+    let maxScore = 0;
+
+    pool.forEach(item => {
+      let score = 0;
+      if(lower.includes(item.question.toLowerCase())) score += 10;
+      item.synonyms.forEach(s => { if(lower.includes(s.toLowerCase())) score += 5; });
+      // Mots longs
+      lower.split(' ').forEach(w => { if(w.length > 3 && item.answer.toLowerCase().includes(w)) score += 1; });
+      if(score > maxScore) { maxScore = score; best = item; }
+    });
 
     setTimeout(() => {
-      const response = generateAgentResponse(txt);
-      addChatMsg('agent', response);
-    }, 400);
+      if(best && maxScore >= 3) {
+        let html = `<strong>${best.question}</strong><br>${best.answer.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}<br><em style="font-size:0.8rem;color:var(--text-muted)">Source: ${best.sources.join(', ')}</em>`;
+        // Suggestions
+        const related = pool.filter(i => i !== best).slice(0, 2);
+        if(related.length) {
+          html += `<div class="suggestions">`;
+          related.forEach(r => { html += `<span class="chip" onclick="document.getElementById('chat-input').value='${r.question}';sendChat()">${r.question.substring(0,25)}...</span>`; });
+          html += `</div>`;
+        }
+        addMsg('agent', html);
+      } else {
+        addMsg('agent', "Je n'ai pas trouvé de réponse précise. Essayez de reformuler ou consultez le Simulateur.");
+      }
+    }, 300);
   }
 
-  function addChatMsg(sender, html) {
+  function addMsg(sender, html) {
     const log = document.getElementById('chat-log');
     const div = document.createElement('div');
     div.className = `msg ${sender}`;
@@ -294,48 +360,34 @@
     log.appendChild(div);
     log.scrollTop = log.scrollHeight;
   }
-
-  function generateAgentResponse(query) {
-    const q = query.toLowerCase();
-    let bestMatch = null;
-    let maxScore = 0;
-
-    // Recherche vectorielle simplifiée (Mot-clé + Synonymes)
-    DB.faq.forEach(item => {
-      let score = 0;
-      // Score question
-      if (q.includes(item.question.toLowerCase())) score += 10;
-      // Score synonymes
-      item.synonyms.forEach(syn => {
-        if (q.includes(syn.toLowerCase())) score += 5;
-      });
-      // Score mots longs
-      q.split(' ').forEach(word => {
-        if (word.length > 4 && item.answer.toLowerCase().includes(word)) score += 1;
-      });
-
-      if (score > maxScore) { maxScore = score; bestMatch = item; }
-    });
-
-    if (bestMatch && maxScore >= 3) {
-      let html = `<strong>Réponse :</strong><br>${bestMatch.answer.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}<br>`;
-      html += `<div style="margin-top:0.5rem; font-size:0.8rem; color:var(--text-muted)">Source: ${bestMatch.sources.join(', ')}</div>`;
-      
-      // Suggestions liées
-      const related = DB.faq.filter(f => f.category === bestMatch.category && f !== bestMatch).slice(0, 2);
-      if (related.length) {
-        html += `<div class="suggestion-chips">`;
-        related.forEach(r => {
-          html += `<span class="chip" onclick="document.getElementById('chat-input').value='${r.question}';sendChat()">${r.question.substring(0, 30)}...</span>`;
-        });
-        html += `</div>`;
-      }
-      return html;
-    }
-    
-    return "Je n'ai pas trouvé d'information précise. Essayez de reformuler ou consultez le simulateur.";
-  }
 </script>
-
 </body>
 </html>
+
+
+
+              <script>
+                              const fs = require('fs');
+const path = require('path');
+
+console.log('Démarrage de la vérification...');
+
+// Ici tu pourrais ajouter du code pour fetcher une URL et parser le HTML
+// Pour l'instant, on met juste à jour la date pour prouver que ça tourne
+const filePath = path.join(__dirname, '..', 'faq-inami.json');
+
+try {
+  const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+  data.metadata.last_updated = new Date().toISOString();
+  fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+  console.log('Mise à jour effectuée avec succès.');
+} catch (err) {
+  console.error('Erreur:', err.message);
+  process.exit(1);
+}
+
+
+              </script>
+                        </body>
+                        </html>
+                    
